@@ -1119,21 +1119,19 @@ function createtime1() {
   var dnum = Math.floor(days);
 
   var ascll = [
-    `欢迎来到Fomalhaut🥝の小家!`,
-    `Future is now 🍭🍭🍭`,
+    `欢迎来到Pengeの秘密基地!`,
+    `keep it simple stupid 🍭🍭🍭`,
     `
-        
-███████  ██████  ███    ███  █████  ██      ██   ██  █████  ██    ██ ████████ 
-██      ██    ██ ████  ████ ██   ██ ██      ██   ██ ██   ██ ██    ██    ██    
-█████   ██    ██ ██ ████ ██ ███████ ██      ███████ ███████ ██    ██    ██    
-██      ██    ██ ██  ██  ██ ██   ██ ██      ██   ██ ██   ██ ██    ██    ██    
-██       ██████  ██      ██ ██   ██ ███████ ██   ██ ██   ██  ██████     ██   
-                                              
+    ______   ____   ____    ____   ____  /  _____//  _____//  _____/
+    \____ \_/ __ \ /    \  / ___\_/ __ \/   __  \/   __  \/   __  \ 
+    |  |_> >  ___/|   |  \/ /_/  >  ___/\  |__\  \  |__\  \  |__\  \
+    |   __/ \___  >___|  /\___  / \___  >\_____  /\_____  /\_____  /
+    |__|        \/     \//_____/      \/       \/       \/       \/ 
 `,
     "小站已经苟活",
     dnum,
     "天啦!",
-    "©2022 By Fomalhaut",
+    "©2024 By Penge",
   ];
 
   setTimeout(
@@ -1172,7 +1170,7 @@ function createtime2() {
   setTimeout(
     console.warn.bind(
       console,
-      "%c ⚡ Powered by Fomalhaut🥝 %c 你正在访问Fomalhaut🥝の小家",
+      "%c ⚡ Powered by Penge🥝 %c 你正在访问Pengeの秘密基地",
       "color:white; background-color:#f0ad4e",
       ""
     )
@@ -3170,14 +3168,15 @@ let unsplash = "url(https://source.unsplash.com/random/1920x1080/)";
 
 
 // 更换背景(自己的代码)
+// 更换背景(自己的代码)
 if (localStorage.getItem("blogbg") != undefined) {
   setBg(localStorage.getItem("blogbg"));
 } else {
   document.getElementById("defineBg").innerText = `:root{
-    --default-bg: url(https://lskypro.acozycotage.net/Fomalhaut/img/dm14.webp);
-    --darkmode-bg:url(https://lskypro.acozycotage.net/Fomalhaut/img/yuanshen1.webp);
-    --mobileday-bg: url(https://lskypro.acozycotage.net/Fomalhaut/img/snow.webp);
-    --mobilenight-bg: url(https://lskypro.acozycotage.net/Fomalhaut/img/mb8.webp);
+    --default-bg: url(https://source.fomal.cc/img/default_cover_1.webp);
+    --darkmode-bg: url(https://source.fomal.cc/img/default_cover_1.webp);
+    --mobileday-bg: url(https://source.fomal.cc/img/default_cover_1.webp);
+    --mobilenight-bg: url(https://source.fomal.cc/img/default_cover_1.webp);
   }`;
 }
 // 切换背景主函数
