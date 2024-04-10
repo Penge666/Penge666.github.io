@@ -3168,15 +3168,14 @@ let unsplash = "url(https://source.unsplash.com/random/1920x1080/)";
 
 
 // 更换背景(自己的代码)
-// 更换背景(自己的代码)
 if (localStorage.getItem("blogbg") != undefined) {
   setBg(localStorage.getItem("blogbg"));
 } else {
   document.getElementById("defineBg").innerText = `:root{
-    --default-bg: url(https://source.fomal.cc/img/default_cover_1.webp);
-    --darkmode-bg: url(https://source.fomal.cc/img/default_cover_1.webp);
-    --mobileday-bg: url(https://source.fomal.cc/img/default_cover_1.webp);
-    --mobilenight-bg: url(https://source.fomal.cc/img/default_cover_1.webp);
+    --default-bg: url(https://cdn.staticaly.com/gh/L-Carry/pic_bed@main/img/day01.jpg);
+    --darkmode-bg: url(https://cdn.staticaly.com/gh/L-Carry/pic_bed@main/img/night01.jpg);
+    --mobileday-bg: url(https://cdn.staticaly.com/gh/L-Carry/pic_bed@main/img/day01.jpg);
+    --mobilenight-bg: url(https://cdn.staticaly.com/gh/L-Carry/pic_bed@main/img/night01.jpg);
   }`;
 }
 // 切换背景主函数
