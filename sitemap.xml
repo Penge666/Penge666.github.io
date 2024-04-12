@@ -2,6 +2,15 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://penge666.github.io/posts/b032cb51.html</loc>
+    
+    <lastmod>2024-04-12</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://penge666.github.io/posts/e584d079.html</loc>
     
     <lastmod>2024-04-12</lastmod>
@@ -229,6 +238,20 @@
     <priority>0.2</priority>
   </url>
   
+  <url>
+    <loc>https://penge666.github.io/tags/%E8%AE%A1%E7%AE%97%E7%BD%91%E7%BB%9C/</loc>
+    <lastmod>2024-04-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://penge666.github.io/tags/linux/</loc>
+    <lastmod>2024-04-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
 
   
   <url>
@@ -247,6 +270,20 @@
   
   <url>
     <loc>https://penge666.github.io/categories/Cpp/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/</loc>
+    <lastmod>2024-04-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://penge666.github.io/categories/%E8%AE%A1%E7%AE%97%E7%BD%91%E7%BB%9C/</loc>
+    <lastmod>2024-04-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://penge666.github.io/categories/%E8%AE%A1%E7%AE%97%E7%BD%91%E7%BB%9C/Linux/</loc>
     <lastmod>2024-04-12</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
