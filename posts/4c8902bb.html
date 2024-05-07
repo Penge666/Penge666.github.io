@@ -1,0 +1,576 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><div id="myscoll"></div><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>Cpp内存顺序 | Penge666</title><meta name="keywords" content="Cpp"><meta name="author" content="Penge666"><meta name="copyright" content="Penge666"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="ffffff"><meta name="description" content="Memory Order">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Cpp内存顺序">
+<meta property="og:url" content="https://penge666.github.io/posts/4c8902bb.html">
+<meta property="og:site_name" content="Penge666">
+<meta property="og:description" content="Memory Order">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://penge666.github.io/assets/photo1/default_cover_27.webp">
+<meta property="article:published_time" content="2024-05-07T03:31:55.000Z">
+<meta property="article:modified_time" content="2024-05-07T07:17:19.176Z">
+<meta property="article:author" content="Penge666">
+<meta property="article:tag" content="Cpp">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://penge666.github.io/assets/photo1/default_cover_27.webp"><link rel="shortcut icon" href="/"><link rel="canonical" href="https://penge666.github.io/posts/4c8902bb"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://lf6-cdn-tos.bytecdntp.com/cdn/expire-1-M/font-awesome/6.0.0/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.staticfile.org/fancyapps-ui/4.0.31/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":true,"languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: {"limitDay":365,"position":"top","messagePrev":"It has been","messageNext":"days since the last update, the content of the article may be outdated."},
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":230},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: true,
+    post: true
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdnjs.cloudflare.com/ajax/libs/flickr-justified-gallery/2.1.2/fjGallery.min.js',
+      css: 'https://cdnjs.cloudflare.com/ajax/libs/flickr-justified-gallery/2.1.2/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isAnchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Cpp内存顺序',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-05-07 15:17:19'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          const now = new Date()
+          const hour = now.getHours()
+          const isNight = hour <= 6 || hour >= 18
+          if (t === undefined) isNight ? activateDarkMode() : activateLightMode()
+          else if (t === 'light') activateLightMode()
+          else activateDarkMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><link rel="stylesheet" href="https://cdn1.tianli0.top/npm/element-ui@2.15.6/packages/theme-chalk/lib/index.css"><style id="themeColor"></style><style id="rightSide"></style><style id="transPercent"></style><style id="blurNum"></style><style id="settingStyle"></style><span id="fps"></span><style id="defineBg"></style><style id="menu_shadow"></style><svg aria-hidden="true" style="position:absolute; overflow:hidden; width:0; height:0"><symbol id="icon-sun" viewBox="0 0 1024 1024"><path d="M960 512l-128 128v192h-192l-128 128-128-128H192v-192l-128-128 128-128V192h192l128-128 128 128h192v192z" fill="#FFD878" p-id="8420"></path><path d="M736 512a224 224 0 1 0-448 0 224 224 0 1 0 448 0z" fill="#FFE4A9" p-id="8421"></path><path d="M512 109.248L626.752 224H800v173.248L914.752 512 800 626.752V800h-173.248L512 914.752 397.248 800H224v-173.248L109.248 512 224 397.248V224h173.248L512 109.248M512 64l-128 128H192v192l-128 128 128 128v192h192l128 128 128-128h192v-192l128-128-128-128V192h-192l-128-128z" fill="#4D5152" p-id="8422"></path><path d="M512 320c105.888 0 192 86.112 192 192s-86.112 192-192 192-192-86.112-192-192 86.112-192 192-192m0-32a224 224 0 1 0 0 448 224 224 0 0 0 0-448z" fill="#4D5152" p-id="8423"></path></symbol><symbol id="icon-moon" viewBox="0 0 1024 1024"><path d="M611.370667 167.082667a445.013333 445.013333 0 0 1-38.4 161.834666 477.824 477.824 0 0 1-244.736 244.394667 445.141333 445.141333 0 0 1-161.109334 38.058667 85.077333 85.077333 0 0 0-65.066666 135.722666A462.08 462.08 0 1 0 747.093333 102.058667a85.077333 85.077333 0 0 0-135.722666 65.024z" fill="#FFB531" p-id="11345"></path><path d="M329.728 274.133333l35.157333-35.157333a21.333333 21.333333 0 1 0-30.165333-30.165333l-35.157333 35.157333-35.114667-35.157333a21.333333 21.333333 0 0 0-30.165333 30.165333l35.114666 35.157333-35.114666 35.157334a21.333333 21.333333 0 1 0 30.165333 30.165333l35.114667-35.157333 35.157333 35.157333a21.333333 21.333333 0 1 0 30.165333-30.165333z" fill="#030835" p-id="11346"></path></symbol></svg><!-- hexo injector head_end start --><link rel="stylesheet" href="https://npm.elemecdn.com/hexo-butterfly-swiper/lib/swiper.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://npm.elemecdn.com/hexo-butterfly-swiper/lib/swiperstyle.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://npm.elemecdn.com/hexo-butterfly-wowjs/lib/animate.min.css" media="print" onload="this.media='screen'"><link rel="stylesheet" href="https://npm.elemecdn.com/hexo-filter-gitcalendar/lib/gitcalendar.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://npm.elemecdn.com/hexo-butterfly-tag-plugins-plus@latest/lib/assets/font-awesome-animation.min.css" media="defer" onload="this.media='all'"><link rel="stylesheet" href="https://npm.elemecdn.com/hexo-butterfly-tag-plugins-plus@latest/lib/tag_plugins.css" media="defer" onload="this.media='all'"><script src="https://npm.elemecdn.com/hexo-butterfly-tag-plugins-plus@latest/lib/assets/carousel-touch.js"></script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="Penge666" type="application/atom+xml">
+</head><body><div id="loading-box" onclick="document.getElementById(&quot;loading-box&quot;).classList.add(&quot;loaded&quot;)"><div class="loading-bg"><div class="loading-img"></div><div class="loading-image-dot"></div></div></div><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/hhh.jpeg" onerror="onerror=null;src='/assets/r1.jpg'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">26</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">11</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">11</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page faa-parent animated-hover" href="/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-home"></use></svg><span class="menu_word" style="font-size:17px"> 首页</span></a></div><div class="menus_item"><a class="site-page faa-parent animated-hover" href="/archives/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-guidang1"></use></svg><span class="menu_word" style="font-size:17px"> 文章</span></a></div><div class="menus_item"><a class="site-page faa-parent animated-hover" href="/tags/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-sekuaibiaoqian"></use></svg><span class="menu_word" style="font-size:17px"> 标签</span></a></div><div class="menus_item"><a class="site-page faa-parent animated-hover" href="/categories/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-fenlei"></use></svg><span class="menu_word" style="font-size:17px"> 分类</span></a></div><div class="menus_item"><a class="site-page faa-parent animated-hover" href="/personal/about/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-paperplane"></use></svg><span class="menu_word" style="font-size:17px"> 个人</span></a></div><div class="menus_item"><a class="site-page group faa-parent animated-hover hide" href="javascript:void(0);"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-shejiaoxinxi"></use></svg><span class="menu_word" style="font-size:17px"> 社交</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/comments/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-liuyan">                   </use></svg><span class="menu_word" style="font-size:17px"> 留言板</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/social/link/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-lianjie">                   </use></svg><span class="menu_word" style="font-size:17px"> 友人帐</span></a></li></ul></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">Penge666</a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page faa-parent animated-hover" href="/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-home"></use></svg><span class="menu_word" style="font-size:17px"> 首页</span></a></div><div class="menus_item"><a class="site-page faa-parent animated-hover" href="/archives/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-guidang1"></use></svg><span class="menu_word" style="font-size:17px"> 文章</span></a></div><div class="menus_item"><a class="site-page faa-parent animated-hover" href="/tags/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-sekuaibiaoqian"></use></svg><span class="menu_word" style="font-size:17px"> 标签</span></a></div><div class="menus_item"><a class="site-page faa-parent animated-hover" href="/categories/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-fenlei"></use></svg><span class="menu_word" style="font-size:17px"> 分类</span></a></div><div class="menus_item"><a class="site-page faa-parent animated-hover" href="/personal/about/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-paperplane"></use></svg><span class="menu_word" style="font-size:17px"> 个人</span></a></div><div class="menus_item"><a class="site-page group faa-parent animated-hover hide" href="javascript:void(0);"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-shejiaoxinxi"></use></svg><span class="menu_word" style="font-size:17px"> 社交</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/comments/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-liuyan">                   </use></svg><span class="menu_word" style="font-size:17px"> 留言板</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/social/link/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-lianjie">                   </use></svg><span class="menu_word" style="font-size:17px"> 友人帐</span></a></li></ul></div></div><center id="name-container"><a id="page-name" href="javascript:scrollToTop()">PAGE_NAME</a></center><div id="nav-right"><div id="search-button"><a class="search faa-parent animated-hover" title="检索站内任何你想要的信息"><svg class="faa-tada icon" style="height:24px;width:24px;fill:currentColor;position:relative;top:6px" aria-hidden="true"><use xlink:href="#icon-valentine_-search-love-find-heart"></use></svg><span> 搜索</span></a></div><a class="meihua faa-parent animated-hover" onclick="toggleWinbox()" title="美化设置-自定义你的风格" id="meihua-button"><svg class="faa-tada icon" style="height:26px;width:26px;fill:currentColor;position:relative;top:8px" aria-hidden="true"><use xlink:href="#icon-tupian1"></use></svg></a><a class="sun_moon faa-parent animated-hover" onclick="switchNightMode()" title="浅色和深色模式转换" id="nightmode-button"><svg class="faa-tada" style="height:25px;width:25px;fill:currentColor;position:relative;top:7px" viewBox="0 0 1024 1024"><use id="modeicon" xlink:href="#icon-moon">       </use></svg></a><div id="toggle-menu"><a><i class="fas fa-bars fa-fw"></i></a></div></div></div></nav><div id="post-info"><h1 class="post-title">Cpp内存顺序</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><svg class="meta_icon post-meta-icon" style="width:30px;height:30px;position:relative;top:10px"><use xlink:href="#icon-rili"></use></svg><span class="post-meta-label">发表于 </span><time class="post-meta-date-created" datetime="2024-05-07T03:31:55.000Z" title="发表于 2024-05-07 11:31:55">2024-05-07</time><span class="post-meta-separator">|</span><svg class="meta_icon post-meta-icon" style="width:18px;height:18px;position:relative;top:5px"><use xlink:href="#icon-gengxin1"></use></svg><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-05-07T07:17:19.176Z" title="更新于 2024-05-07 15:17:19">2024-05-07</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><svg class="meta_icon post-meta-icon" style="width:25px;height:25px;position:relative;top:8px"><use xlink:href="#icon-charuword"></use></svg><span class="post-meta-label">字数总计:</span><span class="word-count">7022</span><span class="post-meta-separator">|</span><svg class="meta_icon post-meta-icon" style="width:20px;height:20px;position:relative;top:5px"><use xlink:href="#icon-shizhong"></use></svg><span class="post-meta-label">阅读时长:</span><span>26分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Cpp内存顺序"><svg class="meta_icon post-meta-icon" style="width:25px;height:25px;position:relative;top:5px"><use xlink:href="#icon-eye"></use></svg><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div><section class="main-hero-waves-area waves-area"><svg class="waves-svg" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto"><defs><path id="gentle-wave" d="M -160 44 c 30 0 58 -18 88 -18 s 58 18 88 18 s 58 -18 88 -18 s 58 18 88 18 v 44 h -352 Z"></path></defs><g class="parallax"><use href="#gentle-wave" x="48" y="0"></use><use href="#gentle-wave" x="48" y="3"></use><use href="#gentle-wave" x="48" y="5"></use><use href="#gentle-wave" x="48" y="7"></use></g></svg></section></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><p>C++11 将多线程纳入了标准. 一旦涉及到多线程, 就需要考虑<strong>并发</strong>, <strong>数据竞争 (date race)</strong>, <strong>线程同步</strong>等问题, 为此 C++ 提供了互斥锁 <code>std::mutex</code>, 原子变量 <code>std::atomic</code> 等标准库。</p>
+<p>把博客中的例子理解清楚。</p>
+<h2 id="1-原子变量">1. 原子变量</h2>
+<p>我们不能在两个线程中同时访问修改一个变量, 这会导致数据竞争的问题. 程序的结果是未定义的. 从实现上来说, 我们不能保证读写操作是原子的, 例如 32 位机器上, 修改一个 64 位变量可能需要两条指令; 或者变量有可能只是在寄存器里, 对其的修改要在稍后才会写入内存. 解决数据竞争的方式除了使用 <code>std::mutex</code> 加锁, 还可以使用原子变量.</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">std::atomic&lt;<span class="type">int</span>&gt; a&#123;<span class="number">0</span>&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">thread1</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    a = <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">thread2</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    std::cout &lt;&lt; a &lt;&lt; std::endl;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上面的例子展示了原子变量最简单的用法. 使用原子变量不用担心数据竞争, 对它的操作都是原子的. <strong>除此之外, 原子变量的操作可以指定内存顺序, 帮助我们实现线程同步, 这也是本文的重点</strong>. 上面的代码中, 线程 1 将值写入原子变量 <code>a</code>, 线程 2 则读取 <code>a</code> 中的值. 这便是原子变量最基础的两种操作。</p>
+<h3 id="1-1-原子变量的操作">1.1 原子变量的操作</h3>
+<p>对原子变量的操作可以分为三种</p>
+<ol>
+<li>store. 将一个值存到原子变量中.</li>
+<li>load. 读取原子变量中的值.</li>
+<li>read-modify-write (RMW). 原子地执行读取, 修改和写入. 如自增操作 <code>fetch_add</code>, 交换操作 <code>exchange</code> (返回变量当前的值并写入指定值) 等.</li>
+</ol>
+<p>每个原子操作都需要指定一个<strong>内存顺序 (memory order)</strong>. 不同的内存顺序有不同的语义, 会实现不同的顺序模型 (order model), 性能也各不相同. C++ 中有六种内存顺序</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">enum</span> <span class="title class_">memory_order</span> &#123;</span><br><span class="line">    memory_order_relaxed,</span><br><span class="line">    memory_order_consume,</span><br><span class="line">    memory_order_acquire,</span><br><span class="line">    memory_order_release,</span><br><span class="line">    memory_order_acq_rel,</span><br><span class="line">    memory_order_seq_cst,</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p><strong>这六种内存顺序相互组合可以实现三种顺序模型 (ordering model)</strong></p>
+<ul>
+<li><strong>Sequencial consistent ordering. 实现同步, 且保证全局顺序一致 (single total order) 的模型. 是一致性最强的模型, 也是默认的顺序模型.</strong></li>
+<li><strong>Acquire-release ordering. 实现同步, 但不保证保证全局顺序一致的模型.</strong></li>
+<li><strong>Relaxed ordering. 不能实现同步, 只保证原子性的模型.</strong></li>
+</ul>
+<p>稍后我们会详细讨论这六种内存顺序. <code>atomic::store</code> 和 <code>atomic::load</code> 函数都有一个内存顺序的参数, 默认为 <code>memory_order_seq_cst</code>. 它们的声明如下</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">store</span><span class="params">(T desired, std::memory_order order = std::memory_order_seq_cst)</span></span>;</span><br><span class="line"><span class="function">T <span class="title">load</span><span class="params">(std::memory_order order = std::memory_order_seq_cst)</span> <span class="type">const</span></span>;</span><br></pre></td></tr></table></figure>
+<p>此外 <code>std::atomic</code> 重载了运算符, 我们可以像使用普通变量一样读写原子变量. 例如上面代码中两个线程的读写操作分别调用的是 <code>std::atomic&lt;int&gt;::operator=(int)</code> 和 <code>std::atomic&lt;int&gt;::operator int()</code>. 此时会使用默认的内存顺序, 也就是 <code>memory_order_seq_cst</code>。</p>
+<h2 id="2-基础概念">2. 基础概念</h2>
+<p>在开始讲这六种内存顺序之前, 有必要先了解一下几个最基础的概念.</p>
+<h3 id="2-1-修改顺序-Modification-orders">2.1 修改顺序 (Modification orders)</h3>
+<p>对一个原子变量的所有修改操作总是存在一定的先后顺序, 且所有线程都认可这个顺序, 即使这些修改操作是在不同的线程中执行的. 这个所有线程一致同意的顺序就称为<strong>修改顺序 (modification order)</strong>. 这意味着</p>
+<ul>
+<li>两个修改操作不可能同时进行, 一定存在一个先后顺序. 这很容易理解, 因为这是原子操作必须保证的, 否则就有数据竞争的问题.</li>
+<li>即使每次运行的修改顺序可能都不同, 但所有线程看到的修改顺序总是一致的. 如果线程 a 看到原子变量 x 由 1 变成 2, 那么线程 b 就不可能看到 x 由 2 变成 1.</li>
+</ul>
+<p>无论使用哪种内存顺序, 原子变量的操作总能满足修改顺序一致性, 即使是最松散的 <code>memory_order_relaxed</code>. 我们来看一个例子</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">std::atomic&lt;<span class="type">int</span>&gt; a&#123;<span class="number">0</span>&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">thread1</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; <span class="number">10</span>; i += <span class="number">2</span>)</span><br><span class="line">        a.<span class="built_in">store</span>(i, std::memory_order_relaxed);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">thread2</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">1</span>; i &lt; <span class="number">10</span>; i += <span class="number">2</span>)</span><br><span class="line">        a.<span class="built_in">store</span>(i, std::memory_order_relaxed);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">thread3</span><span class="params">(vector&lt;<span class="type">int</span>&gt; *v)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; <span class="number">10</span>; ++i)</span><br><span class="line">        v-&gt;<span class="built_in">push_back</span>(a.<span class="built_in">load</span>(std::memory_order_relaxed));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">thread4</span><span class="params">(vector&lt;<span class="type">int</span>&gt; *v)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; <span class="number">10</span>; ++i)</span><br><span class="line">        v-&gt;<span class="built_in">push_back</span>(a.<span class="built_in">load</span>(std::memory_order_relaxed));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    vector&lt;<span class="type">int</span>&gt; v3, v4;</span><br><span class="line">    <span class="function">std::thread <span class="title">t1</span><span class="params">(thread1)</span>, <span class="title">t2</span><span class="params">(thread2)</span>, <span class="title">t3</span><span class="params">(thread3, &amp;v3)</span>, <span class="title">t4</span><span class="params">(thread4, &amp;v4)</span></span>;</span><br><span class="line">    t1.<span class="built_in">join</span>(), t2.<span class="built_in">join</span>(), t3.<span class="built_in">join</span>(), t4.<span class="built_in">join</span>();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i : v3) cout &lt;&lt; i &lt;&lt; <span class="string">&quot; &quot;</span>;</span><br><span class="line">    cout &lt;&lt; endl;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i : v4) cout &lt;&lt; i &lt;&lt; <span class="string">&quot; &quot;</span>;</span><br><span class="line">    cout &lt;&lt; endl;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上面的代码创建了 4 个线程. <code>thread1</code> 和 <code>thread2</code> 分别将偶数和奇数依次写入原子变量 <code>a</code>, <code>thread3</code> 和 <code>thread4</code> 则读取它们. 最后输出 <code>thread3</code> 和 <code>thread4</code> 每次读取到的值. 程序运行的结果可能是这样的</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">$ ./test-modification-order</span><br><span class="line"><span class="number">1</span> <span class="number">8</span> <span class="number">7</span> <span class="number">7</span> <span class="number">7</span> <span class="number">9</span> <span class="number">9</span> <span class="number">9</span> <span class="number">9</span> <span class="number">9</span></span><br><span class="line"><span class="number">0</span> <span class="number">2</span> <span class="number">8</span> <span class="number">8</span> <span class="number">8</span> <span class="number">7</span> <span class="number">9</span> <span class="number">9</span> <span class="number">9</span> <span class="number">9</span></span><br><span class="line"></span><br><span class="line">$ ./test-modification-order</span><br><span class="line"><span class="number">1</span> <span class="number">2</span> <span class="number">5</span> <span class="number">6</span> <span class="number">9</span> <span class="number">9</span> <span class="number">9</span> <span class="number">8</span> <span class="number">8</span> <span class="number">8</span></span><br><span class="line"><span class="number">1</span> <span class="number">3</span> <span class="number">2</span> <span class="number">5</span> <span class="number">9</span> <span class="number">8</span> <span class="number">8</span> <span class="number">8</span> <span class="number">8</span> <span class="number">8</span></span><br></pre></td></tr></table></figure>
+<p>虽然每次运行的修改顺序不同, 各个线程也不太可能看到每次修改的结果, 但是它们看到的修改顺序是一致的. 例如 <code>thread3</code> 看到 8 先于 9, <code>thread4</code> 也会看到 8 先于 9, 反之亦然.</p>
+<h3 id="2-2-Happens-before">2.2 Happens-before</h3>
+<p><strong>Happens-before</strong> 是一个非常重要的概念. 如果操作 a “happens-before” 操作 b, 则操作 a 的结果对于操作 b 可见. happens-before 的关系可以建立在用一个线程的两个操作之间, 也可以建立在不同的线程的两个操作之间.</p>
+<h4 id="2-2-1-单线程的情况-sequenced-before">2.2.1 单线程的情况: sequenced-before</h4>
+<p>单线程的情况很容易理解. 函数的语句按顺序依次执行, 前面的语句先执行, 后面的后执行. 正式地说, 前面的语句总是 <strong>“sequenced-before”</strong> 后面的语句. 显然, 根据定义, sequenced-before 具有传递性:</p>
+<ul>
+<li>如果操作 a “sequenced-before” 操作 k, 且操作 k “sequenced-before” 操作 b, 则操作 a “sequenced-before” 操作 b.</li>
+</ul>
+<p>Sequenced-before 可以直接构成 happens-before 的关系. 如果操作 a “sequenced-before” 操作 b, 则操作 a “happens-before” 操作 b. 例如</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">a = <span class="number">42</span>; <span class="comment">// (1)</span></span><br><span class="line">cout &lt;&lt; a &lt;&lt; endl; <span class="comment">// (2)</span></span><br></pre></td></tr></table></figure>
+<p>语句 (1) 在语句 (2) 的前面, 因此语句 (1) “sequenced-before” 语句 (2), 也就是 (1) “happens-before” 语句 (2). 所以 (2) 可以打印出 (1) 赋值的结果.</p>
+<h4 id="2-2-2-多线程的情况-synchronizes-with-和-inter-thread-happens-before">2.2.2 多线程的情况: synchronizes-with 和 inter-thread happens-before</h4>
+<p>多线程的情况就稍微复杂些. 一般来说多线程都是并发执行的, 如果没有正确的同步操作, 就无法保证两个操作之间有 happens-before 的关系. 如果我们通过一些手段, 让不同线程的两个操作同步, 我们称这两个操作之间有 <strong>synchronizes-with</strong> 的关系. 稍后我们会详细讨论如何组合使用 6 种内存顺序, 让两个操作达成 synchronizes-with 的关系.</p>
+<p>如果线程 1 中的操作 a “synchronizes-with” 线程 2 中的操作 b, 则操作 a <strong>“inter-thread happens-before”</strong> 操作 b. 此外 synchronizes-with 还可以 “后接” 一个 sequenced-before 关系组合成 inter-thread happens-before 的关系:</p>
+<ul>
+<li>如果操作 a “synchronizes-with” 操作 k, 且操作 k “sequenced-before” 操作 b, 则操作 a “inter-thread happens-before” 操作 b.</li>
+</ul>
+<p>Inter-thread happens-before 关系则可以 “前接” 一个 sequenced-before 关系以延伸它的范围; 而且 inter-thread happens-before 关系具有传递性:</p>
+<ul>
+<li>如果操作 a “sequenced-before” 操作 k, 且操作 k “inter-thread happens-before” 操作 b, 则操作 a “inter-thread happens-before” 操作 b.</li>
+<li>如果操作 a “inter-thread happens-before” 操作 k, 且操作 k “inter-thread happens-before” 操作 b, 则操作 a “inter-thread happens-before” 操作 b.</li>
+</ul>
+<p>正如它的名字暗示的, 如果操作 a “inter-thread happens-before” 操作 b, 则操作 a “happens-before” 操作 b. 下图展示了这几个概念之间的关系:</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://penge666blog.oss-cn-beijing.aliyuncs.com/img/image-20240507143104191.png" alt=""></p>
+<p>注意, 虽然 sequenced-before 和 inter-thread happens-before 都有传递性, 但是 <strong>happens-before 没有传递性</strong>. 后面我们会在 3.5 节中看到这个性质的重要性, 以及 C++ 为什么要定义这么多概念.</p>
+<p>现在我们来看一个例子. 假设下面的代码中 <code>unlock()</code> 操作 “synchronizes-with” <code>lock()</code> 操作.</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">thread1</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    a += <span class="number">1</span> <span class="comment">// (1)</span></span><br><span class="line">    <span class="built_in">unlock</span>(); <span class="comment">// (2)</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">thread2</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="built_in">lock</span>(); <span class="comment">// (3)</span></span><br><span class="line">    cout &lt;&lt; a &lt;&lt; endl; <span class="comment">// (4)</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>假设直到 <code>thread1</code> 执行到 (2) 之前, <code>thread2</code> 都会阻塞在 (3) 处的 <code>lock()</code> 中. 那么可以推导出:</p>
+<ul>
+<li>根据语句顺序, 有 (1) “sequenced-before” (2) 且 (3) “sequenced-before” (4);</li>
+<li>因为 (2) “synchronizes-with” (3) 且 (3) “sequenced-before” (4), 所以 (2) “inter-thread happens-before” (4);</li>
+<li>因为 (1) “sequenced-before” (2) 且 (2) “inter-thread happens-before” (4), 所以 (1) “inter-thread happens-before” (4); 所以 (1) “happens-before” (4).</li>
+</ul>
+<p>因此 (4) 可以读到 (1) 对变量 <code>a</code> 的修改.</p>
+<h3 id="2-3-Happens-before-不代表指令实际的执行顺序">2.3 Happens-before 不代表指令实际的执行顺序</h3>
+<p>需要说明的是, happens-before 是 C++ 语义层面的概念, 它并不代表指令在 CPU 中实际的执行顺序. 为了优化性能, 编译器会在不破坏语义的前提下对指令重排. 例如</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">extern</span> <span class="type">int</span> a, b;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">add</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    a++;</span><br><span class="line">    b++;</span><br><span class="line">    <span class="keyword">return</span> a + b;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>虽然有 <code>a++;</code> “happens-before” <code>b++;</code>, 但编译器实际生成的指令可能是先加载 <code>a</code>, <code>b</code> 两个变量到寄存器, 接着分别执行 “加一” 操作, 然后再执行 <code>a + b</code>, 最后才将自增的结果写入内存.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">add():</span><br><span class="line">    movl    a(%rip), %eax   # 将变量 a 加载到寄存器</span><br><span class="line">    movl    b(%rip), %ecx   # 将变量 b 加载到寄存器</span><br><span class="line">    addl    $1, %eax        # a 的值加一</span><br><span class="line">    leal    1(%rcx), %edx   # b 的值加一</span><br><span class="line">    movl    %eax, a(%rip)   # 将 a 加一的结果写入内存</span><br><span class="line">    addl    %edx, %eax      # a + b</span><br><span class="line">    movl    %edx, b(%rip)   # 将 b 加一的结果写入内存</span><br><span class="line">    ret</span><br></pre></td></tr></table></figure>
+<p>上面展示了 x86-64 下的一种可能的编译结果. 可以看到 C++ 的一条语句可能产生多条指令, 这些指令都是交错执行的. 其实编译器甚至还有可能先自增 <code>b</code> 再自增 <code>a</code>. 这样的重排并不会影响语义, 两个自增操作的结果仍然对 <code>return a + b;</code> 可见.</p>
+<h2 id="3-内存顺序">3. 内存顺序</h2>
+<p>前面我们提到 C++ 的六种内存顺序相互组合可以实现三种顺序模型. 现在我们来具体看看如何使用这六种内存顺序, 以及怎样的组合可以实现 synchronizes-with 的关系.</p>
+<h3 id="3-1-memory-order-seq-cst">3.1 memory_order_seq_cst</h3>
+<p><code>memory_order_seq_cst</code> 可以用于 store, load 和 read-modify-write 操作, 实现 sequencial consistent 的顺序模型. 在这个模型下, 所有线程看到的所有操作都有一个一致的顺序, 即使这些操作可能针对不同的变量, 运行在不同的线程. 2.1 节中我们介绍了修改顺序 (modification order), 即单一变量的修改顺序在所有线程看来都是一致的. Sequencial consistent 则将这种一致性扩展到了所有变量. 例如</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">std::atomic&lt;<span class="type">bool</span>&gt; x&#123;<span class="literal">false</span>&#125;, y&#123;<span class="literal">false</span>&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">thread1</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    x.<span class="built_in">store</span>(<span class="literal">true</span>, std::memory_order_seq_cst); <span class="comment">// (1)</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">thread2</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    y.<span class="built_in">store</span>(<span class="literal">true</span>, std::memory_order_seq_cst); <span class="comment">// (2)</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>thread1</code> 和 <code>thread2</code> 分别修改原子变量 <code>x</code> 和 <code>y</code>. 运行过程中, 有可能先执行 (1) 再执行 (2), 也有可能先执行 (2) 后执行 (1). 但无论如何, 所有线程中看到的顺序都是一致的. 因此如果我们这样测试这段代码:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">std::atomic&lt;<span class="type">int</span>&gt; z&#123;<span class="number">0</span>&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">read_x_then_y</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">while</span> (!x.<span class="built_in">load</span>(std::memory_order_seq_cst)); <span class="comment">// (3)</span></span><br><span class="line">    <span class="keyword">if</span> (y.<span class="built_in">load</span>(std::memory_order_seq_cst)) ++z; <span class="comment">// (4)</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">read_y_then_x</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">while</span> (!y.<span class="built_in">load</span>(std::memory_order_seq_cst)); <span class="comment">// (5)</span></span><br><span class="line">    <span class="keyword">if</span> (x.<span class="built_in">load</span>(std::memory_order_seq_cst)) ++z; <span class="comment">// (6)</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="function">std::thread <span class="title">a</span><span class="params">(thread1)</span>, <span class="title">b</span><span class="params">(thread2)</span>, <span class="title">c</span><span class="params">(read_x_then_y)</span>, <span class="title">d</span><span class="params">(read_y_then_x)</span></span>;</span><br><span class="line">    a.<span class="built_in">join</span>(), b.<span class="built_in">join</span>(), c.<span class="built_in">join</span>(), d.<span class="built_in">join</span>();</span><br><span class="line">    <span class="built_in">assert</span>(z.<span class="built_in">load</span>() != <span class="number">0</span>); <span class="comment">// (7)</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>(7) 处的断言永远不会失败. <strong>因为 <code>x</code> 和 <code>y</code> 的修改顺序是全局一致的, 如果先执行 (1) 后执行 (2), 则 <code>read_y_then_x</code> 中循环 (5) 退出时, 能保证 <code>y</code> 为 <code>true</code>, 此时 <code>x</code> 也必然为 <code>true</code>, 因此 (6) 会被执行; 同理, 如果先执行 (2) 后执行 (1), 则循环 (3) 退出时 <code>y</code> 也必然为 <code>true</code>, 因此 (4) 会被执行. 无论如何, <code>z</code> 最终都不会等于 0.</strong></p>
+<p>Sequencial consistent 可以实现 synchronizes-with 的关系. 如果一个 <code>memory_order_seq_cst</code> 的 load 操作在某个原子变量上读到了一个 <code>memory_order_seq_cst</code> 的 store 操作在这个原子变量中写入的值, 则 store 操作 “synchronizes-with” load 操作. 在上面的例子中, 有 (1) “synchronizes-with” (3) 和 (2) “synchronizes-with” (5).</p>
+<p>实现 sequencial consistent 模型有一定的开销. 现代 CPU 通常有多核, 每个核心还有自己的缓存. 为了做到<strong>全局顺序一致</strong>, 每次写入操作都必须同步给其他核心. 为了减少性能开销, 如果不需要全局顺序一致, 我们应该考虑使用更加宽松的顺序模型.</p>
+<h3 id="3-2-memory-order-relaxed">3.2 memory_order_relaxed</h3>
+<p><code>memory_order_relaxed</code> 可以用于 store, load 和 read-modify-write 操作, 实现 relaxed 的顺序模型. 这种模型下, 只能保证操作的原子性和修改顺序 (modification order) 一致性, 无法实现 synchronizes-with 的关系. 例如</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">std::atomic&lt;<span class="type">bool</span>&gt; x&#123;<span class="literal">false</span>&#125;, y&#123;<span class="literal">false</span>&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">thread1</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    x.<span class="built_in">store</span>(<span class="literal">true</span>, std::memory_order_relaxed); <span class="comment">// (1)</span></span><br><span class="line">    y.<span class="built_in">store</span>(<span class="literal">true</span>, std::memory_order_relaxed); <span class="comment">// (2)</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>thread1</code> 对不同的变量执行 store 操作. 那么在某些线程看来, 有可能是 <code>x</code> 先变为 <code>true</code>, y 后变为 <code>true</code>; 另一些线程看来, 又有可能是 <code>y</code> 先变为 <code>true</code>, <code>x</code> 后变为 <code>true</code>. 如果这样测试这段代码:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">thread2</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">while</span> (!y.<span class="built_in">load</span>(std::memory_order_relaxed)); <span class="comment">// (3)</span></span><br><span class="line">    <span class="built_in">assert</span>(x.<span class="built_in">load</span>()); <span class="comment">// (4)</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>(4) 处的断言就有可能失败. 因为 (2) 与 (3) 之间没有 synchronizes-with 的关系, 所以就不能保证 (1) “happens-before” (4). 因此 (4) 就有可能读到 <code>false</code>.</strong> 至于 relaxed 顺序模型能保证的修改顺序一致性的例子, 2.1 节中已经讨论过了, 这里就不多赘述了.</p>
+<p>Relaxed 顺序模型的开销很小. 在 x86 架构下, <code>memory_order_relaxed</code> 的操作不会产生任何其他的指令, 只会影响编译器优化, 确保操作是原子的. Relaxed 模型可以用在一些不需要线程同步的场景, 但是使用时要小心. 例如 <code>std::shared_ptr</code> 增加引用计数时用的就是 <code>memory_order_relaxed</code>, 因为不需要同步; 但是减小应用计数不能用它, 因为需要与析构操作同步.</p>
+<h3 id="3-3-Acquire-release">3.3 Acquire-release</h3>
+<p>在 acquire-release 模型中, 会使用 <code>memory_order_acquire</code>, <code>memory_order_release</code> 和 <code>memory_order_acq_rel</code> 这三种内存顺序. 它们的用法具体是这样的:</p>
+<ul>
+<li>
+<p>对原子变量的 load 可以使用 <code>memory_order_acquire</code> 内存顺序. 这称为 <strong>acquire 操作</strong>.</p>
+</li>
+<li>
+<p>对原子变量的 store 可以使用 <code>memory_order_release</code> 内存顺序. 这称为 <strong>release 操作</strong>.</p>
+</li>
+<li>
+<p>read-modify-write 操作即读 (load) 又写 (store), 它可以使用 <code>memory_order_acquire</code>, <code>memory_order_release</code> 和 <code>memory_order_acq_rel</code>:</p>
+<ul>
+<li>如果使用 <code>memory_order_acquire</code>, 则作为 acquire 操作;</li>
+<li>如果使用 <code>memory_order_release</code>, 则作为 release 操作;</li>
+<li>如果使用 <code>memory_order_acq_rel</code>, 则同时为两者.</li>
+</ul>
+</li>
+</ul>
+<p>Acquire-release 可以实现 synchronizes-with 的关系. 如果一个 acquire 操作在同一个原子变量上读取到了一个 release 操作写入的值, 则这个 release 操作 “synchronizes-with” 这个 acquire 操作. 我们来看一个例子:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">std::atomic&lt;<span class="type">bool</span>&gt; x&#123;<span class="literal">false</span>&#125;, y&#123;<span class="literal">false</span>&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">thread1</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    x.<span class="built_in">store</span>(<span class="literal">true</span>, std::memory_order_relaxed); <span class="comment">// (1)</span></span><br><span class="line">    y.<span class="built_in">store</span>(<span class="literal">true</span>, std::memory_order_release); <span class="comment">// (2)</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">thread2</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">while</span> (!y.<span class="built_in">load</span>(std::memory_order_acquire)); <span class="comment">// (3)</span></span><br><span class="line">    <span class="built_in">assert</span>(x.<span class="built_in">load</span>(std::memory_order_relaxed)); <span class="comment">// (4)</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在上面的例子中, 语句 (2) 使用 <code>memory_order_release</code> 在 <code>y</code> 中写入 <code>true</code>, 语句 (3) 中使用 <code>memory_order_acquire</code> 从 <code>y</code> 中读取值. 循环 (3) 退出时, 它已经读取到了 <code>y</code> 的值为 <code>true</code>, 也就是读取到了操作 (2) 中写入的值. 因此有 (2) “synchronizes-with” (3). 根据 2.2 节介绍的规则我们可以推导出:</p>
+<ul>
+<li>因为 (2) “synchronizes-with” (3) 且 (3) “sequenced-before” (4), 所以 (2) “inter-thread happens-before” (4);</li>
+<li>因为 (1) “sequenced-before” (2) 且 (2) “inter-thread happens-before” (4), 所以 (1) “inter-thread happens-before” (4);</li>
+</ul>
+<p>所以 (1) “happens-before” (4). 因此 (4) 能读取到 (1) 中写入的值, 断言永远不会失败. 即使 (1) 和 (4) 用的是 <code>memory_order_relaxed</code>.</p>
+<p>3.1 节我们提到 sequencial consistent 模型可以实现 synchronizes-with 关系. 事实上, 内存顺序为 <code>memory_order_seq_cst</code> 的 load 操作和 store 操作可以分别视为 acquire 操作和 release 操作. 因此对于两个指定了 <code>memory_order_seq_cst</code> 的 store 操作和 load 操作, 如果后者读到了前者写入的值, 则前者 “synchronizes-with” 后者.</p>
+<p>为了实现 synchronizes-with 关系, acquire 操作和 release 操作应该成对出现. 如果 <code>memory_order_acquire</code> 的 load 读到了 <code>memory_order_relaxed</code> 的 store 写入的值, 或者 <code>memory_order_relaxed</code> 的 load 读到了 <code>memory_order_release</code> 的 store 写入的值, 都不能实现 synchronizes-with 的关系.</p>
+<p><strong>虽然 sequencial consistent 模型能够像 acquire-release 一样实现同步, 但是反过来 acquire-release 模型不能像 sequencial consistent 一样提供全局顺序一致性.</strong> 如果将 3.1 节的例子中的 <code>memory_order_seq_cst</code> 换成 <code>memory_order_acquire</code> 和 <code>memory_order_release</code></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">thread1</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    x.<span class="built_in">store</span>(<span class="literal">true</span>, std::memory_order_release); <span class="comment">// (1)</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">thread2</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    y.<span class="built_in">store</span>(<span class="literal">true</span>, std::memory_order_release); <span class="comment">// (2)</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">read_x_then_y</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">while</span> (!x.<span class="built_in">load</span>(std::memory_order_acquire)); <span class="comment">// (3)</span></span><br><span class="line">    <span class="keyword">if</span> (y.<span class="built_in">load</span>(std::memory_order_acquire)) ++z; <span class="comment">// (4)</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">read_y_then_x</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">while</span> (!y.<span class="built_in">load</span>(std::memory_order_acquire)); <span class="comment">// (5)</span></span><br><span class="line">    <span class="keyword">if</span> (x.<span class="built_in">load</span>(std::memory_order_acquire)) ++z; <span class="comment">// (6)</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>则最终不能保证 <code>z</code> 不为 0. <strong>在同一次运行中, <code>read_x_then_y</code> 有可能看到先 (1) 后 (2), 而 <code>read_y_then_x</code> 有可能看到先 (2) 后 (1). 这样有可能 (4) 和 (6) 的 load 的结果都为 <code>false</code>, 导致最后 <code>z</code> 仍然为 0.</strong></p>
+<p>Acquire-release 的开销比 sequencial consistent 小. 在 x86 架构下, <code>memory_order_acquire</code> 和 <code>memory_order_release</code> 的操作不会产生任何其他的指令, 只会影响编译器的优化: 任何指令都不能重排到 acquire 操作的前面, 且不能重排到 release 操作的后面; 否则会违反 acquire-release 的语义. 因此很多需要实现 synchronizes-with 关系的场景都会使用 acquire-release.</p>
+<h3 id="3-4-Release-sequences">3.4* Release sequences</h3>
+<p>到目前为止我们看到的, 无论是 sequencial consistent 还是 acquire-release, <strong>要想实现 synchronizes-with 的关系, acquire 操作必须在同一个原子变量上读到 release 操作的写入的值. 如果 acquire 操作没有读到 release 操作写入的值, 那么它俩之间通常没有 synchronizes-with 的关系</strong>. 例如</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">std::atomic&lt;<span class="type">int</span>&gt; x&#123;<span class="number">0</span>&#125;, y&#123;<span class="number">0</span>&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">thread1</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    x.<span class="built_in">store</span>(<span class="number">1</span>, std::memory_order_relaxed); <span class="comment">// (1)</span></span><br><span class="line">    y.<span class="built_in">store</span>(<span class="number">1</span>, std::memory_order_release); <span class="comment">// (2)</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">thread2</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    y.<span class="built_in">store</span>(<span class="number">2</span>, std::memory_order_release); <span class="comment">// (3)</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">thread3</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">while</span> (!y.<span class="built_in">load</span>(std::memory_order_acquire)); <span class="comment">// (4)</span></span><br><span class="line">    <span class="built_in">assert</span>(x.<span class="built_in">load</span>(std::memory_order_relaxed) == <span class="number">1</span>); <span class="comment">// (5)</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上面的例子中, 只要 <code>y</code> 的值非 0 循环 (4) 就会退出. 当它退出时, 有可能读到 (2) 写入的值, 也有可能读到 (3) 写入的值. 如果是后者, 则只能保证 (3) “synchronizes-with” (4), 不能保证与 (2) 与 (4) 之间有同步关系. 因此 (5) 处的断言就有可能失败.</p>
+<p>但并不是只有在 acquire 操作读取到 release 操作写入的值时才能构成 synchronizes-with 关系. 为了说这种情况, 我们需要引入 <strong>release sequence</strong> 这个概念.</p>
+<p>针对一个原子变量 M 的 release 操作 A 完成后, 接下来 M 上可能还会有一连串的其他操作. <strong>如果这一连串操作是由</strong></p>
+<ul>
+<li><strong>同一线程上的写操作, 或者</strong></li>
+<li><strong>任意线程上的 read-modify-write 操作</strong></li>
+</ul>
+<p>这两种构成的, 则称这一连串的操作为<strong>以 release 操作 A 为首的 release sequence</strong>. 这里的写操作和 read-modify-write 操作可以使用任意内存顺序.</p>
+<p>如果一个 acquire 操作在同一个原子变量上读到了一个 release 操作写入的值, 或者读到了以这个 release 操作为首的 release sequence 写入的值, 那么这个 release 操作 “synchronizes-with” 这个 acquire 操作. 我们来看个例子</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">std::vector&lt;<span class="type">int</span>&gt; data;</span><br><span class="line">std::atomic&lt;<span class="type">int</span>&gt; flag&#123;<span class="number">0</span>&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">thread1</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    data.<span class="built_in">push_back</span>(<span class="number">42</span>); <span class="comment">// (1)</span></span><br><span class="line">    flag.<span class="built_in">store</span>(<span class="number">1</span>, std::memory_order_release); <span class="comment">// (2)</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">thread2</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="type">int</span> expected = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">while</span> (!flag.<span class="built_in">compare_exchange_strong</span>(expected, <span class="number">2</span>, std::memory_order_relaxed)) <span class="comment">// (3)</span></span><br><span class="line">        expected = <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">thread3</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">while</span> (flag.<span class="built_in">load</span>(std::memory_order_acquire) &lt; <span class="number">2</span>); <span class="comment">// (4)</span></span><br><span class="line">    <span class="built_in">assert</span>(data.<span class="built_in">at</span>(<span class="number">0</span>) == <span class="number">42</span>); <span class="comment">// (5)</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上面的例子中, (3) 处的 <code>compare_exchange_strong</code> 是一种 read-modify-write 操作, 它判断原子变量的值是否与期望的值 (第一个参数) 相等, 如果相等则将原子变量设置成目标值 (第二个参数) 并返回 <code>true</code>, 否则将第一个参数 (引用传递) 设置成原子变量当前值并返回 <code>false</code>. 操作 (3) 会一直循环检查, 当 <code>flag</code> 当值为 1 时, 将其替换成 2. 所以 (3) 属于 (2) 的 release sequence. 而循环 (4) 退出时, 它已经读到了 (3) 写入的值, 也就是 release 操作 (2) 为首的 release sequence 写入的值. 所以有 (2) “synchronizes-with” (4). 因此 (1) “happens-before” (5), (5) 处的断言不会失败.</p>
+<p>注意 (3) 处的 <code>compare_exchange_strong</code> 的内存顺序是 <code>memory_order_relaxed</code>, 所以 (2) 与 (3) 并不构成 synchronizes-with 的关系. 也就是说, 当循环 (3) 退出时, 并不能保证 <code>thread2</code> 能读到 <code>data.at(0)</code> 为 42. 但是 (3) 属于 (2) 的 release sequence, 当 (4) 以 <code>memory_order_acquire</code> 的内存顺序读到 (2) 的 release sequence 写入的值时, 可以与 (2) 构成 synchronizes-with 的关系.</p>
+<h3 id="3-5-memory-order-consume">3.5* memory_order_consume</h3>
+<p><code>memory_order_consume</code> 其实是 acquire-release 模型的一部分, 但是它比较特殊, 它涉及到数据间相互依赖的关系. 为此我们又要提出两个新概念: <strong>carries dependency</strong> 和 <strong>dependency-ordered before</strong>.</p>
+<p>如果操作 a “sequenced-before” b, 且 b 依赖 a 的数据, 则 a “carries a dependency into” b. 一般来说, 如果 a 的值用作 b 的一个操作数, 或者 b 读取到了 a 写入的值, 都可以称为 b 依赖于 a. 例如</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">p++;  <span class="comment">// (1)</span></span><br><span class="line">i++;  <span class="comment">// (2)</span></span><br><span class="line">p[i]; <span class="comment">// (3)</span></span><br></pre></td></tr></table></figure>
+<p>有 (1) “sequenced-before” (2) “sequenced-before” (3); (1) 和 (2) 的值作为 (3) 的下标运算符 <code>[]</code> 的操作数, 所以有 (1) “carries a dependency into” (3) 和 (2) “carries a dependency into” (3). 但是 (1) 和 (2) 并没有相互依赖, 它们之间没有 carries dependency 的关系. 类似于 sequenced-before, carries dependency 关系具有传递性.</p>
+<p><code>memory_order_consume</code> 可以用于 load 操作. 使用 <code>memory_order_consume</code> 的 load 称为 consume 操作. 如果一个 consume 操作在同一个原子变量上读到了一个 release 操作写入的值, 或以其为首的 release sequence 写入的值, 则这个 release 操作 “dependency-ordered before” 这个 consume 操作.</p>
+<p>Dependency-ordered before 可以 “后接” 一个 carries dependency 的关系以延伸它的范围: 如果 a “dependency-ordered before” k 且 k “carries a dependency into” b, 则 a “dependency-ordered before” b. Dependency-ordered before 可以直接构成 inter-thread happens-before 的关系: 如果 a “dependency-ordered before” b 则 a “inter-thread happens-before” b.</p>
+<p>概念很复杂, 但是基本思路是:</p>
+<ul>
+<li>release 操作和 acquire 操作构成的 synchronizes-with 可以后接 sequenced-before 构成 inter-thread happens-before 的关系;</li>
+<li>release 操作和 consume 操作构成的 dependency-ordered before 则只能后接 carries dependency 构成 inter-thread happens-before 的关系.</li>
+<li>无论 inter-thread happens-before 是怎么构成的, 都可以前接 sequenced-before 以延伸其范围.</li>
+</ul>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://penge666blog.oss-cn-beijing.aliyuncs.com/img/image-20240507150744160.png" alt="image-20240507150744160"></p>
+<p>我们来看一个例子:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">std::atomic&lt;std::string*&gt; ptr;</span><br><span class="line"><span class="type">int</span> data;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">thread1</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    std::string* p  = <span class="keyword">new</span> std::<span class="built_in">string</span>(<span class="string">&quot;Hello&quot;</span>); <span class="comment">// (1)</span></span><br><span class="line">    data = <span class="number">42</span>; <span class="comment">// (2)</span></span><br><span class="line">    ptr.<span class="built_in">store</span>(p, std::memory_order_release); <span class="comment">// (3)</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">thread2</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    std::string* p2;</span><br><span class="line">    <span class="keyword">while</span> (!(p2 = ptr.<span class="built_in">load</span>(std::memory_order_consume))); <span class="comment">// (4)</span></span><br><span class="line">    <span class="built_in">assert</span>(*p2 == <span class="string">&quot;Hello&quot;</span>); <span class="comment">// (5)</span></span><br><span class="line">    <span class="built_in">assert</span>(data == <span class="number">42</span>); <span class="comment">// (6)</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>(4) 处的循环退出时, consume 操作 (4) 读取到 release 操作 (3) 写入的值, 因此 (3) “dependency-ordered before” (4). 由此可以推导出:</p>
+<ul>
+<li><code>p2</code> 的值作为 (5) 的操作数, 因此 (4) “carries a dependency into” (5);</li>
+<li>因为 (3) “dependency-ordered before” (4) 且 (4) “carries a dependency into” (5), 所以 (3) “inter-thread happens-before” (5);</li>
+<li>因为 (1) “sequenced-before” (3) 且 (3) “inter-thread happens-before” (5), 所以 (1) “inter-thread happens-before” (5);</li>
+</ul>
+<p>所以 (1) “happens-before” (5). 因此 (5) 可以读到 (1) 写入的值, 断言 (5) 不会失败. 但是操作 (6) 并不依赖于 (4), 所以 (3) 和 (6) 之间没有 inter-thread happens-before 的关系, 因此断言 (6) 就有可能失败. 回想 2.2 节强调过的, happens-before 没有传递性. 所以不能说因为 (3) “happens-before” (4) 且 (4) “happens-before” (6) 所以 (2) “happens-before” (6).</p>
+<p>与 acquire-release 类似, 在 x86 下使用 <code>memory_order_consume</code> 的操作不会产生任何其他的指令, 只会影响编译器优化. 与 consume 操作有依赖关系的指令都不会重排到 consume 操作前面. 它对重排的限制比 acquire 宽松些, acquire 要求所有的指令都不能重排到它的前面, 而 consume 只要求有依赖关系的指令不能重排到它的前面. 因此在某些情况下, consume 的性能可能会高一些.</p>
+<h2 id="4-例子">4. 例子</h2>
+<blockquote>
+<p><strong>自旋锁</strong></p>
+</blockquote>
+<p>在一些场景下, 如果锁被占用的时间很短, 我们会选择自旋锁, 以减少上下文切换的开销. 锁一般用来保护临界数据的读写, 我们希望同一时间只有一个线程能获取到锁, 且获取到锁后, 被锁保护的数据总是最新的. 前者通过原子操作即可保证, 而后者就需要考虑内存顺序了.</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">std::deque&lt;<span class="type">int</span>&gt; queue;</span><br><span class="line">spinlock mu;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">thread1</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="type">int</span> val;</span><br><span class="line">    <span class="keyword">while</span> ((val = <span class="built_in">read_from_remote</span>())) &#123;</span><br><span class="line">        mu.<span class="built_in">lock</span>(); <span class="comment">// (1)</span></span><br><span class="line">        queue.<span class="built_in">push_back</span>(val); <span class="comment">// (2)</span></span><br><span class="line">        mu.<span class="built_in">unlock</span>(); <span class="comment">// (3)</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">thread2</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">while</span> (<span class="literal">true</span>) &#123;</span><br><span class="line">        mu.<span class="built_in">lock</span>(); <span class="comment">// (4)</span></span><br><span class="line">        cout &lt;&lt; queue.<span class="built_in">front</span>() &lt;&lt; endl;</span><br><span class="line">        queue.<span class="built_in">pop_front</span>(); <span class="comment">// (5)</span></span><br><span class="line">        mu.<span class="built_in">unlock</span>(); <span class="comment">// (6)</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>两个线程并发运行, <code>thread1</code> 往队列里写入数据, <code>thread2</code> 从队列里读出数据. 入队操作 (2) 可能需要复制数据, 移动指针, 甚至 resize 队列, 因此我们要保证获取到锁时, 这些操作的结果完全可见. 出队操作也是同理. 所以自旋锁要保证 unlock 操作 “synchronizes-with” lock 操作, 保证锁保护的数据是完整的.</p>
+<p>我们可以用 acquire-release 模型实现自旋锁. 下面是一个简单的实现:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">spinlock</span> &#123;</span><br><span class="line">    std::atomic&lt;<span class="type">bool</span>&gt; flag&#123;<span class="literal">false</span>&#125;;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">lock</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">while</span> (flag.<span class="built_in">exchange</span>(<span class="literal">true</span>, std::memory_order_acquire)); <span class="comment">// (1)</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">unlock</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        flag.<span class="built_in">store</span>(<span class="literal">false</span>, std::memory_order_release); <span class="comment">// (2)</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>上面的实现中, (1) 处加锁用到的 <code>exchange</code> 是一种 read-modify-write 操作, 它将目标值 (第一个参数) 写入原子变量, 并返回写入前的值. 在这个实现中, 锁被占用时 <code>flag</code> 为 <code>true</code>. 如果锁被占用, (1) 处的 exchange 操作会一直返回 <code>true</code>, 线程阻塞在循环中; 直到锁被释放, <code>flag</code> 为 <code>false</code>, exchange 操作将 <code>flag</code> 重新置为 <code>true</code> 以抢占锁, 并且返回其原来的值 <code>false</code>, 循环退出, 加锁成功. 解锁则很简单, 将 <code>flag</code> 置为 <code>false</code> 即可.</p>
+<p>由于解锁操作使用 <code>memory_order_release</code> 且加锁操作使用 <code>memory_order_acquire</code>, 所以能保证加锁成功时与上一次解锁操作构成 “synchronizes-with” 的关系, 也就是 unlock 操作 “synchronizes-with” lock 操作.</p>
+<p>加锁时的 exchange 操作是一个 read-modify-write 操作, 它既读又写. 当它使用 <code>memory_order_acquire</code> 时, 只能保证它读的部分是一个 acquire 操作. 如果有两个线程抢占同一个锁</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">spinlock mu;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">thread1</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">// some operations</span></span><br><span class="line">    mu.<span class="built_in">lock</span>(); <span class="comment">// (1)</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">thread2</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    mu.<span class="built_in">lock</span>(); <span class="comment">// (2)</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>(1) 和 (2) 之间没有任何同步关系, 假设先执行操作 (1) 后执行操作 (2), 那么 <code>thread1</code> 中 (1) 之前的操作结果不一定对 <code>thread2</code> 可见. 但能确定的是, 只会有一个线程得到锁, 这是由原子变量的修改顺序 (modification order) 所保证的. 要么 <code>thread1</code> 先将 <code>flag</code> 置为 <code>true</code>, 要么 <code>thread2</code> 先将 <code>flag</code> 置为 <code>true</code>, 这个顺序是全局一致的.</p>
+<h2 id="5-总结">5. 总结</h2>
+<p>总结一下这几种内存顺序模型:</p>
+<ul>
+<li><code>memory_order_relaxed</code>: 最宽松的内存顺序, 只保证操作的<strong>原子性</strong>和<strong>修改顺序 (modification order)</strong>.</li>
+<li><code>memory_order_acquire</code>, <code>memory_order_release</code> 和 <code>memory_order_acq_rel</code>: 实现 <strong>acquire 操作</strong>和 <strong>release 操作</strong>, 如果 acquire 操作读到了 release 操作写入的值, 或其 release sequence 写入的值, 则构成 <strong>synchronizes-with 关系</strong>, 进而可以推导出 <strong>happens-before 的关系</strong>.</li>
+<li><code>memory_order_consume</code>: 实现 <strong>consume 操作</strong>, 能实现数据依赖相关的同步关系. 如果 consume 操作读到了 release 操作写入的值, 或其 release sequence 写入的值, 则构成 <strong>dependency-ordered before 的关系</strong>, 对于有数据依赖的操作可以进而推导出 <strong>happens-before 的关系</strong>.</li>
+<li><code>memory_order_seq_cst</code>: 加强版的 acquire-release 模型, 除了可以实现 <strong>synchronizes-with 关系</strong>, 还保证<strong>全局顺序一致</strong>.</li>
+</ul>
+<h2 id="6-资料">6.资料</h2>
+<ul>
+<li>《C++并发编程实战》</li>
+<li><a target="_blank" rel="noopener" href="https://www.zhihu.com/question/24301047">内存模型</a></li>
+</ul>
+<p>本文转载自：<a target="_blank" rel="noopener" href="https://luyuhuang.tech/2022/06/25/cpp-memory-order.html#%E5%8E%9F%E5%AD%90%E5%8F%98%E9%87%8F">谈谈 C++ 中的内存顺序 (Memory Order)</a></p>
+</article><div class="post-copyright"><div class="post-copyright__title"><span class="post-copyright-info"><h>Cpp内存顺序</h></span></div><div class="post-copyright__type"><span class="post-copyright-info"><a href="https://penge666.github.io/posts/4c8902bb.html">https://penge666.github.io/posts/4c8902bb.html</a></span></div><div class="post-copyright-m"><div class="post-copyright-m-info"><div class="post-copyright-a"><h>作者</h><div class="post-copyright-cc-info"><h>Penge666</h></div></div><div class="post-copyright-c"><h>发布于</h><div class="post-copyright-cc-info"><h>2024-05-07</h></div></div><div class="post-copyright-u"><h>更新于</h><div class="post-copyright-cc-info"><h>2024-05-07</h></div></div><div class="post-copyright-c"><h>许可协议</h><div class="post-copyright-cc-info"><a class="icon" rel="noopener" target="_blank" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a><a rel="noopener" target="_blank" title="CC BY-NC-SA 4.0" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a></div></div></div></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Cpp/"><div class="tags-punctuation"><svg class="faa-tada icon" style="height:1.1em;width:1.1em;fill:currentColor;position:relative;top:2px;margin-right:3px" aria-hidden="true"><use xlink:href="#icon-sekuaibiaoqian"></use></svg></div>Cpp</a></div></div><link rel="stylesheet" href="/css/coin.css" media="defer" onload="this.media='all'"/><div class="post-reward"><button class="tip-button reward-button"><span class="tip-button__text">投喂作者</span><div class="coin-wrapper"><div class="coin"><div class="coin__middle"></div><div class="coin__back"></div><div class="coin__front"></div></div></div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="https://tuchuang.voooe.cn/images/2023/01/04/2.webp" target="_blank"><img class="post-qr-code-img" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://tuchuang.voooe.cn/images/2023/01/04/2.webp" alt="微信"/></a><div class="post-qr-code-desc">微信</div></li><li class="reward-item"><a href="https://tuchuang.voooe.cn/images/2023/01/04/20f8e49805975b8f8.webp" target="_blank"><img class="post-qr-code-img" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://tuchuang.voooe.cn/images/2023/01/04/20f8e49805975b8f8.webp" alt="支付宝"/></a><div class="post-qr-code-desc">支付宝</div></li></ul></div></button></div><audio id="coinAudio" src="https://npm.elemecdn.com/akilar-candyassets@1.0.36/audio/aowu.m4a"></audio><script defer="defer" src="/js/coin.js"></script><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/posts/48ea1a6e.html"><img class="next-cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/assets/photo1/default_cover_1.webp" onerror="onerror=null;src='/assets/r2.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">CMake快速上手</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/posts/af408df9.html" title="Modern Cpp"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/assets/photo1/default_cover_17.webp" alt="cover"><div class="content is-center"><div class="date"><i class="fas fa-history fa-fw"></i> 2024-04-11</div><div class="title">Modern Cpp</div></div></a></div><div><a href="/posts/e584d079.html" title="More Effective Cpp"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/assets/photo1/default_cover_20.webp" alt="cover"><div class="content is-center"><div class="date"><i class="fas fa-history fa-fw"></i> 2024-04-12</div><div class="title">More Effective Cpp</div></div></a></div><div><a href="/posts/bf4dced7.html" title="Effective Cpp"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/assets/photo1/default_cover_24.webp" alt="cover"><div class="content is-center"><div class="date"><i class="fas fa-history fa-fw"></i> 2024-04-11</div><div class="title">Effective Cpp</div></div></a></div><div><a href="/posts/4772239d.html" title="Cpp基础知识"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/assets/photo1/default_cover_11.webp" alt="cover"><div class="content is-center"><div class="date"><i class="fas fa-history fa-fw"></i> 2024-05-04</div><div class="title">Cpp基础知识</div></div></a></div><div><a href="/posts/a5a0c60f.html" title="内存屏障"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/assets/photo1/default_cover_13.webp" alt="cover"><div class="content is-center"><div class="date"><i class="fas fa-history fa-fw"></i> 2024-04-24</div><div class="title">内存屏障</div></div></a></div><div><a href="/posts/ccc0d0ac.html" title="Effectivate Modern Cpp"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/assets/photo1/default_cover_3.webp" alt="cover"><div class="content is-center"><div class="date"><i class="fas fa-history fa-fw"></i> 2024-04-11</div><div class="title">Effectivate Modern Cpp</div></div></a></div></div></div><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="twikoo-wrap"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><svg class="meta_icon" style="width:22px;height:22px;position:relative;top:5px"><use xlink:href="#icon-mulu1"></use></svg><span style="font-weight:bold">目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E5%8E%9F%E5%AD%90%E5%8F%98%E9%87%8F"><span class="toc-text">1. 原子变量</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-1-%E5%8E%9F%E5%AD%90%E5%8F%98%E9%87%8F%E7%9A%84%E6%93%8D%E4%BD%9C"><span class="toc-text">1.1 原子变量的操作</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5"><span class="toc-text">2. 基础概念</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-%E4%BF%AE%E6%94%B9%E9%A1%BA%E5%BA%8F-Modification-orders"><span class="toc-text">2.1 修改顺序 (Modification orders)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-Happens-before"><span class="toc-text">2.2 Happens-before</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-2-1-%E5%8D%95%E7%BA%BF%E7%A8%8B%E7%9A%84%E6%83%85%E5%86%B5-sequenced-before"><span class="toc-text">2.2.1 单线程的情况: sequenced-before</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-2-2-%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%9A%84%E6%83%85%E5%86%B5-synchronizes-with-%E5%92%8C-inter-thread-happens-before"><span class="toc-text">2.2.2 多线程的情况: synchronizes-with 和 inter-thread happens-before</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-3-Happens-before-%E4%B8%8D%E4%BB%A3%E8%A1%A8%E6%8C%87%E4%BB%A4%E5%AE%9E%E9%99%85%E7%9A%84%E6%89%A7%E8%A1%8C%E9%A1%BA%E5%BA%8F"><span class="toc-text">2.3 Happens-before 不代表指令实际的执行顺序</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E5%86%85%E5%AD%98%E9%A1%BA%E5%BA%8F"><span class="toc-text">3. 内存顺序</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-memory-order-seq-cst"><span class="toc-text">3.1 memory_order_seq_cst</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-memory-order-relaxed"><span class="toc-text">3.2 memory_order_relaxed</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-3-Acquire-release"><span class="toc-text">3.3 Acquire-release</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-4-Release-sequences"><span class="toc-text">3.4* Release sequences</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-5-memory-order-consume"><span class="toc-text">3.5* memory_order_consume</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-%E4%BE%8B%E5%AD%90"><span class="toc-text">4. 例子</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-%E6%80%BB%E7%BB%93"><span class="toc-text">5. 总结</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-%E8%B5%84%E6%96%99"><span class="toc-text">6.资料</span></a></li></ol></div></div></div></div></main><footer id="footer" style="background-color: transparent;"><div id="footer-wrap"><div id="ft"><div class="ft-item-1"><div class="t-top"><div class="t-t-l"><p class="ft-t t-l-t">格言🧬</p><div class="bg-ad"><div>用勇气改变可以改变的事，用胸怀接受不能接受的事，用智慧分辨两者的不同✨</div><div class="btn-xz-box"><a class="btn-xz" target="_blank" rel="noopener" href="https://github.com/Penge666/">点击开启星辰之旅</a></div></div></div><div class="t-t-r"><p class="ft-t t-l-t">猜你想看💡</p><ul class="ft-links"><li><a href="/posts/eec9786.html">惊喜网站</a><a href="/box/nav/">网址导航</a></li><li><a href="/social/link/">我的朋友</a><a href="/comments/">留点什么</a></li><li><a href="/personal/about/">关于作者</a><a href="/archives/">文章归档</a></li><li><a href="/categories/">文章分类</a><a href="/tags/">文章标签</a></li></ul></div></div></div><div class="ft-item-2"><p class="ft-t">推荐友链⌛</p><div class="ft-img-group"><div class="img-group-item"><a target="_blank" rel="noopener" href="https://www.fomal.cc/" title="Fomalhaut🥝"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://lskypro.acozycotage.net/LightPicture/2022/12/60e5d4e39da7c077.webp" alt=""/></a></div><div class="img-group-item"><a href="javascript:void(0)" title="广告位招租"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://lskypro.acozycotage.net/LightPicture/2022/12/65307a5828af6790.webp" alt=""/></a></div><div class="img-group-item"><a href="javascript:void(0)" title="广告位招租"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://lskypro.acozycotage.net/LightPicture/2022/12/65307a5828af6790.webp" alt=""/></a></div><div class="img-group-item"><a href="javascript:void(0)" title="广告位招租"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://lskypro.acozycotage.net/LightPicture/2022/12/65307a5828af6790.webp" alt=""/></a></div><div class="img-group-item"><a href="javascript:void(0)" title="广告位招租"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://lskypro.acozycotage.net/LightPicture/2022/12/65307a5828af6790.webp" alt=""/></a></div><div class="img-group-item"><a href="javascript:void(0)" title="广告位招租"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://lskypro.acozycotage.net/LightPicture/2022/12/65307a5828af6790.webp" alt=""/></a></div><div class="img-group-item"><a href="javascript:void(0)" title="广告位招租"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://lskypro.acozycotage.net/LightPicture/2022/12/65307a5828af6790.webp" alt=""/></a></div><div class="img-group-item"><a href="javascript:void(0)" title="广告位招租"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://lskypro.acozycotage.net/LightPicture/2022/12/65307a5828af6790.webp" alt=""/></a></div></div></div></div><div class="copyright"><span><b>&copy;2022-2024</b></span><span><b>&nbsp;&nbsp;By Penge666</b></span></div><div id="workboard"></div><p id="ghbdages"><a class="github-badge" target="_blank" href="https://hexo.io/" style="margin-inline:5px" title="博客框架为Hexo_v6.3.0"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://sourcebucket.s3.ladydaily.com/badge/Frame-Hexo-blue.svg" alt=""/></a><a class="github-badge" target="_blank" href="https://butterfly.js.org/" style="margin-inline:5px" title="主题版本Butterfly_v4.3.1"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://sourcebucket.s3.ladydaily.com/badge/Theme-Butterfly-6513df.svg" alt=""/></a><a class="github-badge" target="_blank" href="https://vercel.com/" style="margin-inline:5px" title="本站采用多线部署，主线路托管于Vercel"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://sourcebucket.s3.ladydaily.com/badge/Hosted-Vercel-brightgreen.svg" alt=""/></a><a class="github-badge" target="_blank" href="https://user.51.la/" style="margin-inline:5px" title="本站数据分析得益于51la技术支持"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://sourcebucket.s3.ladydaily.com/badge/Analytics-51la-3db1eb.svg" alt=""/></a><a class="github-badge" target="_blank" href="https://icp.gov.moe/?keyword=20226665" style="margin-inline:5px" title="本站已加入萌ICP豪华套餐，萌ICP备20226665号"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://sourcebucket.s3.ladydaily.com/badge/萌ICP备-20226665-fe1384.svg" alt=""/></a><a class="github-badge" target="_blank" href="https://bitiful.dogecast.com/buckets" style="margin-inline:5px" title="本网站经Service Worker分流至缤纷云对象存储"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src=" https://sourcebucket.s3.ladydaily.com/badge/Bucket-缤纷云-9c62da.svg" alt=""/></a><a class="github-badge" target="_blank" href="https://www.netdun.net/" style="margin-inline:5px" title="本站使用网盾星球提供CDN加速与防护"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://sourcebucket.s3.ladydaily.com/badge/CDN-网盾星球-fff2cc.svg" alt=""/></a><a class="github-badge" target="_blank" href="https://github.com/" style="margin-inline:5px" title="本网站源码由Github提供存储仓库"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src=" https://sourcebucket.s3.ladydaily.com/badge/Source-Github-d021d6.svg" alt=""/></a></p></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><a class="icon-V hidden" onclick="switchNightMode()" title="浅色和深色模式转换"><svg width="25" height="25" viewBox="0 0 1024 1024"><use id="modeicon" xlink:href="#icon-moon"></use></svg></a><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button><button class="share" type="button" title="右键模式" onclick="changeMouseMode()"><i class="fas fa-mouse"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog right_side"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button class="share" type="button" title="分享链接" onclick="share()"><i class="fas fa-share-nodes"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i><span id="percent">0<span>%</span></span></button><button id="go-down" type="button" title="直达底部" onclick="btf.scrollToDest(document.body.scrollHeight, 500)"><i class="fas fa-arrow-down"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div class="js-pjax" id="rightMenu"><div class="rightMenu-group rightMenu-small"><a class="rightMenu-item" href="javascript:window.history.back();"><i class="fa fa-arrow-left"></i></a><a class="rightMenu-item" href="javascript:window.history.forward();"><i class="fa fa-arrow-right"></i></a><a class="rightMenu-item" href="javascript:window.location.reload();"><i class="fa fa-refresh"></i></a><a class="rightMenu-item" href="javascript:rmf.scrollToTop();"><i class="fa fa-arrow-up"></i></a></div><div class="rightMenu-group rightMenu-line hide" id="menu-text"><a class="rightMenu-item" href="javascript:rmf.copySelect();"><i class="fa fa-copy"></i><span>复制</span></a><a class="rightMenu-item" href="javascript:window.open(&quot;https://www.baidu.com/s?wd=&quot;+window.getSelection().toString());window.location.reload();"><i class="fa fa-search"></i><span>百度搜索</span></a></div><div class="rightMenu-group rightMenu-line hide" id="menu-too"><a class="rightMenu-item" href="javascript:window.open(window.getSelection().toString());window.location.reload();"><i class="fa fa-link"></i><span>转到链接</span></a></div><div class="rightMenu-group rightMenu-line hide" id="menu-paste"><a class="rightMenu-item" href="javascript:rmf.paste()"><i class="fa fa-copy"></i><span>粘贴</span></a></div><div class="rightMenu-group rightMenu-line hide" id="menu-post"><a class="rightMenu-item" href="#post-comment"><i class="fas fa-comment"></i><span>空降评论</span></a><a class="rightMenu-item" href="javascript:rmf.copyWordsLink()"><i class="fa fa-link"></i><span>复制本文地址</span></a></div><div class="rightMenu-group rightMenu-line hide" id="menu-to"><a class="rightMenu-item" href="javascript:rmf.openWithNewTab()"><i class="fa fa-window-restore"></i><span>新窗口打开</span></a><a class="rightMenu-item" id="menu-too" href="javascript:rmf.open()"><i class="fa fa-link"></i><span>转到链接</span></a><a class="rightMenu-item" href="javascript:rmf.copyLink()"><i class="fa fa-copy"></i><span>复制链接</span></a></div><div class="rightMenu-group rightMenu-line hide" id="menu-img"><a class="rightMenu-item" href="javascript:rmf.saveAs()"><i class="fa fa-download"></i><span>保存图片</span></a><a class="rightMenu-item" href="javascript:rmf.openWithNewTab()"><i class="fa fa-window-restore"></i><span>在新窗口打开</span></a><a class="rightMenu-item" href="javascript:rmf.copyLink()"><i class="fa fa-copy"></i><span>复制图片链接</span></a></div><div class="rightMenu-group rightMenu-line"><a class="rightMenu-item" href="javascript:randomPost()"><i class="fa fa-paper-plane"></i><span>随便逛逛</span></a><a class="rightMenu-item" href="javascript:switchNightMode();"><i class="fa fa-moon"></i><span>昼夜切换</span></a><a class="rightMenu-item" href="/personal/about/"><i class="fa fa-info-circle"></i><span>关于博客</span></a><a class="rightMenu-item" href="javascript:toggleWinbox();"><i class="fas fa-cog"></i><span>美化设置</span></a><a class="rightMenu-item" href="javascript:rmf.fullScreen();"><i class="fas fa-expand"></i><span>切换全屏</span></a><a class="rightMenu-item" href="javascript:window.print();"><i class="fa-solid fa-print"></i><span>打印页面</span></a></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.staticfile.org/fancyapps-ui/4.0.31/fancybox.umd.min.js"></script><script src="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/instant.page/5.1.0/instantpage.min.js" type="module"></script><script src="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/vanilla-lazyload/17.3.1/lazyload.iife.min.js"></script><script src="/js/search/local-search.js"></script><script async="async">var preloader = {
+  endLoading: () => {
+    document.body.style.overflow = 'auto';
+    document.getElementById('loading-box').classList.add("loaded")
+  },
+  initLoading: () => {
+    document.body.style.overflow = '';
+    document.getElementById('loading-box').classList.remove("loaded")
+
+  }
+}
+window.addEventListener('load',preloader.endLoading())
+setTimeout(function(){preloader.endLoading();}, 5000);
+document.getElementById('loading-box').addEventListener('click',()=> {preloader.endLoading()})</script><div class="js-pjax"><script>if (!window.MathJax) {
+  window.MathJax = {
+    tex: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"]],
+      tags: 'ams'
+    },
+    chtml: {
+      scale: 1.2
+    },
+    options: {
+      renderActions: {
+        findScript: [10, doc => {
+          for (const node of document.querySelectorAll('script[type^="math/tex"]')) {
+            const display = !!node.type.match(/; *mode=display/)
+            const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display)
+            const text = document.createTextNode('')
+            node.parentNode.replaceChild(text, node)
+            math.start = {node: text, delim: '', n: 0}
+            math.end = {node: text, delim: '', n: 0}
+            doc.math.push(math)
+          }
+        }, ''],
+        insertScript: [200, () => {
+          document.querySelectorAll('mjx-container:not\([display]\)').forEach(node => {
+            const target = node.parentNode
+            if (target.nodeName.toLowerCase() === 'li') {
+              target.parentNode.classList.add('has-jax')
+            } else {
+              target.classList.add('has-jax')
+            }
+          });
+        }, '', false]
+      }
+    }
+  }
+  
+  const script = document.createElement('script')
+  script.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.min.js'
+  script.id = 'MathJax-script'
+  script.async = true
+  document.head.appendChild(script)
+} else {
+  MathJax.startup.document.state(0)
+  MathJax.texReset()
+  MathJax.typeset()
+}</script><script>(()=>{
+  const init = () => {
+    twikoo.init(Object.assign({
+      el: '#twikoo-wrap',
+      envId: '',
+      region: '',
+      onCommentLoaded: function () {
+        btf.loadLightbox(document.querySelectorAll('#twikoo .tk-content img:not(.tk-owo-emotion)'))
+      }
+    }, null))
+  }
+
+  const getCount = () => {
+    const countELement = document.getElementById('twikoo-count')
+    if(!countELement) return
+    twikoo.getCommentsCount({
+      envId: '',
+      region: '',
+      urls: [window.location.pathname],
+      includeReply: false
+    }).then(function (res) {
+      countELement.innerText = res[0].count
+    }).catch(function (err) {
+      console.error(err);
+    });
+  }
+
+  const runFn = () => {
+    init()
+    
+  }
+
+  const loadTwikoo = () => {
+    if (typeof twikoo === 'object') {
+      setTimeout(runFn,0)
+      return
+    } 
+    getScript('https://cdn.staticfile.org/twikoo/1.6.8/twikoo.all.min.js').then(runFn)
+  }
+
+  if ('Twikoo' === 'Twikoo' || !true) {
+    if (true) btf.loadComment(document.getElementById('twikoo-wrap'), loadTwikoo)
+    else loadTwikoo()
+  } else {
+    window.loadOtherComment = () => {
+      loadTwikoo()
+    }
+  }
+})()</script></div><script src="https://cdn.staticfile.org/jquery/3.6.3/jquery.min.js"></script><script async src="https://cdn1.tianli0.top/npm/vue@2.6.14/dist/vue.min.js"></script><script async src="https://cdn1.tianli0.top/npm/element-ui@2.15.6/lib/index.js"></script><script async src="https://cdn.bootcdn.net/ajax/libs/clipboard.js/2.0.11/clipboard.min.js"></script><script defer type="text/javascript" src="https://cdn1.tianli0.top/npm/sweetalert2@8.19.0/dist/sweetalert2.all.js"></script><script async src="//npm.elemecdn.com/pace-js@1.2.4/pace.min.js"></script><script defer src="https://cdn1.tianli0.top/gh/nextapps-de/winbox/dist/winbox.bundle.min.js"></script><script async src="//at.alicdn.com/t/c/font_3586335_hsivh70x0fm.js"></script><script async src="//at.alicdn.com/t/c/font_3636804_gr02jmjr3y9.js"></script><script async src="//at.alicdn.com/t/c/font_3612150_kfv55xn3u2g.js"></script><script async src="https://cdn.wpon.cn/2022-sucai/Gold-ingot.js"></script><canvas id="universe"></canvas><canvas id="snow"></canvas><script defer src="/js/fomal.js"></script><link rel="stylesheet" href="https://lf6-cdn-tos.bytecdntp.com/cdn/expire-1-M/aplayer/1.10.1/APlayer.min.css" media="print" onload="this.media='all'"><script src="https://lf6-cdn-tos.bytecdntp.com/cdn/expire-1-M/aplayer/1.10.1/APlayer.min.js"></script><script src="https://cdn1.tianli0.top/npm/js-heo@1.0.12/metingjs/Meting.min.js"></script><script src="https://lib.baomitu.com/pjax/0.2.8/pjax.min.js"></script><script>let pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show","#web_bg",".js-pjax","#bibi","body > title","#app","#tag-echarts","#posts-echart","#categories-echarts"]
+
+var pjax = new Pjax({
+  elements: 'a:not([target="_blank"])',
+  selectors: pjaxSelectors,
+  cacheBust: false,
+  analytics: false,
+  scrollRestoration: false
+})
+
+document.addEventListener('pjax:send', function () {
+
+  // removeEventListener scroll 
+  window.tocScrollFn && window.removeEventListener('scroll', window.tocScrollFn)
+  window.scrollCollect && window.removeEventListener('scroll', scrollCollect)
+
+  typeof preloader === 'object' && preloader.initLoading()
+  document.getElementById('rightside').style.cssText = "opacity: ''; transform: ''"
+  
+  if (window.aplayers) {
+    for (let i = 0; i < window.aplayers.length; i++) {
+      if (!window.aplayers[i].options.fixed) {
+        window.aplayers[i].destroy()
+      }
+    }
+  }
+
+  typeof typed === 'object' && typed.destroy()
+
+  //reset readmode
+  const $bodyClassList = document.body.classList
+  $bodyClassList.contains('read-mode') && $bodyClassList.remove('read-mode')
+
+  typeof disqusjs === 'object' && disqusjs.destroy()
+})
+
+document.addEventListener('pjax:complete', function () {
+  window.refreshFn()
+
+  document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+  })
+
+  GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+  typeof chatBtnFn === 'function' && chatBtnFn()
+  typeof panguInit === 'function' && panguInit()
+
+  // google analytics
+  typeof gtag === 'function' && gtag('config', '', {'page_path': window.location.pathname});
+
+  // baidu analytics
+  typeof _hmt === 'object' && _hmt.push(['_trackPageview',window.location.pathname]);
+
+  typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
+
+  // prismjs
+  typeof Prism === 'object' && Prism.highlightAll()
+
+  typeof preloader === 'object' && preloader.endLoading()
+})
+
+document.addEventListener('pjax:error', (e) => {
+  if (e.request.status === 404) {
+    pjax.loadUrl('/404.html')
+  }
+})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div><!-- hexo injector body_end start --> <script data-pjax>if(document.getElementById('recent-posts') && (location.pathname ==='/'|| '/' ==='all')){
+    var parent = document.getElementById('recent-posts');
+    var child = '<div class="recent-post-item" style="width:100%;height: auto"><div id="catalog_magnet"><a class="magnet_link_more"  href="https://Penge666.github.io/categories/" style="flex:1;text-align: center;margin-bottom: 10px;">查看更多...</a></div></div>';
+    console.log('已挂载magnet')
+    parent.insertAdjacentHTML("afterbegin",child)}
+     </script><style>#catalog_magnet{flex-wrap: wrap;display: flex;width:100%;justify-content:space-between;padding: 10px 10px 0 10px;align-content: flex-start;}.magnet_item{flex-basis: calc(33.333333333333336% - 5px);background: #e9e9e9;margin-bottom: 10px;border-radius: 8px;transition: all 0.2s ease-in-out;}.magnet_item:hover{background: var(--text-bg-hover)}.magnet_link_more{color:#555}.magnet_link{color:black}.magnet_link:hover{color:white}@media screen and (max-width: 600px) {.magnet_item {flex-basis: 100%;}}.magnet_link_context{display:flex;padding: 10px;font-size:16px;transition: all 0.2s ease-in-out;}.magnet_link_context:hover{padding: 10px 20px;}</style>
+    <style></style><script data-pjax>
+  function butterfly_swiper_injector_config(){
+    var parent_div_git = document.getElementById('recent-posts');
+    var item_html = '<div class="recent-post-item" style="height: auto;width: 100%"><div class="blog-slider swiper-container-fade swiper-container-horizontal" id="swiper_container"><div class="blog-slider__wrp swiper-wrapper" style="transition-duration: 0ms;"><div class="blog-slider__item swiper-slide" style="width: 750px; opacity: 1; transform: translate3d(0px, 0px, 0px); transition-duration: 0ms;"><a class="blog-slider__img" onclick="pjax.loadUrl(&quot;posts/2013454d.html&quot;);" href="javascript:void(0);" alt=""><img width="48" height="48" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/assets/photo1/default_cover_20.webp" alt="" onerror="this.src=https://unpkg.zhimg.com/akilar-candyassets/image/loading.gif; this.onerror = null;"/></a><div class="blog-slider__content"><span class="blog-slider__code">2023-08-09</span><a class="blog-slider__title" onclick="pjax.loadUrl(&quot;posts/2013454d.html&quot;);" href="javascript:void(0);" alt="">Markdown语法与外挂标签写法汇总</a><div class="blog-slider__text">🥧本文汇总Markdown格式以及外挂标签在网页端的渲染效果，可作为文档进行查询</div><a class="blog-slider__button" onclick="pjax.loadUrl(&quot;posts/2013454d.html&quot;);" href="javascript:void(0);" alt="">详情       </a></div></div></div><div class="blog-slider__pagination swiper-pagination-clickable swiper-pagination-bullets"></div></div></div>';
+    console.log('已挂载butterfly_swiper')
+    parent_div_git.insertAdjacentHTML("afterbegin",item_html)
+    }
+  var elist = 'undefined'.split(',');
+  var cpage = location.pathname;
+  var epage = '/';
+  var flag = 0;
+
+  for (var i=0;i<elist.length;i++){
+    if (cpage.includes(elist[i])){
+      flag++;
+    }
+  }
+
+  if ((epage ==='all')&&(flag == 0)){
+    butterfly_swiper_injector_config();
+  }
+  else if (epage === cpage){
+    butterfly_swiper_injector_config();
+  }
+  </script><script defer src="https://npm.elemecdn.com/hexo-butterfly-swiper/lib/swiper.min.js"></script><script defer data-pjax src="https://npm.elemecdn.com/hexo-butterfly-swiper/lib/swiper_init.js"></script><div class="js-pjax"><script async="async">var arr = document.getElementsByClassName('recent-post-item');
+for(var i = 0;i<arr.length;i++){
+    arr[i].classList.add('wow');
+    arr[i].classList.add('animate__zoomIn');
+    arr[i].setAttribute('data-wow-duration', '2s');
+    arr[i].setAttribute('data-wow-delay', '200ms');
+    arr[i].setAttribute('data-wow-offset', '30');
+    arr[i].setAttribute('data-wow-iteration', '1');
+  }</script><script async="async">var arr = document.getElementsByClassName('card-widget');
+for(var i = 0;i<arr.length;i++){
+    arr[i].classList.add('wow');
+    arr[i].classList.add('animate__zoomIn');
+    arr[i].setAttribute('data-wow-duration', '2s');
+    arr[i].setAttribute('data-wow-delay', '200ms');
+    arr[i].setAttribute('data-wow-offset', '30');
+    arr[i].setAttribute('data-wow-iteration', '1');
+  }</script></div><script defer src="https://npm.elemecdn.com/hexo-butterfly-wowjs/lib/wow.min.js"></script><script defer src="https://npm.elemecdn.com/hexo-butterfly-wowjs/lib/wow_init.js"></script><script data-pjax src="https://npm.elemecdn.com/hexo-filter-gitcalendar/lib/gitcalendar.js"></script><script data-pjax>
+  function gitcalendar_injector_config(){
+      var parent_div_git = document.getElementById('gitZone');
+      var item_html = '<div class="recent-post-item" id="gitcalendarBar" style="width:100%;height:auto;padding:10px;"><style>#git_container{min-height: 320px}@media screen and (max-width:650px) {#git_container{min-height: 0px}}</style><div id="git_loading" style="width:10%;height:100%;margin:0 auto;display: block;"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 50 50" style="enable-background:new 0 0 50 50" xml:space="preserve"><path fill="#d0d0d0" d="M25.251,6.461c-10.318,0-18.683,8.365-18.683,18.683h4.068c0-8.071,6.543-14.615,14.615-14.615V6.461z" transform="rotate(275.098 25 25)"><animatetransform attributeType="xml" attributeName="transform" type="rotate" from="0 25 25" to="360 25 25" dur="0.6s" repeatCount="indefinite"></animatetransform></path></svg><style>#git_container{display: none;}</style></div><div id="git_container"></div></div>';
+      parent_div_git.insertAdjacentHTML("afterbegin",item_html)
+      console.log('已挂载gitcalendar')
+      }
+
+    if( document.getElementById('gitZone') && (location.pathname ==='/site/census/'|| '/site/census/' ==='all')){
+        gitcalendar_injector_config()
+        GitCalendarInit("/api?null",['#d9e0df', '#c6e0dc', '#a8dcd4', '#9adcd2', '#89ded1', '#77e0d0', '#5fdecb', '#47dcc6', '#39dcc3', '#1fdabe', '#00dab9'],'null')
+    }
+  </script><!-- hexo injector body_end end --></body></html>
