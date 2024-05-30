@@ -1,0 +1,481 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><div id="myscoll"></div><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>SEDA异步事件框架 | Penge666</title><meta name="keywords" content="网络编程"><meta name="author" content="Penge666"><meta name="copyright" content="Penge666"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="ffffff"><meta name="description" content="SEDA论文翻译">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SEDA异步事件框架">
+<meta property="og:url" content="https://penge666.github.io/posts/b1577ae3.html">
+<meta property="og:site_name" content="Penge666">
+<meta property="og:description" content="SEDA论文翻译">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://penge666.github.io/assets/photo1/default_cover_61.webp">
+<meta property="article:published_time" content="2024-05-30T14:23:30.000Z">
+<meta property="article:modified_time" content="2024-05-30T14:39:07.386Z">
+<meta property="article:author" content="Penge666">
+<meta property="article:tag" content="网络编程">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://penge666.github.io/assets/photo1/default_cover_61.webp"><link rel="shortcut icon" href="/"><link rel="canonical" href="https://penge666.github.io/posts/b1577ae3"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://lf6-cdn-tos.bytecdntp.com/cdn/expire-1-M/font-awesome/6.0.0/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.staticfile.org/fancyapps-ui/4.0.31/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":true,"languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: {"limitDay":365,"position":"top","messagePrev":"It has been","messageNext":"days since the last update, the content of the article may be outdated."},
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":230},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: true,
+    post: true
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdnjs.cloudflare.com/ajax/libs/flickr-justified-gallery/2.1.2/fjGallery.min.js',
+      css: 'https://cdnjs.cloudflare.com/ajax/libs/flickr-justified-gallery/2.1.2/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isAnchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'SEDA异步事件框架',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-05-30 22:39:07'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          const now = new Date()
+          const hour = now.getHours()
+          const isNight = hour <= 6 || hour >= 18
+          if (t === undefined) isNight ? activateDarkMode() : activateLightMode()
+          else if (t === 'light') activateLightMode()
+          else activateDarkMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><link rel="stylesheet" href="https://cdn1.tianli0.top/npm/element-ui@2.15.6/packages/theme-chalk/lib/index.css"><style id="themeColor"></style><style id="rightSide"></style><style id="transPercent"></style><style id="blurNum"></style><style id="settingStyle"></style><span id="fps"></span><style id="defineBg"></style><style id="menu_shadow"></style><svg aria-hidden="true" style="position:absolute; overflow:hidden; width:0; height:0"><symbol id="icon-sun" viewBox="0 0 1024 1024"><path d="M960 512l-128 128v192h-192l-128 128-128-128H192v-192l-128-128 128-128V192h192l128-128 128 128h192v192z" fill="#FFD878" p-id="8420"></path><path d="M736 512a224 224 0 1 0-448 0 224 224 0 1 0 448 0z" fill="#FFE4A9" p-id="8421"></path><path d="M512 109.248L626.752 224H800v173.248L914.752 512 800 626.752V800h-173.248L512 914.752 397.248 800H224v-173.248L109.248 512 224 397.248V224h173.248L512 109.248M512 64l-128 128H192v192l-128 128 128 128v192h192l128 128 128-128h192v-192l128-128-128-128V192h-192l-128-128z" fill="#4D5152" p-id="8422"></path><path d="M512 320c105.888 0 192 86.112 192 192s-86.112 192-192 192-192-86.112-192-192 86.112-192 192-192m0-32a224 224 0 1 0 0 448 224 224 0 0 0 0-448z" fill="#4D5152" p-id="8423"></path></symbol><symbol id="icon-moon" viewBox="0 0 1024 1024"><path d="M611.370667 167.082667a445.013333 445.013333 0 0 1-38.4 161.834666 477.824 477.824 0 0 1-244.736 244.394667 445.141333 445.141333 0 0 1-161.109334 38.058667 85.077333 85.077333 0 0 0-65.066666 135.722666A462.08 462.08 0 1 0 747.093333 102.058667a85.077333 85.077333 0 0 0-135.722666 65.024z" fill="#FFB531" p-id="11345"></path><path d="M329.728 274.133333l35.157333-35.157333a21.333333 21.333333 0 1 0-30.165333-30.165333l-35.157333 35.157333-35.114667-35.157333a21.333333 21.333333 0 0 0-30.165333 30.165333l35.114666 35.157333-35.114666 35.157334a21.333333 21.333333 0 1 0 30.165333 30.165333l35.114667-35.157333 35.157333 35.157333a21.333333 21.333333 0 1 0 30.165333-30.165333z" fill="#030835" p-id="11346"></path></symbol></svg><!-- hexo injector head_end start --><link rel="stylesheet" href="https://npm.elemecdn.com/hexo-butterfly-swiper/lib/swiper.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://npm.elemecdn.com/hexo-butterfly-swiper/lib/swiperstyle.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://npm.elemecdn.com/hexo-filter-gitcalendar/lib/gitcalendar.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://npm.elemecdn.com/hexo-butterfly-wowjs/lib/animate.min.css" media="print" onload="this.media='screen'"><link rel="stylesheet" href="https://npm.elemecdn.com/hexo-butterfly-tag-plugins-plus@latest/lib/assets/font-awesome-animation.min.css" media="defer" onload="this.media='all'"><link rel="stylesheet" href="https://npm.elemecdn.com/hexo-butterfly-tag-plugins-plus@latest/lib/tag_plugins.css" media="defer" onload="this.media='all'"><script src="https://npm.elemecdn.com/hexo-butterfly-tag-plugins-plus@latest/lib/assets/carousel-touch.js"></script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="Penge666" type="application/atom+xml">
+</head><body><div id="loading-box" onclick="document.getElementById(&quot;loading-box&quot;).classList.add(&quot;loaded&quot;)"><div class="loading-bg"><div class="loading-img"></div><div class="loading-image-dot"></div></div></div><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/hhh.jpeg" onerror="onerror=null;src='/assets/r1.jpg'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">60</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">18</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">19</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page faa-parent animated-hover" href="/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-home"></use></svg><span class="menu_word" style="font-size:17px"> 首页</span></a></div><div class="menus_item"><a class="site-page faa-parent animated-hover" href="/archives/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-guidang1"></use></svg><span class="menu_word" style="font-size:17px"> 文章</span></a></div><div class="menus_item"><a class="site-page faa-parent animated-hover" href="/tags/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-sekuaibiaoqian"></use></svg><span class="menu_word" style="font-size:17px"> 标签</span></a></div><div class="menus_item"><a class="site-page faa-parent animated-hover" href="/categories/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-fenlei"></use></svg><span class="menu_word" style="font-size:17px"> 分类</span></a></div><div class="menus_item"><a class="site-page faa-parent animated-hover" href="/personal/about/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-paperplane"></use></svg><span class="menu_word" style="font-size:17px"> 个人</span></a></div><div class="menus_item"><a class="site-page group faa-parent animated-hover hide" href="javascript:void(0);"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-shejiaoxinxi"></use></svg><span class="menu_word" style="font-size:17px"> 社交</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/comments/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-liuyan">                   </use></svg><span class="menu_word" style="font-size:17px"> 留言板</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/social/link/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-lianjie">                   </use></svg><span class="menu_word" style="font-size:17px"> 友人帐</span></a></li></ul></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">Penge666</a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page faa-parent animated-hover" href="/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-home"></use></svg><span class="menu_word" style="font-size:17px"> 首页</span></a></div><div class="menus_item"><a class="site-page faa-parent animated-hover" href="/archives/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-guidang1"></use></svg><span class="menu_word" style="font-size:17px"> 文章</span></a></div><div class="menus_item"><a class="site-page faa-parent animated-hover" href="/tags/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-sekuaibiaoqian"></use></svg><span class="menu_word" style="font-size:17px"> 标签</span></a></div><div class="menus_item"><a class="site-page faa-parent animated-hover" href="/categories/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-fenlei"></use></svg><span class="menu_word" style="font-size:17px"> 分类</span></a></div><div class="menus_item"><a class="site-page faa-parent animated-hover" href="/personal/about/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-paperplane"></use></svg><span class="menu_word" style="font-size:17px"> 个人</span></a></div><div class="menus_item"><a class="site-page group faa-parent animated-hover hide" href="javascript:void(0);"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-shejiaoxinxi"></use></svg><span class="menu_word" style="font-size:17px"> 社交</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/comments/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-liuyan">                   </use></svg><span class="menu_word" style="font-size:17px"> 留言板</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/social/link/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-lianjie">                   </use></svg><span class="menu_word" style="font-size:17px"> 友人帐</span></a></li></ul></div></div><center id="name-container"><a id="page-name" href="javascript:scrollToTop()">PAGE_NAME</a></center><div id="nav-right"><div id="search-button"><a class="search faa-parent animated-hover" title="检索站内任何你想要的信息"><svg class="faa-tada icon" style="height:24px;width:24px;fill:currentColor;position:relative;top:6px" aria-hidden="true"><use xlink:href="#icon-valentine_-search-love-find-heart"></use></svg><span> 搜索</span></a></div><a class="meihua faa-parent animated-hover" onclick="toggleWinbox()" title="美化设置-自定义你的风格" id="meihua-button"><svg class="faa-tada icon" style="height:26px;width:26px;fill:currentColor;position:relative;top:8px" aria-hidden="true"><use xlink:href="#icon-tupian1"></use></svg></a><a class="sun_moon faa-parent animated-hover" onclick="switchNightMode()" title="浅色和深色模式转换" id="nightmode-button"><svg class="faa-tada" style="height:25px;width:25px;fill:currentColor;position:relative;top:7px" viewBox="0 0 1024 1024"><use id="modeicon" xlink:href="#icon-moon">       </use></svg></a><div id="toggle-menu"><a><i class="fas fa-bars fa-fw"></i></a></div></div></div></nav><div id="post-info"><h1 class="post-title">SEDA异步事件框架</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><svg class="meta_icon post-meta-icon" style="width:30px;height:30px;position:relative;top:10px"><use xlink:href="#icon-rili"></use></svg><span class="post-meta-label">发表于 </span><time class="post-meta-date-created" datetime="2024-05-30T14:23:30.000Z" title="发表于 2024-05-30 22:23:30">2024-05-30</time><span class="post-meta-separator">|</span><svg class="meta_icon post-meta-icon" style="width:18px;height:18px;position:relative;top:5px"><use xlink:href="#icon-gengxin1"></use></svg><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-05-30T14:39:07.386Z" title="更新于 2024-05-30 22:39:07">2024-05-30</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><svg class="meta_icon post-meta-icon" style="width:18px;height:18px;position:relative;top:5px"><use xlink:href="#icon-biaoqian"></use></svg><a class="post-meta-categories" href="/categories/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/">网络编程</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><svg class="meta_icon post-meta-icon" style="width:25px;height:25px;position:relative;top:8px"><use xlink:href="#icon-charuword"></use></svg><span class="post-meta-label">字数总计:</span><span class="word-count">1.7w</span><span class="post-meta-separator">|</span><svg class="meta_icon post-meta-icon" style="width:20px;height:20px;position:relative;top:5px"><use xlink:href="#icon-shizhong"></use></svg><span class="post-meta-label">阅读时长:</span><span>50分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="SEDA异步事件框架"><svg class="meta_icon post-meta-icon" style="width:25px;height:25px;position:relative;top:5px"><use xlink:href="#icon-eye"></use></svg><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div><section class="main-hero-waves-area waves-area"><svg class="waves-svg" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto"><defs><path id="gentle-wave" d="M -160 44 c 30 0 58 -18 88 -18 s 58 18 88 18 s 58 -18 88 -18 s 58 18 88 18 v 44 h -352 Z"></path></defs><g class="parallax"><use href="#gentle-wave" x="48" y="0"></use><use href="#gentle-wave" x="48" y="3"></use><use href="#gentle-wave" x="48" y="5"></use><use href="#gentle-wave" x="48" y="7"></use></g></svg></section></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><p>SEDA: An Architecture for Well-Conditioned, Scalable Internet Services</p>
+<p>Matt Welsh, David Culler, and Eric Brewer 加州大学伯克利分校</p>
+<p>论文地址：<a target="_blank" rel="noopener" href="https://people.eecs.berkeley.edu/~brewer/papers/SEDA-sosp.pdf">https://people.eecs.berkeley.edu/~brewer/papers/SEDA-sosp.pdf</a></p>
+<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>​    我们为高度并发的Internet服务提出了一种新设计，我们将其称为<strong>分阶段事件驱动架构（SEDA）</strong>。SEDA旨在支持大规模并发需求并简化良好服务的构建。在SEDA中，应用程序由通过显式队列连接的阶段事件驱动网络组成。这种架构使服务具有良好的负载，在需求超过服务容量时防止资源过度使用。尽管负载波动很大，但SEDA利用一组动态资源控制器将各阶段保持在其运行状态。我们描述了几种用于自动调整和负载调节的控制机制，包括线程池大小调整，事件批处理和自适应负载消减。我们介绍了SEDA设计以及基于该架构的互联网服务平台的实现。我们通过两个应用程序评估SEDA的使用：用于Gnutella（无结构的P2P网络代表软件）对等文件共享网络的高性能HTTP服务器和数据包路由器。这些结果表明，SEDA应用程序表现出比传统服务设计更高的性能，并且对于负载的巨大变化具有稳健性。</p>
+<h2 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h2><p>​      互联网呈现出前所未有的计算机系统问题：要求支持数百万用户的访问，服务必须是相应的、稳健的、始终可用的。Internet站点每天的并发会话数和点击次数转化为更多的I/O和网络请求，对底层资源提出了巨大的要求。雅虎每天收到超过12亿的页面浏览量，AOL的网络缓存每天提供超过100亿次点击。此外，互联网服务在服务负载方面经历巨大变化，突发与服务具有最大价值的时间一致。详细记录的“Slashdot效应”表明，当网站变得流行时，需求增长超过100倍并不罕见。随着对互联网服务的需求的增长，必须使用新的系统设计技术来管理这种负载。</p>
+<p>​      这种系统挑战被三种趋势放大，这些趋势增加了服务的普遍性。首先，服务本身变得越来越复杂，静态内容被涉及大量计算和I/O的动态内容所取代。其次，服务逻辑趋于快速变化，这增加了工程和部署的复杂性。第三，服务越来越多地托管在通用设施上，而不是在为特定服务精心设计的平台上。随着这些趋势的继续，我们设想将创建一系列丰富的新颖服务并将其推入基础设施，在这些基础设施中，它们可能会成功扩展到数百万用户。一些研究正在解决服务的高级方面，包括命名，查找，组合和版本控制。我们将重点放在问题的性能方面：在负载变化很大的情况下，在广泛的服务上实现强大的性能，同时保持其易用性。复制是服务可伸缩性的关键方面。给定一个可以维持一定性能水平的服务实例，必须复制它以维持负载的多倍增加，可扩展的集群现在被广泛用于在服务站点内获得复制，并且广泛的复制越来越多地用于特定服务，例如内容分发网络。但是，因为峰值负载可能比平均值大几个数量级，所以它不实用。复制大多数服务以处理最大的潜在需求。 因此，我们预计每个节点所承受的负载会出现大幅峰值。我们的目标是开发一个通用框架，用于创建高度并发且运行良好的服务实例，以便优雅地处理负载。</p>
+<p>​      遗憾的是，传统的操作系统设计和广泛推广的并发模型并不能提供这种优雅的负载管理。商品操作系统专注于通过为每个进程提供独有的CPU，内存，磁盘和网络的虚拟机的抽象来提供最大的透明度。 这个目标与互联网服务的需求有些不一致，互联网服务需要大量的并发性和对资源使用的广泛控制。进程和线程是良好支持的并发编程模型，但在上下文切换时间和内存占用方面往往需要很高的开销，这限制了并发性。 透明的资源虚拟化阻止了应用程序做出明智的决策，这对于管理过多的负载至关重要。大多说工作都侧重于特定服务的性能和稳健性。然而，随着服务变得越来越动态和灵活，这种工程负担变得过度。很少有工具可以帮助开发高度并发，运行良好的服务; 我们的目标是通过提供帮助软件开发人员获取这些属性的通用机制来降低这种复杂性。</p>
+<p>​      我们为高度并发的服务器应用程序提出了一个新的设计框架，我们将其称为分阶段事件驱动架构（SEDA）。SEDA结合了线程和基于事件的编程模型的各个方面来管理Internet服务的并发性，I/O，调度和资源管理需求。在SEDA中，应用程序被构建为阶段网络，每个阶段都具有关联的传入事件队列。每个阶段可以通过单独调节负载阈值或过滤其事件队列来构建一个健壮的模块。此外，使事件队列显式化允许应用程序进行合适的调度和资源管理决策，例如重新排序，过滤或聚合请求。SEDA利用动态资源限制来控制应用程序组件的资源分配和调度，使系统能够适应过载状态。</p>
+<p>​      本文描述了基于SEDA的Internet服务平台的设计，体系结构和实现。该平台提供高效，可扩展的I/O接口以及多种资源控制机制，包括线程池大小调整和动态事件调度。我们通过两个应用程序评估框架 - 一个高性能HTTP服务器和一个用于Gnutella对等文件共享网络的数据包路由器。我们为这些应用提供了性能和可扩展性结果，证明了SEDA在负载的巨大变化上实现了稳健性，并且优于其他服务设计。我们基于Java的SEDA HTTP服务器优于基于C实现的两个流行的Web服务器，如第5.1节所述。我们认为使用SEDA，高度并发的应用程序更容易构建，更高效，更强大的负载。通过正确的接口，应用程序设计人员可以专注于特定于应用程序的逻辑，而不是并发和资源管理的细节。</p>
+<h2 id="背景和相关工作"><a href="#背景和相关工作" class="headerlink" title="背景和相关工作"></a>背景和相关工作</h2><p>​      SEDA汇集了两个重要的研究领域：<strong>使用基于线程的并发模型来简化编程，使用基于事件的模型来实现大规模的并发</strong>。本节通过概述主导SEDA设计的步骤中的关键贡献和问题来阐明开发这种方法的谱系。</p>
+<p>​      直观地说，如果服务的行为类似于简单的管道，那么服务就是运行良好的，管道的深度由通过网络的路径和服务本身内的处理阶段决定。随着提供的负载增加，交付的吞吐量按比例增加，直到管道充满并且吞吐量饱和; 额外的负载不应该降低吞吐量。类似地，服务所呈现的响应时间在轻负载时大致恒定，因为它由管道的深度支配。当负载接近饱和时，排队延迟占主导地位。在许多服务典型的闭环场景中，每个客户端在提交下一个请求之前等待响应，响应时间应随客户端数量线性增加。</p>
+<p>​      良好的服务的关键属性是优雅降级：当提供的负载超过容量时，服务保持高吞吐量，线性响应时间损失同等地影响所有客户端，或者至少根据某些特定于服务的策略可预测影响。请注意，这不是典型的Web体验; 相反，随着负载的增加，吞吐量会降低，响应时间也会大幅增加，从而产生服务崩溃的印象。</p>
+<h3 id="基于线程的并发"><a href="#基于线程的并发" class="headerlink" title="基于线程的并发"></a>基于线程的并发</h3><p>​      服务器应用程序最常用的设计是thread-per-request线程模型，如RPC包，Java远程方法调用和DCOM中所体现的。 当前的语言和编程环境很好地支持这个模型。 在此模型中，如图1所示，每个接受的请求都使用一个线程来处理它，同步操作受保护的共享资源。操作系统通过在线程之间透明切换来交叉计算和I/O.</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://penge666blog.oss-cn-beijing.aliyuncs.com/img/image-20240530222909219.png" alt="image-20240530222909219"></p>
+<p>图1：线程服务器设计：将每个传入请求分派到一个单独的线程，该线程处理请求并将结果返回给客户端。边表示分支之间的控制流。请注意，此处未显示其他I/O操作（如磁盘访问），但会将其合并到每个线程的请求处理中。</p>
+<p>尽管编程相对容易，但与线程相关的开销（包括缓存和TLB未命中，调度开销和锁争用）当线程数量变大时，会导致严重的性能下降。作为一个具体示例，图2显示了随着线程数量的增加，简单线程服务器的性能。尽管有效的线程限制对于通用分时来说会很大，但它不足以满足Internet服务的巨大并发要求。</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://penge666blog.oss-cn-beijing.aliyuncs.com/img/image-20240530222949971.png" alt="image-20240530222949971"></p>
+<p>图2：线程服务器吞吐量降低</p>
+<p>纵坐标表示吞吐量（每秒任务数） 横坐标表示线程数</p>
+<p>红线代表吞吐量 蓝线代表实际延迟走势 紫线代表理想状态下线性延迟走势</p>
+<p>​    此基准测试用于测量一个简单的线程服务器，该服务器为管道中的每个任务创建单个线收到任务后，每个线程从磁盘文件执行8 KB读取; 所有线程都从同一个文件读取，因此数据总是在缓冲区缓存中。线程在服务器中预先分配，以消除测量中的线程启动开销，并在内部生成任务以消除网络效应。该服务器采用C语言实现，运行在Linux 2.2.14下的4路500 MHz Pentium III和2 GB内存上。 随着并发任务数量的增加，吞吐量会增加，直到线程数量增大，之后吞吐量会大幅下降。 随着任务队列长度的增加，响应时间变得无限制; 为了比较，我们已经显示了理想的线性响应时间曲线（注意x轴上的对数刻度）。</p>
+<p>​      线程和进程主要用于支持多道程序设计，现有的OS力求以对应用程序透明的方式虚拟化硬件资源。应用程序很少有机会参与系统范围的资源管理决策，或者给出资源可用性的指示，以使其行为适应不断变化的条件。虚拟化从根本上隐藏了资源有限和共享的事实。</p>
+<p>​      许多系统试图通过向应用程序公开更多控制来解决这个问题。调度程序激活[5]，应用程序特定处理程序[59]和操作系统（如SPIN [11]，Exokernel [28]和Nemesis [34]）都试图通过为应用程序提供特化内核做出的决策的能力来增强有限的操作系统接口。然而，这些系统的设计仍然基于多道程序设计，因为重点仍然放在安全和有效的资源虚拟化上，而不是优雅的管理和高并发性。</p>
+<h3 id="有界线程池"><a href="#有界线程池" class="headerlink" title="有界线程池"></a>有界线程池</h3><p>​      为了避免过度使用线程，许多系统采用粗略形式的负载调节，用于绑定与服务关联的线程池的大小。 当服务器中的请求数超过某个固定限制时，不接受其他连接。 Web服务器（如Apache [6]，IIS [38]和Netscape Enterprise Server [42]）以及应用程序服务器（如BEA Weblogic [10]和IBM WebSphere [25]）使用此方法。 通过限制并发线程的数量，服务器可以避免吞吐量降低，并且整体性能比无约束的每任务线程模型更强大。但是，这种方法会给客户端带来很多不公平：当所有服务器线程忙或被阻塞时，客户端请求在网络中排队等待服务。正如我们将在5.1节中所示，这可能导致客户端经历任意大的等待时间。</p>
+<p>​      当每个请求由单个线程处理时，很难识别内部性能瓶颈以执行调整和负载调节。 考虑一个简单的线程Web服务器，其中一些请求处理起来成本低廉（例如，缓存的静态页面）而其他请求则很昂贵（例如，不在缓存中的大页面）。 对于许多并发请求，昂贵的请求可能是性能瓶颈的来源，因此需要执行减载。 但是，服务器无法检查内部请求流以实现此类策略; 它所知道的是线程池已经饱和，并且一定是在不知道瓶颈来源的情况下随意拒绝工作。</p>
+<p>​      资源容器[7]和来自Scout操作系统[41,49]的路径概念是两种可用于限制服务器中任务的资源使用的技术。这些机制将垂直资源管理应用于一组软件模块，允许整个数据流通过系统的资源作为一个单元进行管理。 在上述瓶颈的情况下，限制给定请求的资源使用，将避免由于高速缓存未命中而导致的降级，但允许高速缓存命中继续进行。</p>
+<h3 id="事件驱动的并发"><a href="#事件驱动的并发" class="headerlink" title="事件驱动的并发"></a>事件驱动的并发</h3><p>​      线程的可伸缩性限制导致许多开发人员几乎完全避开它们，并采用事件驱动的方法来管理并发。在这种方法中，如图3所示，服务器由少量线程（通常每个CPU一个）组成，它们不断循环，处理队列中不同类型的事件。事件可以由操作系统生成，也可以由应用程序在内部生成，通常对应于网络和磁盘I/O就绪和完成通知，定时器或其他特定于应用程序的事件。事件驱动方法将每个任务的处理实现为有限状态机，其中FSM（finite state machine）中的状态之间的转换由事件触发。通过这种方式，服务器为每个任务维护自己的连续状态，而不是依赖于线程上下文。</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://penge666blog.oss-cn-beijing.aliyuncs.com/img/image-20240530223052896.png" alt="image-20240530223052896"></p>
+<p>图3：事件驱动的服务器设计：此图显示了通过事件驱动的服务器的事件流。 主线程处理来自网络，磁盘和其他来源的传入事件，并使用它们来驱动许多有限状态机的执行。 每个FSM代表通过系统的单个请求或执行流程。 此设计的复杂性的关键来源是事件调度程序，它必须控制每个FSM的执行。</p>
+<pre><code> 事件驱动设计被许多系统使用，包括Flash [44]，thttpd [4]，Zeus [63]和JAWS [24] Web服务器以及Harvest [12] Web缓存。在Flash中，服务器的每个组件都响应特定类型的事件，例如套接字连接或文件系统访问。主服务器进程负责不断地将事件分派给每个组件，这些组件实现为库调用。因为某些I/O操作（在这种情况下，文件系统访问）没有异步接口，所以主服务器进程通过IPC将它们分派给辅助进程来处理这些事件。帮助程序处理发出（阻塞）I/O请求并在完成时将事件返回到主进程。Harvest的结构非常相似：它是单线程和事件驱动的，但FTP协议除外，它由一个单独的进程实现。(Harvest:google搜索到是一款面向自由职业者和小型企业的时间跟踪和在线发票应用程序。)
+  线程和事件驱动的并发模型之间的权衡已经在JAWS Web服务器中进行了广泛的研究[23,24]。JAWS(一个高性能的web服务器架构，jaws设计论文)为Web服务器构建提供了一个框架，允许自定义并发模型，协议处理代码，缓存文件系统和其他组件。与SEDA一样，JAWS强调服务设计中适应性的重要性，通过促进服务框架中的静态和动态适应性。据我们所知，JAWS仅在轻载（少于50个并发客户端）下进行了评估，并未解决在高负荷下使用适应性进行调节的问题。
+  事件驱动系统往往对负载具有稳定性，随着提供的负载增加超出饱和度，吞吐量几乎没有降低。 图4显示了使用图2中的服务的事件驱动版本实现的吞吐量。随着任务数量的增加，服务器吞吐量会增加，直到管道填满并且瓶颈（在这种情况下为CPU）变得饱和。 如果管道中的任务数量进一步增加，则多余的任务将被吸收在服务器的事件队列中。 吞吐量在很大的负载范围内保持不变，每个任务的延迟线性增加。
+</code></pre><p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://penge666blog.oss-cn-beijing.aliyuncs.com/img/image-20240530223140377.png" alt="image-20240530223140377"></p>
+<p>图4：事件驱动的服务器吞吐量：该基准测试用于测量图2中服务器的事件驱动版本。</p>
+<p>在这种情况下，服务器使用单个线程来处理任务，其中每个任务从单个磁盘文件读取8 KB。尽管此处使用的操作系统（Linux 2.2.14）提供的文件系统接口是阻塞的，但由于磁盘数据始终位于缓存中，因此此基准测试可估算非阻塞磁盘I/O层的最佳性能。如图所示，当负载增加到非常大量的任务时，吞吐量保持不变（注意图2中水平轴刻度的变化），响应时间是线性的（注意x轴上的对数刻度）。</p>
+<p>​      此模型的一个重要限制是它假定事件处理线程不会阻塞，因此必须使用非阻塞I/O机制。虽然许多先前的工作已经研究了可伸缩的I/O原语[8,9,33,46,48]，但由于中断，页面错误或垃圾收集，事件处理线程会造成阻塞而不管所使用的I/O机制如何。</p>
+<p>​      事件驱动的设计为应用程序开发人员带来了许多额外的挑战。 事件的调度和排序可能是最重要的问题：应用程序负责决定何时处理每个传入事件以及处理多个流的FSM的顺序。 为了平衡公平性和低响应时间，应用程序必须仔细地复用多个FSM的执行。事件调度算法的选择通常是针对特定应用而定制的，并且新功能的引入可能需要重新设计算法。此外，模块化很难实现，因为必须信任实现每个状态的代码，以阻止或消耗大量可能使事件处理线程停滞的资源。</p>
+<h3 id="结构化事件队列"><a href="#结构化事件队列" class="headerlink" title="结构化事件队列"></a>结构化事件队列</h3><p>   已经提出了关于标准事件驱动设计的若干变体来解决上述问题。 这些设计的一个共同方面是使用一组事件队列构建事件驱动的应用程序，以提高代码模块性并简化应用程序设计。</p>
+<p>   Click模块化分组路由器(Click路由器论文)[40]就是这样一个例子。在Click中，数据包处理阶段由具有自己的私有状态的单独代码模块实现。Click经过优化，可通过路由器改善每个数据包的延迟，允许单个线程直接通过多个数据包处理阶段进行调用。 此设计针对特定应用程序（路由），单个线程为所有事件队列提供服务。Click假设模块具有有限的处理时间，从而导致相对静态的资源管理策略。Qie(Qie路由器论文)等。[47]还描述了在基于软件的路由器中调度和负载调节的技术; 与SEDA一样，他们的设计利用控制器根据负载动态调整运行时参数。</p>
+<p>   Gribble的分布式数据结构（DDS）[20]层也使用了结构化的事件处理框架。在DDS中，存储服务器通过使用固定大小的线程池来模拟异步网络和磁盘I/O接口，并且使用显式事件队列或隐式上行调用来组成软件组件。Work Crews [56]和TSS/360队列扫描程序[35]是利用结构化事件队列和有限数量的线程来管理并发性的系统的其他示例。在这些系统的每一个中，事件队列的使用解耦了两个组件的执行，这提高了模块性和稳定性。</p>
+<p>   StagedServer [31]是另一个利用显式事件队列进行通信的系统。 在这种情况下，目标是通过仔细调度每个模块中的线程和事件来最大化处理器缓存局部性。 通过聚合队列中多个类似事件的执行，增强了局部性，从而提高了性能。（译者注：线程跳转越少，局部性就会更好）</p>
+<p>   Lauer和Needham的经典论文[32]讨论了通过消息进行通信的过程的优点，并将这种方法与“procedures”的方法进行了对比，这与上述线程模型密切相关。 SEDA可以看作是那里讨论的面向消息的模型的一个实例。 作者声称基于消息和基于过程的模型是彼此的双重性，并且在一个模型中实现的任何程序都可以在另一个模型中有效地实现。 虽然我们同意这种基本情绪，但这一论点忽略了构建可扩展通用多线程的复杂性，以及在没有显示请求队列的情况下在基于线程的模型中调整负载的固有困难。</p>
+<h3 id="分阶段事件驱动架构"><a href="#分阶段事件驱动架构" class="headerlink" title="分阶段事件驱动架构"></a>分阶段事件驱动架构</h3><p>​      在本节中，我们提出了一种新的软件架构，即分阶段事件驱动架构（SEDA），旨在实现Internet服务的高并发性，负载调节和易于设计。SEDA将应用程序分解为由事件队列分隔的阶段网络，并引入动态资源控制器的概念，以允许应用程序动态调整以适应不断变化的负载。SEDA服务设计方法概述如图5所示。</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://penge666blog.oss-cn-beijing.aliyuncs.com/img/image-20240530223255205.png" alt="image-20240530223255205"></p>
+<p><strong>目标</strong></p>
+<p>SEDA的主要目标如下：</p>
+<p>支持大规模并发：为避免因为线程导致性能下降，SEDA尽可能使用事件驱动的执行。 这还要求系统提供高效且可扩展的I/O原语。</p>
+<p>简化良好条件服务的构建：为了降低构建Internet服务的复杂性，SEDA保护应用程序开发者免受许多调度和资源管理的细节。该设计还支持这些应用程序的模块化构造，并为调试和性能分析提供支持。</p>
+<p>启用自我检查：应用程序应该能够分析请求流，以使行为适应不断变化的负载条件。 例如，系统应该能够确定优先级并过滤请求，以支持在高负载下降级服务。</p>
+<p>支持自我调优资源管理：系统应该动态调整其资源管理参数以满足性能目标，而不是强制要求应用程序资源需求和客户端负载特性的先验知识。例如，分配给阶段的线程数可以根据感知的并发需求自动确定，而不是由程序员或管理员硬编码。</p>
+<p><strong>作为健壮构建块的阶段</strong></p>
+<p>​      SEDA内的基本处理单位是stage。stage是一个独立的应用程序组件，由事件处理程序，传入事件队列和线程池组成，如图6所示。每个阶段由影响调度和线程分配的控制器管理，如下所述。阶段线程通过从传入事件队列中拉出一批事件并调用应用程序提供的事件处理程序来进行操作。事件处理程序处理每批事件，并通过将它们排入其他阶段的事件队列来调度零个或多个事件。</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://penge666blog.oss-cn-beijing.aliyuncs.com/img/image-20240530223336442.png" alt="image-20240530223336442"></p>
+<p>图6：SEDA阶段：阶段由传入事件队列，线程池和应用程序提供的事件处理程序组成。 阶段的操作由控制器管理，控制器动态调整资源分配和调度。</p>
+<p>​      线程是SEDA中的基本并发机制，但它们的使用仅限于每个阶段的少量线程，而不是系统中每个任务一个线程。此外，动态控制的使用（参见3.4节）可以根据需求自动调整分配给每个阶段的线程数。此设计允许阶段按顺序或并行运行，或两者的组合，取决于线程系统和调度程序的特性 在本文中，我们假设在SMP环境中的操作系统支持抢占式线程，尽管这种选择不是SEDA设计的基础。例如，可以设计一个线程系统，它认识到应用程序的分阶段结构并相应地调度线程。 我们在3.4节回到这个问题。</p>
+<p>​      每个阶段的核心逻辑由事件处理程序提供，其输入是一批多个事件。 事件处理程序无法直接控制队列操作或线程。通过将核心应用程序逻辑与线程管理和调度分离，该阶段能够控制事件处理程序的执行以实现各种资源管理策略。例如，传递给事件处理程序的事件的数量和顺序可以由运行时环境在外部控制。但是，应用程序还可以通过过滤或重新排序传递给它的事件批来实现自己的调度策略。</p>
+<p><strong>作为阶段网络的应用</strong></p>
+<p>​      SEDA应用程序构建为阶段网络，由事件队列连接。事件处理程序可以通过首先获取该阶段的传入事件队列的句柄（通过系统提供的查找例程），然后在该队列上调用入队操作，将事件排入另一个阶段。<br>SEDA中事件队列的一个重要方面是它们可能是有限的：也就是说，如果队列希望拒绝新条目（例如，因为它已达到阈值），则入队操作可能会失败。当排队操作失败时，应用程序可以使用背压（通过阻塞整个队列）或减载（通过丢弃事件）。或者，应用程序可能希望采取某些特定于服务的操作，例如向用户发送错误，或执行替代功能，例如提供降级服务。</p>
+<p>​      图5说明了基于SEDA的应用程序的结构，在本例中是5.1节中描述的Haboob Web服务器。该应用程序包含许多特定于应用程序的阶段，用于处理HTTP请求，实现页面缓存等，以及运行时提供的几个通用阶段，以支持异步I/O. 这些接口在第4节中进一步描述。</p>
+<p>​      阶段之间引入队列通过采用显式控制边界来解耦其执行。此模型将线程的执行约束到给定阶段，因为线程可能只通过将事件排入队列来跨控制边界传递数据。一个基本问题是两个代码模块是应该通过队列进行通信，还是直接通过子程序调用进行通信。在两个模块之间引入队列可提供隔离，模块化和独立负载管理，但可能会增加延迟。例如，第三方代码模块可以在其自己的阶段中隔离，允许其他阶段通过其事件队列与之通信，而不是直接调用它。</p>
+<p>​      SEDA设计有助于服务的调试和性能分析，这对于复杂的多线程服务器来说一直是一个挑战。 将应用程序代码分解为阶段和显式事件传递机制有助于检查; 例如，调试工具可以跟踪通过系统的事件流，并可视化阶段之间的交互。 由于各阶段通过事件调度协议而不是传统API进行交互，因此可以直接在组件之间插入代理阶段以进行调试和性能分析。 使用这种机制，我们的SEDA原型能够生成描绘应用程序阶段及其关系的图表。 原型还可以生成事件队列长度，内存使用和其他系统属性的时间视图，这些属性对于理解性能很有价值。</p>
+<h3 id="动态资源控制器"><a href="#动态资源控制器" class="headerlink" title="动态资源控制器"></a>动态资源控制器</h3><p>​      实现易于服务工程的关键目标是保护程序员免受性能调优的复杂性。 为了使每个阶段保持在其运行状态内，SEDA利用一组资源控制器，根据观察到的性能和需求自动调整阶段的资源使用。 抽象地，控制器观察阶段的运行时特性并调整分配和调度参数以满足性能目标。 控制器既可以完全掌握关于特定阶段的本地知识，也可以基于全局状态协同工作。</p>
+<p>​      我们在SEDA中实现了几个资源控制器，其中两个如图7所示。第一个是线程池控制器，它调整每个阶段内执行的线程数。 目标是避免分配太多线程，但仍有足够的线程来满足阶段的并发需求。 控制器定期对输入队列进行采样，并在队列长度超过某个阈值时添加一个线程，最多为每个阶段的最大线程数。 当线程空闲一段指定的时间后，线程将从一个阶段中删除。 图8显示了在5.1节中描述的Web服务器中运行的线程池控制器的影响; 控制器操作将在4.2节中详细讨论。</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://penge666blog.oss-cn-beijing.aliyuncs.com/img/image-20240530223433294.png" alt="image-20240530223433294"></p>
+<p>图7：SEDA资源控制器：每个阶段都有一个关联的控制器，可以调整其资源分配和行为，以使应用程序保持在其运行状态。 线程池控制器调整在阶段内执行的线程数，批处理控制器调整事件处理程序的每次迭代处理的事件数。<br>      第二个是批处理控制器，它调整每个阶段内事件处理程序调用处理的事件数（批处理因子）。 已经观察到[31]一次处理许多事件会增加吞吐量，因为可以执行缓存局部性和任务聚合。 但是，较大的批处理因子也会增加响应时间。 控制器试图通过搜索维持高吞吐量的最小批处理因子来权衡这些影响。 它通过观察来自一个阶段的事件的输出速率（通过维持许多样本的移动平均值）来操作，并降低批处理因子直到吞吐量开始降低。 如果吞吐量略有下降，则批处理因子会少量增加。 控制器通过将批处理因子重置为其最大值来响应负载的突然下降。 图9显示了工作中的批处理控制器。</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://penge666blog.oss-cn-beijing.aliyuncs.com/img/image-20240530223454494.png" alt="image-20240530223454494"></p>
+<p>图8：SEDA线程池控制器：此图显示了在运行Haboob Web服务器期间线程池控制器的操作，如第5.1节中所述。 控制器根据相应事件队列的长度调整每个阶段的线程池的大小。 在此运行中，队列长度每2秒采样一次，如果队列超过100个条目，则会将一个线程添加到池中（每个阶段的最大限制为20个线程）。当线程空闲超过5秒时，它们将从池中删除。 异步文件阶段使用10个队列条目的控制器阈值来夸大控制器的行为。</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://penge666blog.oss-cn-beijing.aliyuncs.com/img/image-20240530223512168.png" alt="image-20240530223512168"></p>
+<p>图9：SEDA批处理控制器：该图显示了批处理控制器对简单基准测试的操作，该基准测试包括以振荡速率生成事件的单个阶段。 这导致测量的输出速率变化，如图的顶部所示。当输出速率增加时，控制器会降低批处理因子。当输出速率降低时，控制器会增加批处理因子。在输出速率突然下降之后，批处理因子被重置为其最大值。<br>      这些机制代表了SEDA中动态控制的两个简单例子。可以将更复杂的控制器引入系统中; 例如，控制器可能会根据阶段优先级的全局概念调整线程池大小，或者将整个系统中的线程数保持在某个阈值以下。另一种选择是根据阶段的进展调整线程调度参数，如Steere等人提出的。[51]。 SEDA异步套接字库（将在下一节中介绍）包含一个可选控制器，用于限制从网络读取数据包的速率 在5.1节中，我们描述了一个特定于应用程序的控制器，它可以自适应地减少负载以满足响应时间目标。SEDA的结构有助于检查和控制底层应用，并且该模型可以实现一系列控制策略。<br>      SEDA中动态控制的一个重要方面是它允许应用程序适应不断变化的条件，尽管底层操作系统使用了特定的算法。从某种意义上说，SEDA的控制器对操作系统的资源管理策略很天真。例如，SEDA批处理控制器不知道OS线程调度策略; 相反，它会影响基于应用程序性能的外部观察的线程调度。 虽然在某些情况下可能需要对底层操作系统施加更多控制 - 例如，为特定阶段或线程提供服务质量保证 - 我们认为商用操作系统提供的基本资源管理机制，取决于应用级别控制，足以满足互联网服务的需求。</p>
+<h3 id="Sandstorm：SEDA原型"><a href="#Sandstorm：SEDA原型" class="headerlink" title="Sandstorm：SEDA原型"></a>Sandstorm：SEDA原型</h3><p>​      我们已经实施了一个名为Sandstorm的基于SEDA的互联网服务平台。Sandstorm完全用Java实现，并使用一组native库来实现非阻塞套接字I/O（如第4节所述）。使用最新的Java实现，加上正确地使用Java的语言功能，我们发现使用Java的软件工程的稳定性优势远远超过了性能权衡。例如，我们依靠Java的自动内存管理来在系统内对“过期”事件进行垃圾收集; 这大大简化了代码，因为组件不负责跟踪事件的生命周期。Java和静态编译语言之间的性能差距也在缩小; 事实上，我们基于Java的SEDA Web服务器优于在C中实现的两个流行的Web服务器，如第5.1节所述。</p>
+<p>​      在Sandstorm中，每个应用程序模块都使用单个方法调用handleEvents()实现一个简单的事件处理程序接口，该方法处理从阶段的传入事件队列中提取的一批事件。应用程序不创建或管理线程; 这是运行时系统和相关控制器的责任。Sandstorm提供了一个线程管理器接口，可以对其进行定制以实现各种线程分配和调度策略; 此处描述的版本管理每个阶段的线程池，并依赖于底层操作系统进行调度。 Sandstorm提供用于命名，创建和销毁阶段，执行队列操作，控制队列阈值以及分析和调试的API。下一节中描述的套接字和文件I/O机制被提供为标准接口。</p>
+<p>​      Sandstorm运行时由19934行代码和7871非注释源语句（NCSS）组成。其中，3023 NCSS专用于核心运行时，2566专用于I/O设施。</p>
+<h2 id="异步I-O原语"><a href="#异步I-O原语" class="headerlink" title="异步I/O原语"></a>异步I/O原语</h2><p>​      要满足SEDA支持高并发性的目标，需要高效，强大的I/O接口。本节描述如何使用SEDA概念使用现有OS原语实现这些接口。我们描述了一个异步网络套接字层，它利用操作系统提供的非阻塞I/O，以及使用阻塞OS调用和线程池来暴露非阻塞行为的异步文件I/O层。这两个层都实现为一组SEDA阶段，应用程序可以使用它们来提供快速的异步I/O.</p>
+<h3 id="异步套接字I-O"><a href="#异步套接字I-O" class="headerlink" title="异步套接字I / O."></a>异步套接字I / O.</h3><p>​      Sandstorm异步套接字（asyncSocket）层为服务提供了易于使用的非阻塞套接字接口。 应用程序创建类asyncClientSocket和asyncServerSocket的实例以启动传出和传入套接字连接。建立连接时，会将asyncConnection对象推送到用户提供的事件队列（通常是与请求阶段关联的队列）。传入的数据包被排入用户的事件队列，asyncConnection实现了一个可以放置传出数据包的队列接口。每个输出包还可以具有相关联的事件队列，当包被传输时，一个完成事件被推到这个队列上。错误和其他通知事件以类似的方式传递给用户。<br>​      在内部，asyncSocket层使用三个阶段实现，这三个阶段在所有套接字之间共享，如图10所示.readStage读取网络数据包并响应用户请求以在新套接字上启动数据包读取。writeStage将数据包写入网络并建立新的传出连接。 listenStage接受新的TCP连接并响应用户监听新端口的请求。asyncConnection，asyncClientSocket或async-ServerSocket上的每个操作都将转换为请求并放置到相应阶段的请求队列中。</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://penge666blog.oss-cn-beijing.aliyuncs.com/img/image-20240530223637885.png" alt="image-20240530223637885"></p>
+<p>图10：基于SEDA的异步套接字层：Sandstorm套接字接口包括三个阶段：读取，写入和监听。读取阶段响应网络I/O就绪事件并从套接字读取数据，将新数据包推送到应用程序阶段。写入阶段接受传出数据包并调度它们以写入适当的套接字。它还建立新的传出套接字连接。listen阶段接受新的TCP连接并将连接事件推送到应用程序。<br>      每个asyncSocket阶段都为两个独立的事件队列提供服务：来自用户的请求队列，以及来自操作系统的I/O 就绪/完成事件队列。 每个阶段中的线程交替地为每个队列服务，使用简单的超时机制在两者之间切换。I/O事件队列实现为库，该库导致出队操作调用适当的OS调用以检索I/O事件。我们当前的实现支持标准的UNIX poll（2）系统调用以及用于事件传递的/dev/poll [46]接口。 native库用于在Java [60]中提供非阻塞套接字调用。为了提高套接字的公平性，每个阶段随机化处理操作系统提供的I/O事件的顺序。这是必要的，因为OS通常以固定顺序（例如，按文件描述符的递增顺序）返回套接字事件。<br>      只要I/O就绪事件指示套接字具有可用数据，readStage就会通过执行套接字读取来进行操作。它最多将16 KB读入预先分配的缓冲区，并将生成的数据包排入用户提供的事件队列中。在I/O错误的情况下（例如，因为对等方已关闭连接），该阶段关闭套接字并将适当的通知事件推送给用户。每个套接字读取都需要分配新的数据包缓冲区;虽然这可能会导致大量的垃圾收集开销，但我们并未发现这是一个性能问题。请注意，由于此系统是用Java实现的，因此不需要显式释放过期的数据包。readStage还提供了一个可选的速率控制器，可以限制从网络读取数据包的速率;该控制器可用于在过载条件下执行减载。通过计算输入包速率的移动平均值并将人工延迟引入事件处理循环以实现特定速率目标来实现控制器。<br>      writeStage接收来自用户的数据包写入请求，并将它们排入与特定套接字关联的内部队列。当操作系统指示套接字已准备好写入时，它会尝试在该套接字的传出队列上写入下一个数据包。如第5.2节所述，可以对套接字队列进行阈值处理，以防止“慢”套接字在服务器中占用过多资源。<br>      为了评估asyncSocket的性能，我们实现了一个简单的服务器应用程序，它接受来自多个客户端的8KB突发数据包，每1000个突发数据包响应一个32字节的ACK。这种有点人为的应用程序旨在强调网络层，并随着客户端数量的增加来衡量其可扩展性。图11显示了服务器的总吞吐量，期间客户端数量从1增加到8192.服务器和客户端计算机都是使用运行Linux 2.2.14和IBM JDK 1.3的千兆以太网互连的4路500 MHz Pentium III系统。</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://penge666blog.oss-cn-beijing.aliyuncs.com/img/image-20240530223652100.png" alt="image-20240530223652100"></p>
+<p>图11：异步套接字层性能：此图显示了基于SEDA异步套接字层作为并发连接数量的函数的性能。每个客户端打开与服务器的连接并发出8KB突发数据包; 服务器对每个1000个数据包的突发，响应一个32字节的单独ACK。所有机器都通过交换式千兆以太网连接，并运行Linux 2.2.14。基于SEDA的服务器使用操作系统提供的非阻塞I/O原语。将性能与使用阻塞套接字和多个线程来模拟异步I/O的兼容性层进行比较。基于线程的层无法接受超过400个并发连接，因为所需的线程数将超过Linux中的每用户线程限制。<br>      套接字层的两种实现方式。 基于SEDA的层使用OS提供的非阻塞I/O和/dev/poll事件传递机制[46]。 将其与使用阻塞套接字的兼容性层和用于模拟异步I/O的线程池进行比较。该层为每个连接创建一个线程来处理套接字读取事件和一个固定大小的120个线程池来处理套接字写入。此兼容层最初是为了在Java下提供异步I / O而开发的，它不直接提供此功能。<br>      非阻塞实现明显优于线程版本，随着连接数量的增加，线程版本迅速降级。实际上，当接收超过400个连接时，线程实现会崩溃，因为所需的线程数超过了Linux中的每用户线程限制。非阻塞层的轻微吞吐量降低部分是由于Linux网络堆栈缺乏可扩展性。即使使用高度优化的/dev/poll机制[46]进行套接字I/O事件通知，随着套接字数量的增加，来自操作系统的轮询准备事件所涉及的开销也会显着增加[29]。</p>
+<h3 id="异步文件I-O"><a href="#异步文件I-O" class="headerlink" title="异步文件I/O."></a>异步文件I/O.</h3><p>​      Sandstorm文件I/O（asyncFile）层展示与asyncSocket非常不同的设计点。由于底层操作系统不提供非阻塞文件I/O原语，因此我们不得不利用阻塞I/O和有界线程池来实现该层.3用户通过asyncFile对象执行文件I/O，该对象支持熟悉的接口读，写，寻找，统计和关闭。这些操作中的每一个都转换为asyncFile阶段的事件队列中的请求。asyncFile线程将每个请求出列并对文件执行相应的（阻塞）I/O操作。 为确保对同一文件上的多个I/O请求进行串行执行，一次只有一个线程可以处理特定文件的事件。当I/O请求完成时，相应的完成事件将排入用户的事件队列。<br>​      asyncFile阶段在其线程池中使用单个线程进行初始化。 SEDA线程池控制器负责根据观察到的并发需求动态调整线程池的大小。图8显示了在运行第5.1节中描述的基于SEDA的Web服务器期间工作的线程池控制器。运行分为三个阶段，每个阶段对应越来越多的客户;请注意，客户端负载是非常突发的。随着文件访问的突发到来，控制器将线程添加到每个阶段的线程池，直到最多20个线程饱和。在这之间，不需要I / O，并且线程池缩小。虽然PageCache和CacheMiss阶段需要更多线程且客户端负载增加，但服务文件I / O所需的线程数实际上会减少。这是因为底层文件系统缓冲区缓存正在预热，并且能够更快地为磁盘请求提供服务。线程池控制器推断出需要更少的线程来管理磁盘并发，并避免创建不需要的线程。</p>
+<h2 id="应用和评估"><a href="#应用和评估" class="headerlink" title="应用和评估"></a>应用和评估</h2><p>​      在本节中，我们将介绍两个应用程序的性能和负载调节评估：Haboob，一个高性能的HTTP服务器; 和Gnutella对等文件共享网络的数据包路由器。 Haboob代表客户端发出请求并等待响应的“闭环”服务器，而Gnutella数据包路由器是一个“开环”服务器的例子，其中服务器性能不会成为提供负载的限制因素。</p>
+<h3 id="Haboob：高性能HTTP服务器"><a href="#Haboob：高性能HTTP服务器" class="headerlink" title="Haboob：高性能HTTP服务器"></a>Haboob：高性能HTTP服务器</h3><p>​      Web服务器构成了可扩展的Internet服务的原型组件。许多先前的工作已经研究了构建高性能HTTP服务器的工程方面，但很少有关于负载调节，稳健性和易于构造的说法。研究HTTP服务器的一个好处是，存在各种行业标准的基准来衡量它们的性能。我们选择了SPECweb99基准套件[50]中的负载模型作为我们测量的基础，并进行了两项重要修改。首先，我们仅测量静态网页访问的性能（构成SPECweb99负载混合的70％）。其次，我们将网页文件集固定为3.31 GB的磁盘文件，对应于SPECweb99目标负载1000个连接。文件大小从102到921600字节，可以使用SPECweb99规定的基于Zipf的请求分发进行访问。更多细节可以在[50]中找到。</p>
+<p> <strong>Haboob架构</strong></p>
+<p>​      Haboob的整体结构如图5所示。服务器包含10个阶段，其中4个阶段专门用于异步套接字和磁盘I/O，如上一节所述。HttpParse阶段负责接受新的客户端连接和传入数据包的HTTP协议处理。 HttpRecv阶段接受HTTP连接并请求事件并将它们传递到PageCache阶段（如果它们代表磁盘文件）或直接生成响应（对于为收集服务器统计信息而生成的动态页面）。 PageCache实现了使用哈希表实现的内存中网页缓存。<br>​      Haboob的整体结构如图5所示。服务器包含10个阶段，其中4个阶段专门用于异步套接字和磁盘I/O，如上一节所述。HttpParse阶段负责接受新的客户端连接和传入数据包的HTTP协议处理。HttpRecv阶段接受HTTP连接并请求事件并将它们传递到PageCache阶段（如果它们代表磁盘文件）或直接生成响应（对于为收集服务器统计信息而生成的动态页面）。PageCache实现了一个使用由URL索引的哈希表实现的内存网页缓存，其中每个条目包含一个由HTTP头和Web页面有效负载组成的响应数据包。CacheMiss阶段负责处理页面缓存未命中，使用异步文件I/O层从磁盘读取所请求页面的内容。最后，HttpSend向客户端发送响应并处理连接管理和统计信息收集的某些方面。另一个阶段（图中未显示）从HTML模板生成动态Web页面，嵌入的代码用Python脚本语言编写[36]。此功能提供了通用的服务器端脚本，类似于Java Server Pages [26]。<br>​      页面缓存尝试将缓存大小保持在给定阈值以下（对于下面提供的测量，设置为204800 KB）。它积极地回收容量未命中的缓冲区，而不是允许旧的缓冲区被Java运行时垃圾收集; 我们发现这种方法可以产生明显的性能优势。缓存阶段使用特定于应用程序的事件调度来提高性能。特别是，它实现了最短连接优先（SCF）[15]调度，它重新排序请求流以在较长的缓存条目之前发送短缓存条目，并优先考虑缓存命中而不是未命中。由于SCF仅应用于批处理控制器提供的每组事件，因此跨请求的饥饿不是问题。<br>​      将Haboob构建为一组阶段极大地提高了设计的模块性，因为每个阶段都体现了一个强大的，可重复使用的软件组件，可以单独调节负载。 我们能够测试页面缓存的不同实现，而无需对其余代码进行任何修改; 运行时只是实例化一个不同的阶段来代替原始页面缓存。同样，另一位没有Haboob结构知识的开发人员能够花很少的工作将Haboob使用异步文件层替换为备用文件系统接口。不包括Sandstorm平台，Web服务器代码仅包含3283个非注释源语句，其中676个NCSS专用于HTTP协议处理库。</p>
+<p><strong>基准配置</strong></p>
+<p>​      为了进行比较，我们提供了来自流行的Apache [6] Web服务器（版本1.3.14，与Linux Red Hat 6.2系统一起提供）以及Rice大学的Flash [44] Web服务器的性能测量。Apache使用150个进程的固定大小的进程池; 每个进程一次管理一个连接，从磁盘读取文件数据并使用阻塞I/O操作以8 KB块的形式将其发送到客户端。Flash使用高效的事件驱动设计，单个进程处理大多数请求处理任务。一组帮助程序进程执行（阻止）磁盘I/O，路径名解析和其他操作。Flash静态页面缓存的最大大小设置为204800 KB，与Haboob中的大小相同。Apache和Flash都是用C实现的，而Haboob是用Java实现的。<br>​      以下所有测量均在服务器上运行，该服务器运行在具有2 GB RAM和Linux 2.2.14的4路SMP 500 MHz Pentium III系统上。IBM JDK v1.3.0用作Java平台。32台具有类似配置的机器用于生成负载，每台客户机使用多个线程来模拟许多实际客户机。所有机器都通过交换式千兆以太网互连。虽然这种配置不能模拟广域网效果，但我们感兴趣的是服务器在高负载下的性能和稳定性。<br>​      客户端负载生成器循环，不断请求网页（使用SPECweb99套件指定的分发），读取结果，并在请求下一页之前休眠20毫秒的固定时间。 为了更密切地模拟广域中客户端的连接行为，每个客户端在5个HTTP请求之后关闭TCP连接，并在继续之前重新建立连接。该值是根据[39]的HTTP流量观察结果选择的。所有基准测试均使用热文件系统和网页缓存运行。请注意，3.31 GB的文件集大小远远大于物理内存，Haboob和Flash的静态页面缓存仅设置为200 MB; 因此，这些测量包括大量的磁盘I/O.</p>
+<p><strong>性能分析</strong></p>
+<p>​      图12显示了Haboob与Apache和Flash在聚合吞吐量和响应时间方面的性能。还显示了每个客户完成的请求数量的the Jain fairness index(公平指数)[27]。</p>
+<h3 id="Gnutella数据包路由器"><a href="#Gnutella数据包路由器" class="headerlink" title="Gnutella数据包路由器"></a>Gnutella数据包路由器</h3><p>​      我们选择实现Gnutella数据包路由器来演示SEDA在非传统互联网服务中的使用。Gnutella路由器代表了一种与HTTP服务器完全不同的服务方式：在对等文件共享网络中的参与者之间路由数据包。像Gnutella这样的服务的重要性日益增加，因为新的分布式应用程序的开发是为了利用广域内主机的良好连接性。对等模型已被多个分布式存储系统采用，如Freenet [14]，OceanStore [30]和Intermemory [13]。<br>​      Gnutella [19]允许用户搜索和下载来自其他Gnutella用户的文件。该协议完全去中心化的;运行Gnutella客户端的节点形成一个通过TCP/IP分层的adhoc多跳路由网络，节点通过将收到的消息转发给它们的相邻节点来进行通信。Gnutella节点倾向于同时连接到几个（通常是四个或更多）其他节点，并且网络上节点的初始发现是通过众所周知的主机完成的。Gnutella中有五种消息类型：ping用于发现网络上的其他节点; pong是对ping的回应; query用于搜索其他Gnutella主机服务的文件; queryhits是对查询的响应;和push用于允许客户端通过防火墙下载文件。数据包路由器负责向所有其他相邻接点广播接收到的ping和查询消息，并沿着相应的ping或查询消息的路径路由pong，queryhits和push消息。有关消息格式和路由协议的详细信息，请参见[19]。</p>
+<p><strong>架构</strong></p>
+<p>​      除了异步套接字I/O层之外，基于SEDA的Gnutella数据包路由器使用3个阶段实现。该代码由1294个非注释源语句组成，其中880个NCSS专门用于Gnutella协议处理。GnutellaServer阶段接受TCP连接并处理数据包，将数据包事件传递到GnutellaRouter阶段，该阶段执行路由表的实际数据包路由和维护。 GnutellaCatcher是用于连接Gnutella网络的助手阶段，它通过联系周所周知的站点（well-known site）来接收要连接的主机列表。除了由其他广域客户端建立的任何连接之外，它还尝试保持至少4个同时连接到网络的连接。加入“实时”Gnutella网络和路由数据包使我们能够在真实环境中测试SEDA，以及测量通过路由器的流量。在一个37小时的运行期间，路由器处理了2480万个数据包（平均每秒179个数据包），并从网络上的其他主机接收了72,396个连接，在任何给定时间平均有12个同时连接。路由器每秒能够支持超过20,000个数据包。</p>
+<p> <strong>防止慢套接字</strong></p>
+<p>​      我们原始的数据包路由器原型展示了一个有趣的内存泄漏：在通过网络正确路由数据包几个小时之后，服务器会在耗尽内存后崩溃。观察各个阶段队列长度使我们能够轻松地检测问题的根源：大量的传出数据包正在排队等待某些广域连接，导致队列长度（因此内存使用）变得无限制。我们测量了Gnutella消息的平均数据包大小约为32个字节;每秒仅115个数据包的数据包速率可以使28.8千比特的调制解调器链路饱和，这仍然是许多Gnutella软件用户常用的。在这种情况下，解决方案是对每个套接字的传出数据包队列施加一个阈值，并关闭超过其阈值的连接。此解决方案是可以接受的，因为Gnutella客户端会自动发现并连接到网络上的多个主机;跨网络节点的冗余意味着客户端不需要依赖于特定主机来保持连接到网络。</p>
+<p><strong>负载调节行为</strong></p>
+<p>​      为了评估SEDA资源控制器在负载调节中的使用，我们在Gnutella路由器中引入了一个故意的瓶颈，其中每个查询消息都会导致20 ms的服务延迟。这是通过让应用程序事件处理程序在收到查询数据包时休眠20毫秒来实现的。 我们实现了一个负载生成客户端，它连接到服务器并根据与实际Gnutella流量相近的分布生成数据包流。在我们的Gnutella流量模型中，查询消息构成了生成数据包的15％。使用单个线程执行数据包路由，很明显，随着流入服务器的数据包数量的增加，此延迟将导致其他消息的大量积压。<br>​      图14（a）显示了ping和查询数据包通过服务器的平均延迟，提供的负载从100到1000包/秒增加。客户端和服务器计算机使用与HTTP服务器基准测试中相同的配置。当提供的负载超过服务器的容量时，数据包延迟会急剧增加。在1000个数据包/秒的情况下，服务器崩溃（由于内存不足以缓冲传入的数据包），然后才能进行延迟测量。</p>
+<p>​      此时，可以采用若干负载调节策略。一个简单的策略是对每个阶段的传入事件队列进行阈值处理，并在超过阈值时丢弃数据包。或者，可以使用类似于随机早期检测（RED）拥塞避免方案[17]中使用的方法，其中基于输入队列的长度概率地丢弃数据包。虽然这些策略会导致许多数据包在过载期间被丢弃，但由于Gnutella网络流量的有损性质，这可能是一种可接受的解决方案。另一种策略是允许所有数据包进入系统，但让应用程序事件处理程序过滤掉查询数据包（这是过载的来源）。另一个策略是利用asyncSocket输入速率控制器将进入的数据包速率限制在系统中。</p>
+<p>​      另一种方法是利用SEDA的资源控制器自动克服瓶颈。 在这种方法中，线程池控制器在检测到需要额外的并发时将线程添加到GnutellaRouter阶段; 这种机制类似于基于集群的TACC [18]系统中的动态工作者分配。图14（b）显示了启用SEDA线程池控制器的Gnutella路由器的平均延迟。如图14（c）所示，2个线程被添加到GnutellaRouter线程池中，允许服务器处理增加的数据包负载，尽管存在瓶颈。这个数字与从Little的结果中获得的理论值相匹配：如果我们将阶段建模为具有n个线程的排队系统，平均数据包到达率为λ，查询数据包频率为p，查询服务延迟为L秒， 那么维持λ完成率所需的线程数是n =λpL=（1000）（0.15）（20 ms）= 3个线程。</p>
+<h2 id="讨论和结论"><a href="#讨论和结论" class="headerlink" title="讨论和结论"></a>讨论和结论</h2><p>​      因特网服务引发了一系列新的系统设计要求，因为必须以强大，易于编程的方式提供大规模并发，以便优雅地处理负载的巨大变化。 SEDA是为该制度建立设计原则的一步。在本文中，我们介绍了SEDA设计和执行模型，介绍了由显式事件队列连接的阶段的概念。SEDA利用一组动态控制器来管理每个阶段的资源使用和调度; 我们已经描述了几个控制器，包括两个跨阶段的控制线程分配和一个阶段内部使用的批处理程度。我们还分析了两个高效的异步I/O组件，以及使用SEDA设计构建的两个应用程序，表明SEDA在负载下表现出良好的性能和稳健的行为。<br>​      SEDA模型在互联网服务设计领域开辟了新的问题。显式事件队列和动态资源控制器的使用提高了专门针对服务进行调整的新颖调度和资源管理算法的可能性。作为未来的工作，我们计划实施一个广义的流量控制方案，用于各阶段之间的通信; 在此方案中，每个事件都需要一定数量的信用才能排入目标阶段的事件队列。 通过为每个事件分配可变数量的信用，可以实现有趣的负载调节策略。<br>​      我们认为，测量和控制是繁忙的互联网服务中资源管理和过载保护的关键。这与基于资源遏制的长期存在的方法形成对比，后者为系统中的每个任务（例如进程，线程或服务器请求）分配固定资源，并努力控制每个任务消耗的资源。尽管这些技术在互联网服务中提供差异化服务方面已经取得了一些成功[57]，但是遏制通常要求对每项任务进行先验的资源分配，从而限制了适用的负载调节策略的范围。相反，我们认为动态资源控制，加上面对过载的特定应用适应，是接近负载调节的正确方法。<br>​      当控制被视为资源管理的基础时，会出现两个新的挑战。第一个是检测过载情况：许多变量会影响服务的交付性能，而确定服务实际上是过载的以及原因是一个有趣的问题。第二是确定适当的控制策略来抵抗过载。 我们计划对当前实施中的资源控制器进行多项改进，以及针对备用指标进行优化的新控制器。 例如，为了减少资源消耗，可能需要优先考虑释放资源而不是消耗资源的阶段。在SEDA下，控制系统的工作主体[43,45]可以用于服务资源管理，我们只是触及了这种技术潜力的表面。<br>​      关于事件驱动的并发模型的一个共同关注点是易于编程。现代语言和编程工具支持线程应用程序的开发和调试，许多开发人员认为事件驱动编程本质上更加困难。事实上，大多数事件驱动的服务器应用程序通常非常复杂，并且在设计上有点特别，这使得这种观点持续存在。根据我们的经验，SEDA模型中的编程比多线程应用程序设计和传统的事件驱动模型更容易。当线程被隔离到单个阶段时，线程同步和竞争条件等问题更易于管理。阶段之间面向消息的通信建立了明确的排序;在传统的事件驱动设计中，通过系统跟踪事件流程要困难得多。我们认为SEDA是线程和事件驱动设计之间的理想中间点，对编程模型的进一步探索是未来工作的重要方向。<br>​      虽然SEDA有助于在商品操作系统上构建条件良好的服务，但SEDA模型为操作系统设计提供了新的方向。我们设想一个直接支持SEDA执行模型的操作系统，并为应用程序提供对调度和资源使用的更大控制。这种方法类似于各种研究系统[5,11,28,34]中提供的方法，可以实现特定于应用程序的资源管理。更为根本的是，基于SEDA的操作系统无需设计为允许多个应用程序透明地共享资源。Internet服务是高度专业化的，并不是为了与其他应用程序共享机器而设计的：例如，Web服务器通常不希望与数据库引擎在同一台机器上运行（更不用说科学计算或文字处理器）。尽管操作系统可以实施保护（以防止一个阶段破坏内核状态或另一个阶段），但系统不需要以掩盖应用程序可用性的方式虚拟化资源。</p>
+</article><div class="post-copyright"><div class="post-copyright__title"><span class="post-copyright-info"><h>SEDA异步事件框架</h></span></div><div class="post-copyright__type"><span class="post-copyright-info"><a href="https://penge666.github.io/posts/b1577ae3.html">https://penge666.github.io/posts/b1577ae3.html</a></span></div><div class="post-copyright-m"><div class="post-copyright-m-info"><div class="post-copyright-a"><h>作者</h><div class="post-copyright-cc-info"><h>Penge666</h></div></div><div class="post-copyright-c"><h>发布于</h><div class="post-copyright-cc-info"><h>2024-05-30</h></div></div><div class="post-copyright-u"><h>更新于</h><div class="post-copyright-cc-info"><h>2024-05-30</h></div></div><div class="post-copyright-c"><h>许可协议</h><div class="post-copyright-cc-info"><a class="icon" rel="noopener" target="_blank" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a><a rel="noopener" target="_blank" title="CC BY-NC-SA 4.0" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a></div></div></div></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/"><div class="tags-punctuation"><svg class="faa-tada icon" style="height:1.1em;width:1.1em;fill:currentColor;position:relative;top:2px;margin-right:3px" aria-hidden="true"><use xlink:href="#icon-sekuaibiaoqian"></use></svg></div>网络编程</a></div></div><link rel="stylesheet" href="/css/coin.css" media="defer" onload="this.media='all'"/><div class="post-reward"><button class="tip-button reward-button"><span class="tip-button__text">投喂作者</span><div class="coin-wrapper"><div class="coin"><div class="coin__middle"></div><div class="coin__back"></div><div class="coin__front"></div></div></div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="https://tuchuang.voooe.cn/images/2023/01/04/2.webp" target="_blank"><img class="post-qr-code-img" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://tuchuang.voooe.cn/images/2023/01/04/2.webp" alt="微信"/></a><div class="post-qr-code-desc">微信</div></li><li class="reward-item"><a href="https://tuchuang.voooe.cn/images/2023/01/04/20f8e49805975b8f8.webp" target="_blank"><img class="post-qr-code-img" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://tuchuang.voooe.cn/images/2023/01/04/20f8e49805975b8f8.webp" alt="支付宝"/></a><div class="post-qr-code-desc">支付宝</div></li></ul></div></button></div><audio id="coinAudio" src="https://npm.elemecdn.com/akilar-candyassets@1.0.36/audio/aowu.m4a"></audio><script defer="defer" src="/js/coin.js"></script><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/posts/1155b381.html"><img class="next-cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/assets/photo1/default_cover_36.webp" onerror="onerror=null;src='/assets/r2.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Cpp设计模式</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/posts/d0543761.html" title="muduo网络库"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/assets/photo1/default_cover_22.webp" alt="cover"><div class="content is-center"><div class="date"><i class="fas fa-history fa-fw"></i> 2024-05-04</div><div class="title">muduo网络库</div></div></a></div><div><a href="/posts/73cae4d3.html" title="libhv入门教程"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/assets/photo1/default_cover_28.webp" alt="cover"><div class="content is-center"><div class="date"><i class="fas fa-history fa-fw"></i> 2024-05-24</div><div class="title">libhv入门教程</div></div></a></div><div><a href="/posts/32933883.html" title="libevent源码剖析"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/assets/photo1/default_cover_28.webp" alt="cover"><div class="content is-center"><div class="date"><i class="fas fa-history fa-fw"></i> 2024-05-27</div><div class="title">libevent源码剖析</div></div></a></div></div></div><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="twikoo-wrap"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><svg class="meta_icon" style="width:22px;height:22px;position:relative;top:5px"><use xlink:href="#icon-mulu1"></use></svg><span style="font-weight:bold">目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A6%82%E8%BF%B0"><span class="toc-text">概述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BC%95%E8%A8%80"><span class="toc-text">引言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%83%8C%E6%99%AF%E5%92%8C%E7%9B%B8%E5%85%B3%E5%B7%A5%E4%BD%9C"><span class="toc-text">背景和相关工作</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%BA%E4%BA%8E%E7%BA%BF%E7%A8%8B%E7%9A%84%E5%B9%B6%E5%8F%91"><span class="toc-text">基于线程的并发</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%89%E7%95%8C%E7%BA%BF%E7%A8%8B%E6%B1%A0"><span class="toc-text">有界线程池</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%8B%E4%BB%B6%E9%A9%B1%E5%8A%A8%E7%9A%84%E5%B9%B6%E5%8F%91"><span class="toc-text">事件驱动的并发</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BB%93%E6%9E%84%E5%8C%96%E4%BA%8B%E4%BB%B6%E9%98%9F%E5%88%97"><span class="toc-text">结构化事件队列</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%86%E9%98%B6%E6%AE%B5%E4%BA%8B%E4%BB%B6%E9%A9%B1%E5%8A%A8%E6%9E%B6%E6%9E%84"><span class="toc-text">分阶段事件驱动架构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8A%A8%E6%80%81%E8%B5%84%E6%BA%90%E6%8E%A7%E5%88%B6%E5%99%A8"><span class="toc-text">动态资源控制器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Sandstorm%EF%BC%9ASEDA%E5%8E%9F%E5%9E%8B"><span class="toc-text">Sandstorm：SEDA原型</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BC%82%E6%AD%A5I-O%E5%8E%9F%E8%AF%AD"><span class="toc-text">异步I&#x2F;O原语</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%82%E6%AD%A5%E5%A5%97%E6%8E%A5%E5%AD%97I-O"><span class="toc-text">异步套接字I &#x2F; O.</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%82%E6%AD%A5%E6%96%87%E4%BB%B6I-O"><span class="toc-text">异步文件I&#x2F;O.</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BA%94%E7%94%A8%E5%92%8C%E8%AF%84%E4%BC%B0"><span class="toc-text">应用和评估</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Haboob%EF%BC%9A%E9%AB%98%E6%80%A7%E8%83%BDHTTP%E6%9C%8D%E5%8A%A1%E5%99%A8"><span class="toc-text">Haboob：高性能HTTP服务器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Gnutella%E6%95%B0%E6%8D%AE%E5%8C%85%E8%B7%AF%E7%94%B1%E5%99%A8"><span class="toc-text">Gnutella数据包路由器</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%A8%E8%AE%BA%E5%92%8C%E7%BB%93%E8%AE%BA"><span class="toc-text">讨论和结论</span></a></li></ol></div></div></div></div></main><footer id="footer" style="background-color: transparent;"><div id="footer-wrap"><div id="ft"><div class="ft-item-1"><div class="t-top"><div class="t-t-l"><p class="ft-t t-l-t">格言🧬</p><div class="bg-ad"><div>用勇气改变可以改变的事，用胸怀接受不能接受的事，用智慧分辨两者的不同✨</div><div class="btn-xz-box"><a class="btn-xz" target="_blank" rel="noopener" href="https://github.com/Penge666/">点击开启星辰之旅</a></div></div></div><div class="t-t-r"><p class="ft-t t-l-t">猜你想看💡</p><ul class="ft-links"><li><a href="/posts/eec9786.html">惊喜网站</a><a href="/box/nav/">网址导航</a></li><li><a href="/social/link/">我的朋友</a><a href="/comments/">留点什么</a></li><li><a href="/personal/about/">关于作者</a><a href="/archives/">文章归档</a></li><li><a href="/categories/">文章分类</a><a href="/tags/">文章标签</a></li></ul></div></div></div><div class="ft-item-2"><p class="ft-t">推荐友链⌛</p><div class="ft-img-group"><div class="img-group-item"><a target="_blank" rel="noopener" href="https://www.fomal.cc/" title="Fomalhaut🥝"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://lskypro.acozycotage.net/LightPicture/2022/12/60e5d4e39da7c077.webp" alt=""/></a></div><div class="img-group-item"><a href="javascript:void(0)" title="广告位招租"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://lskypro.acozycotage.net/LightPicture/2022/12/65307a5828af6790.webp" alt=""/></a></div><div class="img-group-item"><a href="javascript:void(0)" title="广告位招租"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://lskypro.acozycotage.net/LightPicture/2022/12/65307a5828af6790.webp" alt=""/></a></div><div class="img-group-item"><a href="javascript:void(0)" title="广告位招租"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://lskypro.acozycotage.net/LightPicture/2022/12/65307a5828af6790.webp" alt=""/></a></div><div class="img-group-item"><a href="javascript:void(0)" title="广告位招租"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://lskypro.acozycotage.net/LightPicture/2022/12/65307a5828af6790.webp" alt=""/></a></div><div class="img-group-item"><a href="javascript:void(0)" title="广告位招租"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://lskypro.acozycotage.net/LightPicture/2022/12/65307a5828af6790.webp" alt=""/></a></div><div class="img-group-item"><a href="javascript:void(0)" title="广告位招租"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://lskypro.acozycotage.net/LightPicture/2022/12/65307a5828af6790.webp" alt=""/></a></div><div class="img-group-item"><a href="javascript:void(0)" title="广告位招租"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://lskypro.acozycotage.net/LightPicture/2022/12/65307a5828af6790.webp" alt=""/></a></div></div></div></div><div class="copyright"><span><b>&copy;2022-2024</b></span><span><b>&nbsp;&nbsp;By Penge666</b></span></div><div id="workboard"></div><p id="ghbdages"><a class="github-badge" target="_blank" href="https://hexo.io/" style="margin-inline:5px" title="博客框架为Hexo_v6.3.0"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://sourcebucket.s3.ladydaily.com/badge/Frame-Hexo-blue.svg" alt=""/></a><a class="github-badge" target="_blank" href="https://butterfly.js.org/" style="margin-inline:5px" title="主题版本Butterfly_v4.3.1"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://sourcebucket.s3.ladydaily.com/badge/Theme-Butterfly-6513df.svg" alt=""/></a><a class="github-badge" target="_blank" href="https://vercel.com/" style="margin-inline:5px" title="本站采用多线部署，主线路托管于Vercel"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://sourcebucket.s3.ladydaily.com/badge/Hosted-Vercel-brightgreen.svg" alt=""/></a><a class="github-badge" target="_blank" href="https://user.51.la/" style="margin-inline:5px" title="本站数据分析得益于51la技术支持"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://sourcebucket.s3.ladydaily.com/badge/Analytics-51la-3db1eb.svg" alt=""/></a><a class="github-badge" target="_blank" href="https://icp.gov.moe/?keyword=20226665" style="margin-inline:5px" title="本站已加入萌ICP豪华套餐，萌ICP备20226665号"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://sourcebucket.s3.ladydaily.com/badge/萌ICP备-20226665-fe1384.svg" alt=""/></a><a class="github-badge" target="_blank" href="https://bitiful.dogecast.com/buckets" style="margin-inline:5px" title="本网站经Service Worker分流至缤纷云对象存储"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src=" https://sourcebucket.s3.ladydaily.com/badge/Bucket-缤纷云-9c62da.svg" alt=""/></a><a class="github-badge" target="_blank" href="https://www.netdun.net/" style="margin-inline:5px" title="本站使用网盾星球提供CDN加速与防护"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://sourcebucket.s3.ladydaily.com/badge/CDN-网盾星球-fff2cc.svg" alt=""/></a><a class="github-badge" target="_blank" href="https://github.com/" style="margin-inline:5px" title="本网站源码由Github提供存储仓库"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src=" https://sourcebucket.s3.ladydaily.com/badge/Source-Github-d021d6.svg" alt=""/></a></p></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><a class="icon-V hidden" onclick="switchNightMode()" title="浅色和深色模式转换"><svg width="25" height="25" viewBox="0 0 1024 1024"><use id="modeicon" xlink:href="#icon-moon"></use></svg></a><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button><button class="share" type="button" title="右键模式" onclick="changeMouseMode()"><i class="fas fa-mouse"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog right_side"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button class="share" type="button" title="分享链接" onclick="share()"><i class="fas fa-share-nodes"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i><span id="percent">0<span>%</span></span></button><button id="go-down" type="button" title="直达底部" onclick="btf.scrollToDest(document.body.scrollHeight, 500)"><i class="fas fa-arrow-down"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div class="js-pjax" id="rightMenu"><div class="rightMenu-group rightMenu-small"><a class="rightMenu-item" href="javascript:window.history.back();"><i class="fa fa-arrow-left"></i></a><a class="rightMenu-item" href="javascript:window.history.forward();"><i class="fa fa-arrow-right"></i></a><a class="rightMenu-item" href="javascript:window.location.reload();"><i class="fa fa-refresh"></i></a><a class="rightMenu-item" href="javascript:rmf.scrollToTop();"><i class="fa fa-arrow-up"></i></a></div><div class="rightMenu-group rightMenu-line hide" id="menu-text"><a class="rightMenu-item" href="javascript:rmf.copySelect();"><i class="fa fa-copy"></i><span>复制</span></a><a class="rightMenu-item" href="javascript:window.open(&quot;https://www.baidu.com/s?wd=&quot;+window.getSelection().toString());window.location.reload();"><i class="fa fa-search"></i><span>百度搜索</span></a></div><div class="rightMenu-group rightMenu-line hide" id="menu-too"><a class="rightMenu-item" href="javascript:window.open(window.getSelection().toString());window.location.reload();"><i class="fa fa-link"></i><span>转到链接</span></a></div><div class="rightMenu-group rightMenu-line hide" id="menu-paste"><a class="rightMenu-item" href="javascript:rmf.paste()"><i class="fa fa-copy"></i><span>粘贴</span></a></div><div class="rightMenu-group rightMenu-line hide" id="menu-post"><a class="rightMenu-item" href="#post-comment"><i class="fas fa-comment"></i><span>空降评论</span></a><a class="rightMenu-item" href="javascript:rmf.copyWordsLink()"><i class="fa fa-link"></i><span>复制本文地址</span></a></div><div class="rightMenu-group rightMenu-line hide" id="menu-to"><a class="rightMenu-item" href="javascript:rmf.openWithNewTab()"><i class="fa fa-window-restore"></i><span>新窗口打开</span></a><a class="rightMenu-item" id="menu-too" href="javascript:rmf.open()"><i class="fa fa-link"></i><span>转到链接</span></a><a class="rightMenu-item" href="javascript:rmf.copyLink()"><i class="fa fa-copy"></i><span>复制链接</span></a></div><div class="rightMenu-group rightMenu-line hide" id="menu-img"><a class="rightMenu-item" href="javascript:rmf.saveAs()"><i class="fa fa-download"></i><span>保存图片</span></a><a class="rightMenu-item" href="javascript:rmf.openWithNewTab()"><i class="fa fa-window-restore"></i><span>在新窗口打开</span></a><a class="rightMenu-item" href="javascript:rmf.copyLink()"><i class="fa fa-copy"></i><span>复制图片链接</span></a></div><div class="rightMenu-group rightMenu-line"><a class="rightMenu-item" href="javascript:randomPost()"><i class="fa fa-paper-plane"></i><span>随便逛逛</span></a><a class="rightMenu-item" href="javascript:switchNightMode();"><i class="fa fa-moon"></i><span>昼夜切换</span></a><a class="rightMenu-item" href="/personal/about/"><i class="fa fa-info-circle"></i><span>关于博客</span></a><a class="rightMenu-item" href="javascript:toggleWinbox();"><i class="fas fa-cog"></i><span>美化设置</span></a><a class="rightMenu-item" href="javascript:rmf.fullScreen();"><i class="fas fa-expand"></i><span>切换全屏</span></a><a class="rightMenu-item" href="javascript:window.print();"><i class="fa-solid fa-print"></i><span>打印页面</span></a></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.staticfile.org/fancyapps-ui/4.0.31/fancybox.umd.min.js"></script><script src="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/instant.page/5.1.0/instantpage.min.js" type="module"></script><script src="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/vanilla-lazyload/17.3.1/lazyload.iife.min.js"></script><script src="/js/search/local-search.js"></script><script async="async">var preloader = {
+  endLoading: () => {
+    document.body.style.overflow = 'auto';
+    document.getElementById('loading-box').classList.add("loaded")
+  },
+  initLoading: () => {
+    document.body.style.overflow = '';
+    document.getElementById('loading-box').classList.remove("loaded")
+
+  }
+}
+window.addEventListener('load',preloader.endLoading())
+setTimeout(function(){preloader.endLoading();}, 5000);
+document.getElementById('loading-box').addEventListener('click',()=> {preloader.endLoading()})</script><div class="js-pjax"><script>if (!window.MathJax) {
+  window.MathJax = {
+    tex: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"]],
+      tags: 'ams'
+    },
+    chtml: {
+      scale: 1.2
+    },
+    options: {
+      renderActions: {
+        findScript: [10, doc => {
+          for (const node of document.querySelectorAll('script[type^="math/tex"]')) {
+            const display = !!node.type.match(/; *mode=display/)
+            const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display)
+            const text = document.createTextNode('')
+            node.parentNode.replaceChild(text, node)
+            math.start = {node: text, delim: '', n: 0}
+            math.end = {node: text, delim: '', n: 0}
+            doc.math.push(math)
+          }
+        }, ''],
+        insertScript: [200, () => {
+          document.querySelectorAll('mjx-container:not\([display]\)').forEach(node => {
+            const target = node.parentNode
+            if (target.nodeName.toLowerCase() === 'li') {
+              target.parentNode.classList.add('has-jax')
+            } else {
+              target.classList.add('has-jax')
+            }
+          });
+        }, '', false]
+      }
+    }
+  }
+  
+  const script = document.createElement('script')
+  script.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.min.js'
+  script.id = 'MathJax-script'
+  script.async = true
+  document.head.appendChild(script)
+} else {
+  MathJax.startup.document.state(0)
+  MathJax.texReset()
+  MathJax.typeset()
+}</script><script>(()=>{
+  const init = () => {
+    twikoo.init(Object.assign({
+      el: '#twikoo-wrap',
+      envId: '',
+      region: '',
+      onCommentLoaded: function () {
+        btf.loadLightbox(document.querySelectorAll('#twikoo .tk-content img:not(.tk-owo-emotion)'))
+      }
+    }, null))
+  }
+
+  const getCount = () => {
+    const countELement = document.getElementById('twikoo-count')
+    if(!countELement) return
+    twikoo.getCommentsCount({
+      envId: '',
+      region: '',
+      urls: [window.location.pathname],
+      includeReply: false
+    }).then(function (res) {
+      countELement.innerText = res[0].count
+    }).catch(function (err) {
+      console.error(err);
+    });
+  }
+
+  const runFn = () => {
+    init()
+    
+  }
+
+  const loadTwikoo = () => {
+    if (typeof twikoo === 'object') {
+      setTimeout(runFn,0)
+      return
+    } 
+    getScript('https://cdn.staticfile.org/twikoo/1.6.8/twikoo.all.min.js').then(runFn)
+  }
+
+  if ('Twikoo' === 'Twikoo' || !true) {
+    if (true) btf.loadComment(document.getElementById('twikoo-wrap'), loadTwikoo)
+    else loadTwikoo()
+  } else {
+    window.loadOtherComment = () => {
+      loadTwikoo()
+    }
+  }
+})()</script></div><script src="https://cdn.staticfile.org/jquery/3.6.3/jquery.min.js"></script><script async src="https://cdn1.tianli0.top/npm/vue@2.6.14/dist/vue.min.js"></script><script async src="https://cdn1.tianli0.top/npm/element-ui@2.15.6/lib/index.js"></script><script async src="https://cdn.bootcdn.net/ajax/libs/clipboard.js/2.0.11/clipboard.min.js"></script><script defer type="text/javascript" src="https://cdn1.tianli0.top/npm/sweetalert2@8.19.0/dist/sweetalert2.all.js"></script><script async src="//npm.elemecdn.com/pace-js@1.2.4/pace.min.js"></script><script defer src="https://cdn1.tianli0.top/gh/nextapps-de/winbox/dist/winbox.bundle.min.js"></script><script async src="//at.alicdn.com/t/c/font_3586335_hsivh70x0fm.js"></script><script async src="//at.alicdn.com/t/c/font_3636804_gr02jmjr3y9.js"></script><script async src="//at.alicdn.com/t/c/font_3612150_kfv55xn3u2g.js"></script><script async src="https://cdn.wpon.cn/2022-sucai/Gold-ingot.js"></script><canvas id="universe"></canvas><canvas id="snow"></canvas><script defer src="/js/fomal.js"></script><link rel="stylesheet" href="https://lf6-cdn-tos.bytecdntp.com/cdn/expire-1-M/aplayer/1.10.1/APlayer.min.css" media="print" onload="this.media='all'"><script src="https://lf6-cdn-tos.bytecdntp.com/cdn/expire-1-M/aplayer/1.10.1/APlayer.min.js"></script><script src="https://cdn1.tianli0.top/npm/js-heo@1.0.12/metingjs/Meting.min.js"></script><script src="https://lib.baomitu.com/pjax/0.2.8/pjax.min.js"></script><script>let pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show","#web_bg",".js-pjax","#bibi","body > title","#app","#tag-echarts","#posts-echart","#categories-echarts"]
+
+var pjax = new Pjax({
+  elements: 'a:not([target="_blank"])',
+  selectors: pjaxSelectors,
+  cacheBust: false,
+  analytics: false,
+  scrollRestoration: false
+})
+
+document.addEventListener('pjax:send', function () {
+
+  // removeEventListener scroll 
+  window.tocScrollFn && window.removeEventListener('scroll', window.tocScrollFn)
+  window.scrollCollect && window.removeEventListener('scroll', scrollCollect)
+
+  typeof preloader === 'object' && preloader.initLoading()
+  document.getElementById('rightside').style.cssText = "opacity: ''; transform: ''"
+  
+  if (window.aplayers) {
+    for (let i = 0; i < window.aplayers.length; i++) {
+      if (!window.aplayers[i].options.fixed) {
+        window.aplayers[i].destroy()
+      }
+    }
+  }
+
+  typeof typed === 'object' && typed.destroy()
+
+  //reset readmode
+  const $bodyClassList = document.body.classList
+  $bodyClassList.contains('read-mode') && $bodyClassList.remove('read-mode')
+
+  typeof disqusjs === 'object' && disqusjs.destroy()
+})
+
+document.addEventListener('pjax:complete', function () {
+  window.refreshFn()
+
+  document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+  })
+
+  GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+  typeof chatBtnFn === 'function' && chatBtnFn()
+  typeof panguInit === 'function' && panguInit()
+
+  // google analytics
+  typeof gtag === 'function' && gtag('config', '', {'page_path': window.location.pathname});
+
+  // baidu analytics
+  typeof _hmt === 'object' && _hmt.push(['_trackPageview',window.location.pathname]);
+
+  typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
+
+  // prismjs
+  typeof Prism === 'object' && Prism.highlightAll()
+
+  typeof preloader === 'object' && preloader.endLoading()
+})
+
+document.addEventListener('pjax:error', (e) => {
+  if (e.request.status === 404) {
+    pjax.loadUrl('/404.html')
+  }
+})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div><!-- hexo injector body_end start --> <script data-pjax>if(document.getElementById('recent-posts') && (location.pathname ==='/'|| '/' ==='all')){
+    var parent = document.getElementById('recent-posts');
+    var child = '<div class="recent-post-item" style="width:100%;height: auto"><div id="catalog_magnet"><div class="magnet_item"><a class="magnet_link" href="https://Penge666.github.io/categories/分布式/"><div class="magnet_link_context" style=""><span style="font-weight:500;flex:1">🍡 Kevinの分布式学习笔记 (3)</span><span style="padding:0px 4px;border-radius: 8px;"><i class="fas fa-arrow-circle-right"></i></span></div></a></div><div class="magnet_item"><a class="magnet_link" href="https://Penge666.github.io/categories/操作系统/"><div class="magnet_link_context" style=""><span style="font-weight:500;flex:1">🍉 Kevinの操作系统笔记 (3)</span><span style="padding:0px 4px;border-radius: 8px;"><i class="fas fa-arrow-circle-right"></i></span></div></a></div><div class="magnet_item"><a class="magnet_link" href="https://Penge666.github.io/categories/Cpp/"><div class="magnet_link_context" style=""><span style="font-weight:500;flex:1">🍟 KevinのCpp基础笔记 (23)</span><span style="padding:0px 4px;border-radius: 8px;"><i class="fas fa-arrow-circle-right"></i></span></div></a></div><div class="magnet_item"><a class="magnet_link" href="https://Penge666.github.io/categories/数据库/"><div class="magnet_link_context" style=""><span style="font-weight:500;flex:1">🍨 Kevinの数据库笔记 (2)</span><span style="padding:0px 4px;border-radius: 8px;"><i class="fas fa-arrow-circle-right"></i></span></div></a></div><div class="magnet_item" style="visibility: hidden"></div><div class="magnet_item" style="visibility: hidden"></div><a class="magnet_link_more"  href="https://Penge666.github.io/categories/" style="flex:1;text-align: center;margin-bottom: 10px;">查看更多...</a></div></div>';
+    console.log('已挂载magnet')
+    parent.insertAdjacentHTML("afterbegin",child)}
+     </script><style>#catalog_magnet{flex-wrap: wrap;display: flex;width:100%;justify-content:space-between;padding: 10px 10px 0 10px;align-content: flex-start;}.magnet_item{flex-basis: calc(33.333333333333336% - 5px);background: #e9e9e9;margin-bottom: 10px;border-radius: 8px;transition: all 0.2s ease-in-out;}.magnet_item:hover{background: var(--text-bg-hover)}.magnet_link_more{color:#555}.magnet_link{color:black}.magnet_link:hover{color:white}@media screen and (max-width: 600px) {.magnet_item {flex-basis: 100%;}}.magnet_link_context{display:flex;padding: 10px;font-size:16px;transition: all 0.2s ease-in-out;}.magnet_link_context:hover{padding: 10px 20px;}</style>
+    <style></style><script data-pjax>
+  function butterfly_swiper_injector_config(){
+    var parent_div_git = document.getElementById('recent-posts');
+    var item_html = '<div class="recent-post-item" style="height: auto;width: 100%"><div class="blog-slider swiper-container-fade swiper-container-horizontal" id="swiper_container"><div class="blog-slider__wrp swiper-wrapper" style="transition-duration: 0ms;"><div class="blog-slider__item swiper-slide" style="width: 750px; opacity: 1; transform: translate3d(0px, 0px, 0px); transition-duration: 0ms;"><a class="blog-slider__img" onclick="pjax.loadUrl(&quot;posts/2013454d.html&quot;);" href="javascript:void(0);" alt=""><img width="48" height="48" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/assets/photo1/default_cover_20.webp" alt="" onerror="this.src=https://unpkg.zhimg.com/akilar-candyassets/image/loading.gif; this.onerror = null;"/></a><div class="blog-slider__content"><span class="blog-slider__code">2023-08-09</span><a class="blog-slider__title" onclick="pjax.loadUrl(&quot;posts/2013454d.html&quot;);" href="javascript:void(0);" alt="">Markdown语法与外挂标签写法汇总</a><div class="blog-slider__text">🥧本文汇总Markdown格式以及外挂标签在网页端的渲染效果，可作为文档进行查询</div><a class="blog-slider__button" onclick="pjax.loadUrl(&quot;posts/2013454d.html&quot;);" href="javascript:void(0);" alt="">详情       </a></div></div></div><div class="blog-slider__pagination swiper-pagination-clickable swiper-pagination-bullets"></div></div></div>';
+    console.log('已挂载butterfly_swiper')
+    parent_div_git.insertAdjacentHTML("afterbegin",item_html)
+    }
+  var elist = 'undefined'.split(',');
+  var cpage = location.pathname;
+  var epage = '/';
+  var flag = 0;
+
+  for (var i=0;i<elist.length;i++){
+    if (cpage.includes(elist[i])){
+      flag++;
+    }
+  }
+
+  if ((epage ==='all')&&(flag == 0)){
+    butterfly_swiper_injector_config();
+  }
+  else if (epage === cpage){
+    butterfly_swiper_injector_config();
+  }
+  </script><script defer src="https://npm.elemecdn.com/hexo-butterfly-swiper/lib/swiper.min.js"></script><script defer data-pjax src="https://npm.elemecdn.com/hexo-butterfly-swiper/lib/swiper_init.js"></script><script data-pjax src="https://npm.elemecdn.com/hexo-filter-gitcalendar/lib/gitcalendar.js"></script><script data-pjax>
+  function gitcalendar_injector_config(){
+      var parent_div_git = document.getElementById('gitZone');
+      var item_html = '<div class="recent-post-item" id="gitcalendarBar" style="width:100%;height:auto;padding:10px;"><style>#git_container{min-height: 320px}@media screen and (max-width:650px) {#git_container{min-height: 0px}}</style><div id="git_loading" style="width:10%;height:100%;margin:0 auto;display: block;"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 50 50" style="enable-background:new 0 0 50 50" xml:space="preserve"><path fill="#d0d0d0" d="M25.251,6.461c-10.318,0-18.683,8.365-18.683,18.683h4.068c0-8.071,6.543-14.615,14.615-14.615V6.461z" transform="rotate(275.098 25 25)"><animatetransform attributeType="xml" attributeName="transform" type="rotate" from="0 25 25" to="360 25 25" dur="0.6s" repeatCount="indefinite"></animatetransform></path></svg><style>#git_container{display: none;}</style></div><div id="git_container"></div></div>';
+      parent_div_git.insertAdjacentHTML("afterbegin",item_html)
+      console.log('已挂载gitcalendar')
+      }
+
+    if( document.getElementById('gitZone') && (location.pathname ==='/site/census/'|| '/site/census/' ==='all')){
+        gitcalendar_injector_config()
+        GitCalendarInit("/api?null",['#d9e0df', '#c6e0dc', '#a8dcd4', '#9adcd2', '#89ded1', '#77e0d0', '#5fdecb', '#47dcc6', '#39dcc3', '#1fdabe', '#00dab9'],'null')
+    }
+  </script><div class="js-pjax"><script async="async">var arr = document.getElementsByClassName('recent-post-item');
+for(var i = 0;i<arr.length;i++){
+    arr[i].classList.add('wow');
+    arr[i].classList.add('animate__zoomIn');
+    arr[i].setAttribute('data-wow-duration', '2s');
+    arr[i].setAttribute('data-wow-delay', '200ms');
+    arr[i].setAttribute('data-wow-offset', '30');
+    arr[i].setAttribute('data-wow-iteration', '1');
+  }</script><script async="async">var arr = document.getElementsByClassName('card-widget');
+for(var i = 0;i<arr.length;i++){
+    arr[i].classList.add('wow');
+    arr[i].classList.add('animate__zoomIn');
+    arr[i].setAttribute('data-wow-duration', '2s');
+    arr[i].setAttribute('data-wow-delay', '200ms');
+    arr[i].setAttribute('data-wow-offset', '30');
+    arr[i].setAttribute('data-wow-iteration', '1');
+  }</script></div><script defer src="https://npm.elemecdn.com/hexo-butterfly-wowjs/lib/wow.min.js"></script><script defer src="https://npm.elemecdn.com/hexo-butterfly-wowjs/lib/wow_init.js"></script><!-- hexo injector body_end end --></body></html>
