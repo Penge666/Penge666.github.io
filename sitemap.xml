@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>https://penge666.github.io/posts/ef701d36.html</loc>
+    <loc>https://penge666.github.io/posts/7d025ae5.html</loc>
     
     <lastmod>2024-06-03</lastmod>
     
@@ -11,7 +11,7 @@
   </url>
   
   <url>
-    <loc>https://penge666.github.io/posts/7d025ae5.html</loc>
+    <loc>https://penge666.github.io/posts/ef701d36.html</loc>
     
     <lastmod>2024-06-03</lastmod>
     
@@ -892,6 +892,13 @@
     <priority>0.2</priority>
   </url>
   
+  <url>
+    <loc>https://penge666.github.io/tags/%E5%B7%A5%E7%A8%8B%E5%AE%9E%E8%B7%B5/</loc>
+    <lastmod>2024-06-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
 
   
   <url>
@@ -1022,6 +1029,13 @@
   
   <url>
     <loc>https://penge666.github.io/categories/%E5%BE%AE%E6%9C%8D%E5%8A%A1/</loc>
+    <lastmod>2024-06-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://penge666.github.io/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/%E5%B7%A5%E7%A8%8B%E5%AE%9E%E8%B7%B5/</loc>
     <lastmod>2024-06-03</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
