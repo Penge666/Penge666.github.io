@@ -1,0 +1,496 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><div id="myscoll"></div><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>etcd中的MVCC | Penge666</title><meta name="keywords" content="数据库,etcd"><meta name="author" content="Penge666"><meta name="copyright" content="Penge666"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="ffffff"><meta name="description" content="etcd中的MVCC">
+<meta property="og:type" content="article">
+<meta property="og:title" content="etcd中的MVCC">
+<meta property="og:url" content="https://penge666.github.io/posts/ebe68de0.html">
+<meta property="og:site_name" content="Penge666">
+<meta property="og:description" content="etcd中的MVCC">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://penge666.github.io/assets/photo1/default_cover_117.webp">
+<meta property="article:published_time" content="2024-06-06T08:35:49.000Z">
+<meta property="article:modified_time" content="2024-06-06T08:38:56.007Z">
+<meta property="article:author" content="Penge666">
+<meta property="article:tag" content="数据库">
+<meta property="article:tag" content="etcd">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://penge666.github.io/assets/photo1/default_cover_117.webp"><link rel="shortcut icon" href="/"><link rel="canonical" href="https://penge666.github.io/posts/ebe68de0"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://lf6-cdn-tos.bytecdntp.com/cdn/expire-1-M/font-awesome/6.0.0/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.staticfile.org/fancyapps-ui/4.0.31/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":true,"languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: {"limitDay":365,"position":"top","messagePrev":"It has been","messageNext":"days since the last update, the content of the article may be outdated."},
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":230},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: true,
+    post: true
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdnjs.cloudflare.com/ajax/libs/flickr-justified-gallery/2.1.2/fjGallery.min.js',
+      css: 'https://cdnjs.cloudflare.com/ajax/libs/flickr-justified-gallery/2.1.2/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isAnchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'etcd中的MVCC',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-06-06 16:38:56'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          const now = new Date()
+          const hour = now.getHours()
+          const isNight = hour <= 6 || hour >= 18
+          if (t === undefined) isNight ? activateDarkMode() : activateLightMode()
+          else if (t === 'light') activateLightMode()
+          else activateDarkMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><link rel="stylesheet" href="https://cdn1.tianli0.top/npm/element-ui@2.15.6/packages/theme-chalk/lib/index.css"><style id="themeColor"></style><style id="rightSide"></style><style id="transPercent"></style><style id="blurNum"></style><style id="settingStyle"></style><span id="fps"></span><style id="defineBg"></style><style id="menu_shadow"></style><svg aria-hidden="true" style="position:absolute; overflow:hidden; width:0; height:0"><symbol id="icon-sun" viewBox="0 0 1024 1024"><path d="M960 512l-128 128v192h-192l-128 128-128-128H192v-192l-128-128 128-128V192h192l128-128 128 128h192v192z" fill="#FFD878" p-id="8420"></path><path d="M736 512a224 224 0 1 0-448 0 224 224 0 1 0 448 0z" fill="#FFE4A9" p-id="8421"></path><path d="M512 109.248L626.752 224H800v173.248L914.752 512 800 626.752V800h-173.248L512 914.752 397.248 800H224v-173.248L109.248 512 224 397.248V224h173.248L512 109.248M512 64l-128 128H192v192l-128 128 128 128v192h192l128 128 128-128h192v-192l128-128-128-128V192h-192l-128-128z" fill="#4D5152" p-id="8422"></path><path d="M512 320c105.888 0 192 86.112 192 192s-86.112 192-192 192-192-86.112-192-192 86.112-192 192-192m0-32a224 224 0 1 0 0 448 224 224 0 0 0 0-448z" fill="#4D5152" p-id="8423"></path></symbol><symbol id="icon-moon" viewBox="0 0 1024 1024"><path d="M611.370667 167.082667a445.013333 445.013333 0 0 1-38.4 161.834666 477.824 477.824 0 0 1-244.736 244.394667 445.141333 445.141333 0 0 1-161.109334 38.058667 85.077333 85.077333 0 0 0-65.066666 135.722666A462.08 462.08 0 1 0 747.093333 102.058667a85.077333 85.077333 0 0 0-135.722666 65.024z" fill="#FFB531" p-id="11345"></path><path d="M329.728 274.133333l35.157333-35.157333a21.333333 21.333333 0 1 0-30.165333-30.165333l-35.157333 35.157333-35.114667-35.157333a21.333333 21.333333 0 0 0-30.165333 30.165333l35.114666 35.157333-35.114666 35.157334a21.333333 21.333333 0 1 0 30.165333 30.165333l35.114667-35.157333 35.157333 35.157333a21.333333 21.333333 0 1 0 30.165333-30.165333z" fill="#030835" p-id="11346"></path></symbol></svg><!-- hexo injector head_end start --><link rel="stylesheet" href="https://npm.elemecdn.com/hexo-butterfly-swiper/lib/swiper.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://npm.elemecdn.com/hexo-butterfly-swiper/lib/swiperstyle.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://npm.elemecdn.com/hexo-butterfly-wowjs/lib/animate.min.css" media="print" onload="this.media='screen'"><link rel="stylesheet" href="https://npm.elemecdn.com/hexo-filter-gitcalendar/lib/gitcalendar.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://npm.elemecdn.com/hexo-butterfly-tag-plugins-plus@latest/lib/assets/font-awesome-animation.min.css" media="defer" onload="this.media='all'"><link rel="stylesheet" href="https://npm.elemecdn.com/hexo-butterfly-tag-plugins-plus@latest/lib/tag_plugins.css" media="defer" onload="this.media='all'"><script src="https://npm.elemecdn.com/hexo-butterfly-tag-plugins-plus@latest/lib/assets/carousel-touch.js"></script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="Penge666" type="application/atom+xml">
+</head><body><div id="loading-box" onclick="document.getElementById(&quot;loading-box&quot;).classList.add(&quot;loaded&quot;)"><div class="loading-bg"><div class="loading-img"></div><div class="loading-image-dot"></div></div></div><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/hhh.jpeg" onerror="onerror=null;src='/assets/r1.jpg'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">73</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">22</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">24</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page faa-parent animated-hover" href="/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-home"></use></svg><span class="menu_word" style="font-size:17px"> 首页</span></a></div><div class="menus_item"><a class="site-page faa-parent animated-hover" href="/archives/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-guidang1"></use></svg><span class="menu_word" style="font-size:17px"> 文章</span></a></div><div class="menus_item"><a class="site-page faa-parent animated-hover" href="/tags/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-sekuaibiaoqian"></use></svg><span class="menu_word" style="font-size:17px"> 标签</span></a></div><div class="menus_item"><a class="site-page faa-parent animated-hover" href="/categories/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-fenlei"></use></svg><span class="menu_word" style="font-size:17px"> 分类</span></a></div><div class="menus_item"><a class="site-page faa-parent animated-hover" href="/personal/about/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-paperplane"></use></svg><span class="menu_word" style="font-size:17px"> 个人</span></a></div><div class="menus_item"><a class="site-page group faa-parent animated-hover hide" href="javascript:void(0);"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-shejiaoxinxi"></use></svg><span class="menu_word" style="font-size:17px"> 社交</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/comments/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-liuyan">                   </use></svg><span class="menu_word" style="font-size:17px"> 留言板</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/social/link/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-lianjie">                   </use></svg><span class="menu_word" style="font-size:17px"> 友人帐</span></a></li></ul></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">Penge666</a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page faa-parent animated-hover" href="/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-home"></use></svg><span class="menu_word" style="font-size:17px"> 首页</span></a></div><div class="menus_item"><a class="site-page faa-parent animated-hover" href="/archives/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-guidang1"></use></svg><span class="menu_word" style="font-size:17px"> 文章</span></a></div><div class="menus_item"><a class="site-page faa-parent animated-hover" href="/tags/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-sekuaibiaoqian"></use></svg><span class="menu_word" style="font-size:17px"> 标签</span></a></div><div class="menus_item"><a class="site-page faa-parent animated-hover" href="/categories/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-fenlei"></use></svg><span class="menu_word" style="font-size:17px"> 分类</span></a></div><div class="menus_item"><a class="site-page faa-parent animated-hover" href="/personal/about/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-paperplane"></use></svg><span class="menu_word" style="font-size:17px"> 个人</span></a></div><div class="menus_item"><a class="site-page group faa-parent animated-hover hide" href="javascript:void(0);"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-shejiaoxinxi"></use></svg><span class="menu_word" style="font-size:17px"> 社交</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/comments/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-liuyan">                   </use></svg><span class="menu_word" style="font-size:17px"> 留言板</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/social/link/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-lianjie">                   </use></svg><span class="menu_word" style="font-size:17px"> 友人帐</span></a></li></ul></div></div><center id="name-container"><a id="page-name" href="javascript:scrollToTop()">PAGE_NAME</a></center><div id="nav-right"><div id="search-button"><a class="search faa-parent animated-hover" title="检索站内任何你想要的信息"><svg class="faa-tada icon" style="height:24px;width:24px;fill:currentColor;position:relative;top:6px" aria-hidden="true"><use xlink:href="#icon-valentine_-search-love-find-heart"></use></svg><span> 搜索</span></a></div><a class="meihua faa-parent animated-hover" onclick="toggleWinbox()" title="美化设置-自定义你的风格" id="meihua-button"><svg class="faa-tada icon" style="height:26px;width:26px;fill:currentColor;position:relative;top:8px" aria-hidden="true"><use xlink:href="#icon-tupian1"></use></svg></a><a class="sun_moon faa-parent animated-hover" onclick="switchNightMode()" title="浅色和深色模式转换" id="nightmode-button"><svg class="faa-tada" style="height:25px;width:25px;fill:currentColor;position:relative;top:7px" viewBox="0 0 1024 1024"><use id="modeicon" xlink:href="#icon-moon">       </use></svg></a><div id="toggle-menu"><a><i class="fas fa-bars fa-fw"></i></a></div></div></div></nav><div id="post-info"><h1 class="post-title">etcd中的MVCC</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><svg class="meta_icon post-meta-icon" style="width:30px;height:30px;position:relative;top:10px"><use xlink:href="#icon-rili"></use></svg><span class="post-meta-label">发表于 </span><time class="post-meta-date-created" datetime="2024-06-06T08:35:49.000Z" title="发表于 2024-06-06 16:35:49">2024-06-06</time><span class="post-meta-separator">|</span><svg class="meta_icon post-meta-icon" style="width:18px;height:18px;position:relative;top:5px"><use xlink:href="#icon-gengxin1"></use></svg><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-06-06T08:38:56.007Z" title="更新于 2024-06-06 16:38:56">2024-06-06</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><svg class="meta_icon post-meta-icon" style="width:18px;height:18px;position:relative;top:5px"><use xlink:href="#icon-biaoqian"></use></svg><a class="post-meta-categories" href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库</a><i class="fas fa-angle-right post-meta-separator"></i><svg class="meta_icon post-meta-icon" style="width:18px;height:18px;position:relative;top:5px"><use xlink:href="#icon-biaoqian"></use></svg><a class="post-meta-categories" href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/etcd/">etcd</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><svg class="meta_icon post-meta-icon" style="width:25px;height:25px;position:relative;top:8px"><use xlink:href="#icon-charuword"></use></svg><span class="post-meta-label">字数总计:</span><span class="word-count">4932</span><span class="post-meta-separator">|</span><svg class="meta_icon post-meta-icon" style="width:20px;height:20px;position:relative;top:5px"><use xlink:href="#icon-shizhong"></use></svg><span class="post-meta-label">阅读时长:</span><span>16分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="etcd中的MVCC"><svg class="meta_icon post-meta-icon" style="width:25px;height:25px;position:relative;top:5px"><use xlink:href="#icon-eye"></use></svg><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div><section class="main-hero-waves-area waves-area"><svg class="waves-svg" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto"><defs><path id="gentle-wave" d="M -160 44 c 30 0 58 -18 88 -18 s 58 18 88 18 s 58 -18 88 -18 s 58 18 88 18 v 44 h -352 Z"></path></defs><g class="parallax"><use href="#gentle-wave" x="48" y="0"></use><use href="#gentle-wave" x="48" y="3"></use><use href="#gentle-wave" x="48" y="5"></use><use href="#gentle-wave" x="48" y="7"></use></g></svg></section></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="什么是MVCC">什么是MVCC</h2>
+<p>首先和你聊聊什么是MVCC，从名字上理解，它是一个基于多版本技术实现的一种并发控制机制。那常见的并发机制有哪些？MVCC的优点在哪里呢？</p>
+<p>提到并发控制机制你可能就没那么陌生了，比如数据库中的悲观锁，也就是通过锁机制确保同一时刻只能有一个事务对数据进行修改操作，常见的实现方案有读写锁、互斥锁、两阶段锁等。</p>
+<p>悲观锁是一种事先预防机制，它悲观地认为多个并发事务可能会发生冲突，因此它要求事务必须先获得锁，才能进行修改数据操作。但是悲观锁粒度过大、高并发场景下大量事务会阻塞等，会导致服务性能较差。</p>
+<p><strong>MVCC机制正是基于多版本技术实现的一种乐观锁机制</strong>，它乐观地认为数据不会发生冲突，但是当事务提交时，具备检测数据是否冲突的能力。</p>
+<p>在MVCC数据库中，你更新一个key-value数据的时候，它并不会直接覆盖原数据，而是新增一个版本来存储新的数据，每个数据都有一个版本号。版本号它是一个逻辑时间，为了方便你深入理解版本号意义，在下面我给你画了一个etcd MVCC版本号时间序列图。</p>
+<p>从图中你可以看到，随着时间增长，你每次修改操作，版本号都会递增。每修改一次，生成一条新的数据记录。<strong>当你指定版本号读取数据时，它实际上访问的是版本号生成那个时间点的快照数据</strong>。当你删除数据的时候，它实际也是新增一条带删除标识的数据记录。</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://penge666blog.oss-cn-beijing.aliyuncs.com/img/image-20240606163633150.png" alt="image-20240606163633150"></p>
+<h2 id="MVCC特性初体验">MVCC特性初体验</h2>
+<p>了解完什么是MVCC后，我先通过几个简单命令，带你初体验下MVCC特性，看看它是如何帮助你查询历史修改记录，以及找回不小心删除的key的。</p>
+<p>启动一个空集群，更新两次key hello后，如何获取key hello的上一个版本值呢？ 删除key hello后，还能读到历史版本吗?</p>
+<p>如下面的命令所示，第一次key hello更新完后，我们通过get命令获取下它的key-value详细信息。正如你所看到的，除了key、value信息，还有各类版本号，我后面会详细和你介绍它们的含义。这里我们重点关注mod_revision，它表示key最后一次修改时的etcd版本号。</p>
+<p>当我们再次更新key hello为world2后，然后通过查询时指定key第一次更新后的版本号，你会发现我们查询到了第一次更新的值，甚至我们执行删除key hello后，依然可以获得到这个值。那么etcd是如何实现的呢?</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 更新key hello为world1</span></span><br><span class="line"><span class="variable">$ </span>etcdctl put hello world1</span><br><span class="line"><span class="variable constant_">OK</span></span><br><span class="line"><span class="comment"># 通过指定输出模式为json,查看key hello更新后的详细信息</span></span><br><span class="line"><span class="variable">$ </span>etcdctl get hello -w=json</span><br><span class="line">&#123;</span><br><span class="line">    <span class="string">&quot;kvs&quot;</span><span class="symbol">:</span>[</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="string">&quot;key&quot;</span><span class="symbol">:<span class="string">&quot;aGVsbG8=&quot;</span></span>,</span><br><span class="line">            <span class="string">&quot;create_revision&quot;</span><span class="symbol">:</span><span class="number">2</span>,</span><br><span class="line">            <span class="string">&quot;mod_revision&quot;</span><span class="symbol">:</span><span class="number">2</span>,</span><br><span class="line">            <span class="string">&quot;version&quot;</span><span class="symbol">:</span><span class="number">1</span>,</span><br><span class="line">            <span class="string">&quot;value&quot;</span><span class="symbol">:<span class="string">&quot;d29ybGQx&quot;</span></span></span><br><span class="line">        &#125;</span><br><span class="line">    ],</span><br><span class="line">    <span class="string">&quot;count&quot;</span><span class="symbol">:</span><span class="number">1</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment"># 再次修改key hello为world2</span></span><br><span class="line"><span class="variable">$ </span>etcdctl put hello world2</span><br><span class="line"><span class="variable constant_">OK</span></span><br><span class="line"><span class="comment"># 确认修改成功,最新值为wolrd2</span></span><br><span class="line"><span class="variable">$ </span>etcdctl get hello</span><br><span class="line">hello</span><br><span class="line">world2</span><br><span class="line"><span class="comment"># 指定查询版本号,获得了hello上一次修改的值</span></span><br><span class="line"><span class="variable">$ </span>etcdctl get hello --rev=<span class="number">2</span></span><br><span class="line">hello</span><br><span class="line">world1</span><br><span class="line"><span class="comment"># 删除key hello</span></span><br><span class="line"><span class="variable">$ </span>etcdctl del  hello</span><br><span class="line"><span class="number">1</span></span><br><span class="line"><span class="comment"># 删除后指定查询版本号3,获得了hello删除前的值</span></span><br><span class="line"><span class="variable">$ </span>etcdctl get hello --rev=<span class="number">3</span></span><br><span class="line">hello</span><br><span class="line">world2</span><br></pre></td></tr></table></figure>
+<h2 id="整体架构">整体架构</h2>
+<p>在详细和你介绍etcd如何实现MVCC特性前，我先和你从整体上介绍下MVCC模块。下图是MVCC模块的一个整体架构图，整个MVCC特性由treeIndex、Backend/boltdb组成。</p>
+<p>当你执行MVCC特性初体验中的put命令后，请求经过gRPC KV Server、Raft模块流转，对应的日志条目被提交后，Apply模块开始执行此日志内容。</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://penge666blog.oss-cn-beijing.aliyuncs.com/img/image-20240606163649219.png" alt="image-20240606163649219"></p>
+<p>Apply模块通过MVCC模块来执行put请求，持久化key-value数据。MVCC模块将请求请划分成两个类别，分别是读事务（ReadTxn）和写事务（WriteTxn）。读事务负责处理range请求，写事务负责put/delete操作。读写事务基于treeIndex、Backend/boltdb提供的能力，实现对key-value的增删改查功能。</p>
+<p>treeIndex模块基于内存版B-tree实现了key索引管理，它保存了用户key与版本号（revision）的映射关系等信息。</p>
+<p>Backend模块负责etcd的key-value持久化存储，主要由ReadTx、BatchTx、Buffer组成，ReadTx定义了抽象的读事务接口，BatchTx在ReadTx之上定义了抽象的写事务接口，Buffer是数据缓存区。</p>
+<p>etcd设计上支持多种Backend实现，目前实现的Backend是boltdb。boltdb是一个基于B+ tree实现的、支持事务的key-value嵌入式数据库。</p>
+<p>treeIndex与boltdb关系你可参考下图。当你发起一个get hello命令时，从treeIndex中获取key的版本号，然后再通过这个版本号，从boltdb获取value信息。boltdb的value是包含用户key-value、各种版本号、lease信息的结构体。</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://penge666blog.oss-cn-beijing.aliyuncs.com/img/image-20240606163705986.png" alt="image-20240606163705986"></p>
+<p>接下来我和你重点聊聊treeIndex模块的原理与核心数据结构。</p>
+<h2 id="treeIndex原理">treeIndex原理</h2>
+<p>为什么需要treeIndex模块呢?</p>
+<p>对于etcd v2来说，当你通过etcdctl发起一个put hello操作时，etcd v2直接更新内存树，这就导致历史版本直接被覆盖，无法支持保存key的历史版本。在etcd v3中引入treeIndex模块正是为了解决这个问题，支持保存key的历史版本，提供稳定的Watch机制和事务隔离等能力。</p>
+<p>那etcd v3又是如何基于treeIndex模块，实现保存key的历史版本的呢?</p>
+<p>在02节课里，我们提到过etcd在每次修改key时会生成一个全局递增的版本号（revision），然后通过数据结构B-tree保存用户key与版本号之间的关系，再以版本号作为boltdb key，以用户的key-value等信息作为boltdb value，保存到boltdb。</p>
+<p>下面我就为你介绍下，etcd保存用户key与版本号映射关系的数据结构B-tree，为什么etcd使用它而不使用哈希表、平衡二叉树？</p>
+<p>从etcd的功能特性上分析， 因etcd支持范围查询，因此保存索引的数据结构也必须支持范围查询才行。所以哈希表不适合，而B-tree支持范围查询。</p>
+<p>从性能上分析，平横二叉树每个节点只能容纳一个数据、导致树的高度较高，而B-tree每个节点可以容纳多个数据，树的高度更低，更扁平，涉及的查找次数更少，具有优越的增、删、改、查性能。</p>
+<p>Google的开源项目btree，使用Go语言实现了一个内存版的B-tree，对外提供了简单易用的接口。etcd正是基于btree库实现了一个名为treeIndex的索引模块，通过它来查询、保存用户key与版本号之间的关系。</p>
+<p>下图是个最大度（degree &gt; 1，简称d）为5的B-tree，度是B-tree中的一个核心参数，它决定了你每个节点上的数据量多少、节点的“胖”、“瘦”程度。</p>
+<p>从图中你可以看到，节点越胖，意味着一个节点可以存储更多数据，树的高度越低。在一个度为d的B-tree中，节点保存的最大key数为2d - 1，否则需要进行平衡、分裂操作。这里你要注意的是在etcd treeIndex模块中，创建的是最大度32的B-tree，也就是一个叶子节点最多可以保存63个key。</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://penge666blog.oss-cn-beijing.aliyuncs.com/img/image-20240606163722544.png" alt="image-20240606163722544"></p>
+<p>从图中你可以看到，你通过put/txn命令写入的一系列key，treeIndex模块基于B-tree将其组织起来，节点之间基于用户key比较大小。当你查找一个key k95时，通过B-tree的特性，你仅需通过图中流程1和2两次快速比较，就可快速找到k95所在的节点。</p>
+<p>在treeIndex中，每个节点的key是一个keyIndex结构，etcd就是通过它保存了用户的key与版本号的映射关系。</p>
+<p>那么keyIndex结构包含哪些信息呢？下面是字段说明，你可以参考一下。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> keyIndex <span class="keyword">struct</span> &#123;</span><br><span class="line">   key         []<span class="type">byte</span> <span class="comment">//用户的key名称，比如我们案例中的&quot;hello&quot;</span></span><br><span class="line">   modified    revision <span class="comment">//最后一次修改key时的etcd版本号,比如我们案例中的刚写入hello为world1时的，版本号为2</span></span><br><span class="line">   generations []generation <span class="comment">//generation保存了一个key若干代版本号信息，每代中包含对key的多次修改的版本号列表</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>keyIndex中包含用户的key、最后一次修改key时的etcd版本号、key的若干代（generation）版本号信息，每代中包含对key的多次修改的版本号列表。那我们要如何理解generations？为什么它是个数组呢?</p>
+<p>generations表示一个key从创建到删除的过程，每代对应key的一个生命周期的开始与结束。当你第一次创建一个key时，会生成第0代，后续的修改操作都是在往第0代中追加修改版本号。当你把key删除后，它就会生成新的第1代，一个key不断经历创建、删除的过程，它就会生成多个代。</p>
+<p>generation结构详细信息如下：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> generation <span class="keyword">struct</span> &#123;</span><br><span class="line">   ver     <span class="type">int64</span>    <span class="comment">//表示此key的修改次数</span></span><br><span class="line">   created revision <span class="comment">//表示generation结构创建时的版本号</span></span><br><span class="line">   revs    []revision <span class="comment">//每次修改key时的revision追加到此数组</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>generation结构中包含此key的修改次数、generation创建时的版本号、对此key的修改版本号记录列表。</p>
+<p>你需要注意的是版本号（revision）并不是一个简单的整数，而是一个结构体。revision结构及含义如下：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> revision <span class="keyword">struct</span> &#123;</span><br><span class="line">   main <span class="type">int64</span>    <span class="comment">// 一个全局递增的主版本号，随put/txn/delete事务递增，一个事务内的key main版本号是一致的</span></span><br><span class="line">   sub <span class="type">int64</span>    <span class="comment">// 一个事务内的子版本号，从0开始随事务内put/delete操作递增</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>revision包含main和sub两个字段，main是全局递增的版本号，它是个etcd逻辑时钟，随着put/txn/delete等事务递增。sub是一个事务内的子版本号，从0开始随事务内的put/delete操作递增。</p>
+<p>比如启动一个空集群，全局版本号默认为1，执行下面的txn事务，它包含两次put、一次get操作，那么按照我们上面介绍的原理，全局版本号随读写事务自增，因此是main为2，sub随事务内的put/delete操作递增，因此key hello的revison为{2,0}，key world的revision为{2,1}。</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">$ etcdctl txn -i</span><br><span class="line">compares:</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function">success <span class="title">requests</span> (<span class="params"><span class="keyword">get</span>，put，del</span>):</span></span><br><span class="line"><span class="function">put hello 1</span></span><br><span class="line"><span class="function"><span class="keyword">get</span> hello</span></span><br><span class="line"><span class="function">put world 2</span></span><br></pre></td></tr></table></figure>
+<p>介绍完treeIndex基本原理、核心数据结构后，我们再看看在MVCC特性初体验中的更新、查询、删除key案例里，treeIndex与boltdb是如何协作，完成以上key-value操作的?</p>
+<h2 id="MVCC更新key原理">MVCC更新key原理</h2>
+<p>当你通过etcdctl发起一个put hello操作时，如下面的put事务流程图流程一所示，在put写事务中，首先它需要从treeIndex模块中查询key的keyIndex索引信息，keyIndex中存储了key的创建版本号、修改的次数等信息，这些信息在事务中发挥着重要作用，因此会存储在boltdb的value中。</p>
+<p>在我们的案例中，因为是第一次创建hello key，此时keyIndex索引为空。</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://penge666blog.oss-cn-beijing.aliyuncs.com/img/image-20240606163736154.png" alt="image-20240606163736154"></p>
+<p>其次etcd会根据当前的全局版本号（空集群启动时默认为1）自增，生成put hello操作对应的版本号revision{2,0}，这就是boltdb的key。</p>
+<p>boltdb的value是mvccpb.KeyValue结构体，它是由用户key、value、create_revision、mod_revision、version、lease组成。它们的含义分别如下：</p>
+<ul>
+<li>create_revision表示此key创建时的版本号。在我们的案例中，key hello是第一次创建，那么值就是2。当你再次修改key hello的时候，写事务会从treeIndex模块查询hello第一次创建的版本号，也就是keyIndex.generations[i].created字段，赋值给create_revision字段；</li>
+<li>mod_revision表示key最后一次修改时的版本号，即put操作发生时的全局版本号加1；</li>
+<li>version表示此key的修改次数。每次修改的时候，写事务会从treeIndex模块查询hello已经历过的修改次数，也就是keyIndex.generations[i].ver字段，将ver字段值加1后，赋值给version字段。</li>
+</ul>
+<p>填充好boltdb的KeyValue结构体后，这时就可以通过Backend的写事务batchTx接口将key{2,0},value为mvccpb.KeyValue保存到boltdb的缓存中，并同步更新buffer，如上图中的流程二所示。</p>
+<p>此时存储到boltdb中的key、value数据如下：</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://penge666blog.oss-cn-beijing.aliyuncs.com/img/image-20240606163747347.png" alt="image-20240606163747347"></p>
+<p>然后put事务需将本次修改的版本号与用户key的映射关系保存到treeIndex模块中，也就是上图中的流程三。</p>
+<p>因为key hello是首次创建，treeIndex模块它会生成key hello对应的keyIndex对象，并填充相关数据结构。</p>
+<p>keyIndex填充后的结果如下所示：</p>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">key hello的keyIndex:</span><br><span class="line"><span class="section">key:     &quot;hello&quot;</span></span><br><span class="line"><span class="section">modified: &lt;2,0&gt;</span></span><br><span class="line"><span class="section">generations:</span></span><br><span class="line"><span class="section">[&#123;ver:1,created:&lt;2,0&gt;,revisions: [&lt;2,0&gt;]&#125; ]</span></span><br></pre></td></tr></table></figure>
+<p>我们来简易分析一下上面的结果。</p>
+<ul>
+<li>key为hello，modified为最后一次修改版本号&lt;2,0&gt;，key hello是首次创建的，因此新增一个generation代跟踪它的生命周期、修改记录；</li>
+<li>generation的ver表示修改次数，首次创建为1，后续随着修改操作递增；</li>
+<li>generation.created表示创建generation时的版本号为&lt;2,0&gt;；</li>
+<li>revision数组保存对此key修改的版本号列表，每次修改都会将将相应的版本号追加到revisions数组中。</li>
+</ul>
+<p>通过以上流程，一个put操作终于完成。</p>
+<p>但是此时数据还并未持久化，为了提升etcd的写吞吐量、性能，一般情况下（默认堆积的写事务数大于1万才在写事务结束时同步持久化），数据持久化由Backend的异步goroutine完成，它通过事务批量提交，定时将boltdb页缓存中的脏数据提交到持久化存储磁盘中，也就是下图中的黑色虚线框住的流程四。</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://penge666blog.oss-cn-beijing.aliyuncs.com/img/image-20240606163759638.png" alt="image-20240606163759638"></p>
+<h2 id="MVCC查询key原理">MVCC查询key原理</h2>
+<p>完成put hello为world1操作后，这时你通过etcdctl发起一个get hello操作，MVCC模块首先会创建一个读事务对象（TxnRead），在etcd 3.4中Backend实现了ConcurrentReadTx， 也就是并发读特性。</p>
+<p>并发读特性的核心原理是创建读事务对象时，它会全量拷贝当前写事务未提交的buffer数据，并发的读写事务不再阻塞在一个buffer资源锁上，实现了全并发读。</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://penge666blog.oss-cn-beijing.aliyuncs.com/img/image-20240606163812068.png" alt="image-20240606163812068"></p>
+<p>如上图所示，在读事务中，它首先需要根据key从treeIndex模块获取版本号，因我们未带版本号读，默认是读取最新的数据。treeIndex模块从B-tree中，根据key查找到keyIndex对象后，匹配有效的generation，返回generation的revisions数组中最后一个版本号{2,0}给读事务对象。</p>
+<p>读事务对象根据此版本号为key，通过Backend的并发读事务（ConcurrentReadTx）接口，优先从buffer中查询，命中则直接返回，否则从boltdb中查询此key的value信息。</p>
+<p>那指定版本号读取历史记录又是怎么实现的呢？</p>
+<p>当你再次发起一个put hello为world2修改操作时，key hello对应的keyIndex的结果如下面所示，keyIndex.modified字段更新为&lt;3,0&gt;，generation的revision数组追加最新的版本号&lt;3,0&gt;，ver修改为2。</p>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">key hello的keyIndex:</span><br><span class="line"><span class="section">key:     &quot;hello&quot;</span></span><br><span class="line"><span class="section">modified: &lt;3,0&gt;</span></span><br><span class="line"><span class="section">generations:</span></span><br><span class="line"><span class="section">[&#123;ver:2,created:&lt;2,0&gt;,revisions: [&lt;2,0&gt;,&lt;3,0&gt;]&#125;]</span></span><br></pre></td></tr></table></figure>
+<p>boltdb插入一个新的key revision{3,0}，此时存储到boltdb中的key-value数据如下：</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://penge666blog.oss-cn-beijing.aliyuncs.com/img/image-20240606163824235.png" alt="image-20240606163824235"></p>
+<p>这时你再发起一个指定历史版本号为2的读请求时，实际是读版本号为2的时间点的快照数据。treeIndex模块会遍历generation内的历史版本号，返回小于等于2的最大历史版本号，在我们这个案例中，也就是revision{2,0}，以它作为boltdb的key，从boltdb中查询出value即可。</p>
+<h2 id="MVCC删除key原理">MVCC删除key原理</h2>
+<p>介绍完MVCC更新、查询key的原理后，我们接着往下看。当你执行etcdctl del hello命令时，etcd会立刻从treeIndex和boltdb中删除此数据吗？还是增加一个标记实现延迟删除（lazy delete）呢？</p>
+<p>答案为etcd实现的是延期删除模式，原理与key更新类似。</p>
+<p>与更新key不一样之处在于，一方面，生成的boltdb key版本号{4,0,t}追加了删除标识（tombstone,简写t），boltdb value变成只含用户key的KeyValue结构体。另一方面treeIndex模块也会给此key hello对应的keyIndex对象，追加一个空的generation对象，表示此索引对应的key被删除了。</p>
+<p>当你再次查询hello的时候，treeIndex模块根据key hello查找到keyindex对象后，若发现其存在空的generation对象，并且查询的版本号大于等于被删除时的版本号，则会返回空。</p>
+<p>etcdctl hello操作后的keyIndex的结果如下面所示：</p>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">key hello的keyIndex:</span><br><span class="line"><span class="section">key:     &quot;hello&quot;</span></span><br><span class="line"><span class="section">modified: &lt;4,0&gt;</span></span><br><span class="line"><span class="section">generations:</span></span><br><span class="line">[</span><br><span class="line"><span class="section">&#123;ver:3,created:&lt;2,0&gt;,revisions: [&lt;2,0&gt;,&lt;3,0&gt;,&lt;4,0&gt;(t)]&#125;，             </span></span><br><span class="line">&#123;empty&#125;</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+<p>boltdb此时会插入一个新的key revision{4,0,t}，此时存储到boltdb中的key-value数据如下：</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://penge666blog.oss-cn-beijing.aliyuncs.com/img/image-20240606163836986.png" alt="image-20240606163836986"></p>
+<p>那么key打上删除标记后有哪些用途呢？什么时候会真正删除它呢？</p>
+<p>一方面删除key时会生成events，Watch模块根据key的删除标识，会生成对应的Delete事件。</p>
+<p>另一方面，当你重启etcd，遍历boltdb中的key构建treeIndex内存树时，你需要知道哪些key是已经被删除的，并为对应的key索引生成tombstone标识。而真正删除treeIndex中的索引对象、boltdb中的key是通过压缩(compactor)组件异步完成。</p>
+<p>正因为etcd的删除key操作是基于以上延期删除原理实现的，因此只要压缩组件未回收历史版本，我们就能从etcd中找回误删的数据。</p>
+<h2 id="小结">小结</h2>
+<p>最后我们来小结下今天的内容，我通过MVCC特性初体验中的更新、查询、删除key案例，为你分析了MVCC整体架构、核心模块，它由treeIndex、boltdb组成。</p>
+<p>treeIndex模块基于Google开源的btree库实现，它的核心数据结构keyIndex，保存了用户key与版本号关系。每次修改key都会生成新的版本号，生成新的boltdb key-value。boltdb的key为版本号，value包含用户key-value、各种版本号、lease的mvccpb.KeyValue结构体。</p>
+<p>当你未带版本号查询key时，etcd返回的是key最新版本数据。当你指定版本号读取数据时，etcd实际上返回的是版本号生成那个时间点的快照数据。</p>
+<p>删除一个数据时，etcd并未真正删除它，而是基于lazy delete实现的异步删除。删除原理本质上与更新操作类似，只不过boltdb的key会打上删除标记，keyIndex索引中追加空的generation。真正删除key是通过etcd的压缩组件去异步实现的，在后面的课程里我会继续和你深入介绍。</p>
+<p>基于以上原理特性的实现，etcd实现了保存key历史版本的功能，是高可靠Watch机制的基础。基于key-value中的各种版本号信息，etcd可提供各种级别的简易事务隔离能力。基于Backend/boltdb提供的MVCC机制，etcd可实现读写不冲突。</p>
+</article><div class="post-copyright"><div class="post-copyright__title"><span class="post-copyright-info"><h>etcd中的MVCC</h></span></div><div class="post-copyright__type"><span class="post-copyright-info"><a href="https://penge666.github.io/posts/ebe68de0.html">https://penge666.github.io/posts/ebe68de0.html</a></span></div><div class="post-copyright-m"><div class="post-copyright-m-info"><div class="post-copyright-a"><h>作者</h><div class="post-copyright-cc-info"><h>Penge666</h></div></div><div class="post-copyright-c"><h>发布于</h><div class="post-copyright-cc-info"><h>2024-06-06</h></div></div><div class="post-copyright-u"><h>更新于</h><div class="post-copyright-cc-info"><h>2024-06-06</h></div></div><div class="post-copyright-c"><h>许可协议</h><div class="post-copyright-cc-info"><a class="icon" rel="noopener" target="_blank" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a><a rel="noopener" target="_blank" title="CC BY-NC-SA 4.0" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a></div></div></div></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/"><div class="tags-punctuation"><svg class="faa-tada icon" style="height:1.1em;width:1.1em;fill:currentColor;position:relative;top:2px;margin-right:3px" aria-hidden="true"><use xlink:href="#icon-sekuaibiaoqian"></use></svg></div>数据库</a><a class="post-meta__tags" href="/tags/etcd/"><div class="tags-punctuation"><svg class="faa-tada icon" style="height:1.1em;width:1.1em;fill:currentColor;position:relative;top:2px;margin-right:3px" aria-hidden="true"><use xlink:href="#icon-sekuaibiaoqian"></use></svg></div>etcd</a></div></div><link rel="stylesheet" href="/css/coin.css" media="defer" onload="this.media='all'"/><div class="post-reward"><button class="tip-button reward-button"><span class="tip-button__text">投喂作者</span><div class="coin-wrapper"><div class="coin"><div class="coin__middle"></div><div class="coin__back"></div><div class="coin__front"></div></div></div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="https://tuchuang.voooe.cn/images/2023/01/04/2.webp" target="_blank"><img class="post-qr-code-img" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://tuchuang.voooe.cn/images/2023/01/04/2.webp" alt="微信"/></a><div class="post-qr-code-desc">微信</div></li><li class="reward-item"><a href="https://tuchuang.voooe.cn/images/2023/01/04/20f8e49805975b8f8.webp" target="_blank"><img class="post-qr-code-img" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://tuchuang.voooe.cn/images/2023/01/04/20f8e49805975b8f8.webp" alt="支付宝"/></a><div class="post-qr-code-desc">支付宝</div></li></ul></div></button></div><audio id="coinAudio" src="https://npm.elemecdn.com/akilar-candyassets@1.0.36/audio/aowu.m4a"></audio><script defer="defer" src="/js/coin.js"></script><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/posts/a5b7770b.html"><img class="next-cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/assets/photo1/default_cover_108.webp" onerror="onerror=null;src='/assets/r2.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Raft论文</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/posts/69dcf386.html" title="Memcached笔记"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/assets/photo1/default_cover_17.webp" alt="cover"><div class="content is-center"><div class="date"><i class="fas fa-history fa-fw"></i> 2024-05-27</div><div class="title">Memcached笔记</div></div></a></div><div><a href="/posts/b5f22718.html" title="LSM-Tree"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/assets/photo1/default_cover_13.webp" alt="cover"><div class="content is-center"><div class="date"><i class="fas fa-history fa-fw"></i> 2024-05-28</div><div class="title">LSM-Tree</div></div></a></div><div><a href="/posts/5f51f1dd.html" title="聊聊MVCC"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/assets/photo1/default_cover_72.webp" alt="cover"><div class="content is-center"><div class="date"><i class="fas fa-history fa-fw"></i> 2024-06-02</div><div class="title">聊聊MVCC</div></div></a></div><div><a href="/posts/b79fdeab.html" title="MongoDB基础笔记"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/assets/photo1/default_cover_117.webp" alt="cover"><div class="content is-center"><div class="date"><i class="fas fa-history fa-fw"></i> 2024-06-02</div><div class="title">MongoDB基础笔记</div></div></a></div><div><a href="/posts/7d025ae5.html" title="redis实战项目"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/assets/photo1/default_cover_113.webp" alt="cover"><div class="content is-center"><div class="date"><i class="fas fa-history fa-fw"></i> 2024-06-03</div><div class="title">redis实战项目</div></div></a></div><div><a href="/posts/1bd023c5.html" title="Redis实战"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/assets/photo1/default_cover_136.webp" alt="cover"><div class="content is-center"><div class="date"><i class="fas fa-history fa-fw"></i> 2024-06-04</div><div class="title">Redis实战</div></div></a></div></div></div><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="twikoo-wrap"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><svg class="meta_icon" style="width:22px;height:22px;position:relative;top:5px"><use xlink:href="#icon-mulu1"></use></svg><span style="font-weight:bold">目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFMVCC"><span class="toc-text">什么是MVCC</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#MVCC%E7%89%B9%E6%80%A7%E5%88%9D%E4%BD%93%E9%AA%8C"><span class="toc-text">MVCC特性初体验</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B4%E4%BD%93%E6%9E%B6%E6%9E%84"><span class="toc-text">整体架构</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#treeIndex%E5%8E%9F%E7%90%86"><span class="toc-text">treeIndex原理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#MVCC%E6%9B%B4%E6%96%B0key%E5%8E%9F%E7%90%86"><span class="toc-text">MVCC更新key原理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#MVCC%E6%9F%A5%E8%AF%A2key%E5%8E%9F%E7%90%86"><span class="toc-text">MVCC查询key原理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#MVCC%E5%88%A0%E9%99%A4key%E5%8E%9F%E7%90%86"><span class="toc-text">MVCC删除key原理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B0%8F%E7%BB%93"><span class="toc-text">小结</span></a></li></ol></div></div></div></div></main><footer id="footer" style="background-color: transparent;"><div id="footer-wrap"><div id="ft"><div class="ft-item-1"><div class="t-top"><div class="t-t-l"><p class="ft-t t-l-t">格言🧬</p><div class="bg-ad"><div>用勇气改变可以改变的事，用胸怀接受不能接受的事，用智慧分辨两者的不同✨</div><div class="btn-xz-box"><a class="btn-xz" target="_blank" rel="noopener" href="https://github.com/Penge666/">点击开启星辰之旅</a></div></div></div><div class="t-t-r"><p class="ft-t t-l-t">猜你想看💡</p><ul class="ft-links"><li><a href="/posts/eec9786.html">惊喜网站</a><a href="/box/nav/">网址导航</a></li><li><a href="/social/link/">我的朋友</a><a href="/comments/">留点什么</a></li><li><a href="/personal/about/">关于作者</a><a href="/archives/">文章归档</a></li><li><a href="/categories/">文章分类</a><a href="/tags/">文章标签</a></li></ul></div></div></div><div class="ft-item-2"><p class="ft-t">推荐友链⌛</p><div class="ft-img-group"><div class="img-group-item"><a target="_blank" rel="noopener" href="https://www.fomal.cc/" title="Fomalhaut🥝"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://lskypro.acozycotage.net/LightPicture/2022/12/60e5d4e39da7c077.webp" alt=""/></a></div><div class="img-group-item"><a href="javascript:void(0)" title="广告位招租"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://lskypro.acozycotage.net/LightPicture/2022/12/65307a5828af6790.webp" alt=""/></a></div><div class="img-group-item"><a href="javascript:void(0)" title="广告位招租"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://lskypro.acozycotage.net/LightPicture/2022/12/65307a5828af6790.webp" alt=""/></a></div><div class="img-group-item"><a href="javascript:void(0)" title="广告位招租"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://lskypro.acozycotage.net/LightPicture/2022/12/65307a5828af6790.webp" alt=""/></a></div><div class="img-group-item"><a href="javascript:void(0)" title="广告位招租"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://lskypro.acozycotage.net/LightPicture/2022/12/65307a5828af6790.webp" alt=""/></a></div><div class="img-group-item"><a href="javascript:void(0)" title="广告位招租"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://lskypro.acozycotage.net/LightPicture/2022/12/65307a5828af6790.webp" alt=""/></a></div><div class="img-group-item"><a href="javascript:void(0)" title="广告位招租"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://lskypro.acozycotage.net/LightPicture/2022/12/65307a5828af6790.webp" alt=""/></a></div><div class="img-group-item"><a href="javascript:void(0)" title="广告位招租"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://lskypro.acozycotage.net/LightPicture/2022/12/65307a5828af6790.webp" alt=""/></a></div></div></div></div><div class="copyright"><span><b>&copy;2022-2024</b></span><span><b>&nbsp;&nbsp;By Penge666</b></span></div><div id="workboard"></div><p id="ghbdages"><a class="github-badge" target="_blank" href="https://hexo.io/" style="margin-inline:5px" title="博客框架为Hexo_v6.3.0"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://sourcebucket.s3.ladydaily.com/badge/Frame-Hexo-blue.svg" alt=""/></a><a class="github-badge" target="_blank" href="https://butterfly.js.org/" style="margin-inline:5px" title="主题版本Butterfly_v4.3.1"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://sourcebucket.s3.ladydaily.com/badge/Theme-Butterfly-6513df.svg" alt=""/></a><a class="github-badge" target="_blank" href="https://vercel.com/" style="margin-inline:5px" title="本站采用多线部署，主线路托管于Vercel"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://sourcebucket.s3.ladydaily.com/badge/Hosted-Vercel-brightgreen.svg" alt=""/></a><a class="github-badge" target="_blank" href="https://user.51.la/" style="margin-inline:5px" title="本站数据分析得益于51la技术支持"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://sourcebucket.s3.ladydaily.com/badge/Analytics-51la-3db1eb.svg" alt=""/></a><a class="github-badge" target="_blank" href="https://icp.gov.moe/?keyword=20226665" style="margin-inline:5px" title="本站已加入萌ICP豪华套餐，萌ICP备20226665号"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://sourcebucket.s3.ladydaily.com/badge/萌ICP备-20226665-fe1384.svg" alt=""/></a><a class="github-badge" target="_blank" href="https://bitiful.dogecast.com/buckets" style="margin-inline:5px" title="本网站经Service Worker分流至缤纷云对象存储"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src=" https://sourcebucket.s3.ladydaily.com/badge/Bucket-缤纷云-9c62da.svg" alt=""/></a><a class="github-badge" target="_blank" href="https://www.netdun.net/" style="margin-inline:5px" title="本站使用网盾星球提供CDN加速与防护"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://sourcebucket.s3.ladydaily.com/badge/CDN-网盾星球-fff2cc.svg" alt=""/></a><a class="github-badge" target="_blank" href="https://github.com/" style="margin-inline:5px" title="本网站源码由Github提供存储仓库"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src=" https://sourcebucket.s3.ladydaily.com/badge/Source-Github-d021d6.svg" alt=""/></a></p></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><a class="icon-V hidden" onclick="switchNightMode()" title="浅色和深色模式转换"><svg width="25" height="25" viewBox="0 0 1024 1024"><use id="modeicon" xlink:href="#icon-moon"></use></svg></a><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button><button class="share" type="button" title="右键模式" onclick="changeMouseMode()"><i class="fas fa-mouse"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog right_side"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button class="share" type="button" title="分享链接" onclick="share()"><i class="fas fa-share-nodes"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i><span id="percent">0<span>%</span></span></button><button id="go-down" type="button" title="直达底部" onclick="btf.scrollToDest(document.body.scrollHeight, 500)"><i class="fas fa-arrow-down"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div class="js-pjax" id="rightMenu"><div class="rightMenu-group rightMenu-small"><a class="rightMenu-item" href="javascript:window.history.back();"><i class="fa fa-arrow-left"></i></a><a class="rightMenu-item" href="javascript:window.history.forward();"><i class="fa fa-arrow-right"></i></a><a class="rightMenu-item" href="javascript:window.location.reload();"><i class="fa fa-refresh"></i></a><a class="rightMenu-item" href="javascript:rmf.scrollToTop();"><i class="fa fa-arrow-up"></i></a></div><div class="rightMenu-group rightMenu-line hide" id="menu-text"><a class="rightMenu-item" href="javascript:rmf.copySelect();"><i class="fa fa-copy"></i><span>复制</span></a><a class="rightMenu-item" href="javascript:window.open(&quot;https://www.baidu.com/s?wd=&quot;+window.getSelection().toString());window.location.reload();"><i class="fa fa-search"></i><span>百度搜索</span></a></div><div class="rightMenu-group rightMenu-line hide" id="menu-too"><a class="rightMenu-item" href="javascript:window.open(window.getSelection().toString());window.location.reload();"><i class="fa fa-link"></i><span>转到链接</span></a></div><div class="rightMenu-group rightMenu-line hide" id="menu-paste"><a class="rightMenu-item" href="javascript:rmf.paste()"><i class="fa fa-copy"></i><span>粘贴</span></a></div><div class="rightMenu-group rightMenu-line hide" id="menu-post"><a class="rightMenu-item" href="#post-comment"><i class="fas fa-comment"></i><span>空降评论</span></a><a class="rightMenu-item" href="javascript:rmf.copyWordsLink()"><i class="fa fa-link"></i><span>复制本文地址</span></a></div><div class="rightMenu-group rightMenu-line hide" id="menu-to"><a class="rightMenu-item" href="javascript:rmf.openWithNewTab()"><i class="fa fa-window-restore"></i><span>新窗口打开</span></a><a class="rightMenu-item" id="menu-too" href="javascript:rmf.open()"><i class="fa fa-link"></i><span>转到链接</span></a><a class="rightMenu-item" href="javascript:rmf.copyLink()"><i class="fa fa-copy"></i><span>复制链接</span></a></div><div class="rightMenu-group rightMenu-line hide" id="menu-img"><a class="rightMenu-item" href="javascript:rmf.saveAs()"><i class="fa fa-download"></i><span>保存图片</span></a><a class="rightMenu-item" href="javascript:rmf.openWithNewTab()"><i class="fa fa-window-restore"></i><span>在新窗口打开</span></a><a class="rightMenu-item" href="javascript:rmf.copyLink()"><i class="fa fa-copy"></i><span>复制图片链接</span></a></div><div class="rightMenu-group rightMenu-line"><a class="rightMenu-item" href="javascript:randomPost()"><i class="fa fa-paper-plane"></i><span>随便逛逛</span></a><a class="rightMenu-item" href="javascript:switchNightMode();"><i class="fa fa-moon"></i><span>昼夜切换</span></a><a class="rightMenu-item" href="/personal/about/"><i class="fa fa-info-circle"></i><span>关于博客</span></a><a class="rightMenu-item" href="javascript:toggleWinbox();"><i class="fas fa-cog"></i><span>美化设置</span></a><a class="rightMenu-item" href="javascript:rmf.fullScreen();"><i class="fas fa-expand"></i><span>切换全屏</span></a><a class="rightMenu-item" href="javascript:window.print();"><i class="fa-solid fa-print"></i><span>打印页面</span></a></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.staticfile.org/fancyapps-ui/4.0.31/fancybox.umd.min.js"></script><script src="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/instant.page/5.1.0/instantpage.min.js" type="module"></script><script src="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/vanilla-lazyload/17.3.1/lazyload.iife.min.js"></script><script src="/js/search/local-search.js"></script><script async="async">var preloader = {
+  endLoading: () => {
+    document.body.style.overflow = 'auto';
+    document.getElementById('loading-box').classList.add("loaded")
+  },
+  initLoading: () => {
+    document.body.style.overflow = '';
+    document.getElementById('loading-box').classList.remove("loaded")
+
+  }
+}
+window.addEventListener('load',preloader.endLoading())
+setTimeout(function(){preloader.endLoading();}, 5000);
+document.getElementById('loading-box').addEventListener('click',()=> {preloader.endLoading()})</script><div class="js-pjax"><script>if (!window.MathJax) {
+  window.MathJax = {
+    tex: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"]],
+      tags: 'ams'
+    },
+    chtml: {
+      scale: 1.2
+    },
+    options: {
+      renderActions: {
+        findScript: [10, doc => {
+          for (const node of document.querySelectorAll('script[type^="math/tex"]')) {
+            const display = !!node.type.match(/; *mode=display/)
+            const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display)
+            const text = document.createTextNode('')
+            node.parentNode.replaceChild(text, node)
+            math.start = {node: text, delim: '', n: 0}
+            math.end = {node: text, delim: '', n: 0}
+            doc.math.push(math)
+          }
+        }, ''],
+        insertScript: [200, () => {
+          document.querySelectorAll('mjx-container:not\([display]\)').forEach(node => {
+            const target = node.parentNode
+            if (target.nodeName.toLowerCase() === 'li') {
+              target.parentNode.classList.add('has-jax')
+            } else {
+              target.classList.add('has-jax')
+            }
+          });
+        }, '', false]
+      }
+    }
+  }
+  
+  const script = document.createElement('script')
+  script.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.min.js'
+  script.id = 'MathJax-script'
+  script.async = true
+  document.head.appendChild(script)
+} else {
+  MathJax.startup.document.state(0)
+  MathJax.texReset()
+  MathJax.typeset()
+}</script><script>(()=>{
+  const init = () => {
+    twikoo.init(Object.assign({
+      el: '#twikoo-wrap',
+      envId: '',
+      region: '',
+      onCommentLoaded: function () {
+        btf.loadLightbox(document.querySelectorAll('#twikoo .tk-content img:not(.tk-owo-emotion)'))
+      }
+    }, null))
+  }
+
+  const getCount = () => {
+    const countELement = document.getElementById('twikoo-count')
+    if(!countELement) return
+    twikoo.getCommentsCount({
+      envId: '',
+      region: '',
+      urls: [window.location.pathname],
+      includeReply: false
+    }).then(function (res) {
+      countELement.innerText = res[0].count
+    }).catch(function (err) {
+      console.error(err);
+    });
+  }
+
+  const runFn = () => {
+    init()
+    
+  }
+
+  const loadTwikoo = () => {
+    if (typeof twikoo === 'object') {
+      setTimeout(runFn,0)
+      return
+    } 
+    getScript('https://cdn.staticfile.org/twikoo/1.6.8/twikoo.all.min.js').then(runFn)
+  }
+
+  if ('Twikoo' === 'Twikoo' || !true) {
+    if (true) btf.loadComment(document.getElementById('twikoo-wrap'), loadTwikoo)
+    else loadTwikoo()
+  } else {
+    window.loadOtherComment = () => {
+      loadTwikoo()
+    }
+  }
+})()</script></div><script src="https://cdn.staticfile.org/jquery/3.6.3/jquery.min.js"></script><script async src="https://cdn1.tianli0.top/npm/vue@2.6.14/dist/vue.min.js"></script><script async src="https://cdn1.tianli0.top/npm/element-ui@2.15.6/lib/index.js"></script><script async src="https://cdn.bootcdn.net/ajax/libs/clipboard.js/2.0.11/clipboard.min.js"></script><script defer type="text/javascript" src="https://cdn1.tianli0.top/npm/sweetalert2@8.19.0/dist/sweetalert2.all.js"></script><script async src="//npm.elemecdn.com/pace-js@1.2.4/pace.min.js"></script><script defer src="https://cdn1.tianli0.top/gh/nextapps-de/winbox/dist/winbox.bundle.min.js"></script><script async src="//at.alicdn.com/t/c/font_3586335_hsivh70x0fm.js"></script><script async src="//at.alicdn.com/t/c/font_3636804_gr02jmjr3y9.js"></script><script async src="//at.alicdn.com/t/c/font_3612150_kfv55xn3u2g.js"></script><script async src="https://cdn.wpon.cn/2022-sucai/Gold-ingot.js"></script><canvas id="universe"></canvas><canvas id="snow"></canvas><script defer src="/js/fomal.js"></script><link rel="stylesheet" href="https://lf6-cdn-tos.bytecdntp.com/cdn/expire-1-M/aplayer/1.10.1/APlayer.min.css" media="print" onload="this.media='all'"><script src="https://lf6-cdn-tos.bytecdntp.com/cdn/expire-1-M/aplayer/1.10.1/APlayer.min.js"></script><script src="https://cdn1.tianli0.top/npm/js-heo@1.0.12/metingjs/Meting.min.js"></script><script src="https://lib.baomitu.com/pjax/0.2.8/pjax.min.js"></script><script>let pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show","#web_bg",".js-pjax","#bibi","body > title","#app","#tag-echarts","#posts-echart","#categories-echarts"]
+
+var pjax = new Pjax({
+  elements: 'a:not([target="_blank"])',
+  selectors: pjaxSelectors,
+  cacheBust: false,
+  analytics: false,
+  scrollRestoration: false
+})
+
+document.addEventListener('pjax:send', function () {
+
+  // removeEventListener scroll 
+  window.tocScrollFn && window.removeEventListener('scroll', window.tocScrollFn)
+  window.scrollCollect && window.removeEventListener('scroll', scrollCollect)
+
+  typeof preloader === 'object' && preloader.initLoading()
+  document.getElementById('rightside').style.cssText = "opacity: ''; transform: ''"
+  
+  if (window.aplayers) {
+    for (let i = 0; i < window.aplayers.length; i++) {
+      if (!window.aplayers[i].options.fixed) {
+        window.aplayers[i].destroy()
+      }
+    }
+  }
+
+  typeof typed === 'object' && typed.destroy()
+
+  //reset readmode
+  const $bodyClassList = document.body.classList
+  $bodyClassList.contains('read-mode') && $bodyClassList.remove('read-mode')
+
+  typeof disqusjs === 'object' && disqusjs.destroy()
+})
+
+document.addEventListener('pjax:complete', function () {
+  window.refreshFn()
+
+  document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+  })
+
+  GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+  typeof chatBtnFn === 'function' && chatBtnFn()
+  typeof panguInit === 'function' && panguInit()
+
+  // google analytics
+  typeof gtag === 'function' && gtag('config', '', {'page_path': window.location.pathname});
+
+  // baidu analytics
+  typeof _hmt === 'object' && _hmt.push(['_trackPageview',window.location.pathname]);
+
+  typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
+
+  // prismjs
+  typeof Prism === 'object' && Prism.highlightAll()
+
+  typeof preloader === 'object' && preloader.endLoading()
+})
+
+document.addEventListener('pjax:error', (e) => {
+  if (e.request.status === 404) {
+    pjax.loadUrl('/404.html')
+  }
+})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div><!-- hexo injector body_end start --> <script data-pjax>if(document.getElementById('recent-posts') && (location.pathname ==='/'|| '/' ==='all')){
+    var parent = document.getElementById('recent-posts');
+    var child = '<div class="recent-post-item" style="width:100%;height: auto"><div id="catalog_magnet"><div class="magnet_item"><a class="magnet_link" href="https://Penge666.github.io/categories/分布式/"><div class="magnet_link_context" style=""><span style="font-weight:500;flex:1">🍡 Kevinの分布式学习笔记 (6)</span><span style="padding:0px 4px;border-radius: 8px;"><i class="fas fa-arrow-circle-right"></i></span></div></a></div><div class="magnet_item"><a class="magnet_link" href="https://Penge666.github.io/categories/操作系统/"><div class="magnet_link_context" style=""><span style="font-weight:500;flex:1">🍉 Kevinの操作系统笔记 (3)</span><span style="padding:0px 4px;border-radius: 8px;"><i class="fas fa-arrow-circle-right"></i></span></div></a></div><div class="magnet_item"><a class="magnet_link" href="https://Penge666.github.io/categories/Cpp/"><div class="magnet_link_context" style=""><span style="font-weight:500;flex:1">🍟 KevinのCpp基础笔记 (23)</span><span style="padding:0px 4px;border-radius: 8px;"><i class="fas fa-arrow-circle-right"></i></span></div></a></div><div class="magnet_item"><a class="magnet_link" href="https://Penge666.github.io/categories/数据库/"><div class="magnet_link_context" style=""><span style="font-weight:500;flex:1">🍨 Kevinの数据库笔记 (6)</span><span style="padding:0px 4px;border-radius: 8px;"><i class="fas fa-arrow-circle-right"></i></span></div></a></div><div class="magnet_item"><a class="magnet_link" href="https://Penge666.github.io/categories/Redis/数据库/"><div class="magnet_link_context" style=""><span style="font-weight:500;flex:1">🍨 Kevinの数据库笔记 (1)</span><span style="padding:0px 4px;border-radius: 8px;"><i class="fas fa-arrow-circle-right"></i></span></div></a></div><div class="magnet_item" style="visibility: hidden"></div><a class="magnet_link_more"  href="https://Penge666.github.io/categories/" style="flex:1;text-align: center;margin-bottom: 10px;">查看更多...</a></div></div>';
+    console.log('已挂载magnet')
+    parent.insertAdjacentHTML("afterbegin",child)}
+     </script><style>#catalog_magnet{flex-wrap: wrap;display: flex;width:100%;justify-content:space-between;padding: 10px 10px 0 10px;align-content: flex-start;}.magnet_item{flex-basis: calc(33.333333333333336% - 5px);background: #e9e9e9;margin-bottom: 10px;border-radius: 8px;transition: all 0.2s ease-in-out;}.magnet_item:hover{background: var(--text-bg-hover)}.magnet_link_more{color:#555}.magnet_link{color:black}.magnet_link:hover{color:white}@media screen and (max-width: 600px) {.magnet_item {flex-basis: 100%;}}.magnet_link_context{display:flex;padding: 10px;font-size:16px;transition: all 0.2s ease-in-out;}.magnet_link_context:hover{padding: 10px 20px;}</style>
+    <style></style><script data-pjax>
+  function butterfly_swiper_injector_config(){
+    var parent_div_git = document.getElementById('recent-posts');
+    var item_html = '<div class="recent-post-item" style="height: auto;width: 100%"><div class="blog-slider swiper-container-fade swiper-container-horizontal" id="swiper_container"><div class="blog-slider__wrp swiper-wrapper" style="transition-duration: 0ms;"><div class="blog-slider__item swiper-slide" style="width: 750px; opacity: 1; transform: translate3d(0px, 0px, 0px); transition-duration: 0ms;"><a class="blog-slider__img" onclick="pjax.loadUrl(&quot;posts/2013454d.html&quot;);" href="javascript:void(0);" alt=""><img width="48" height="48" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/assets/photo1/default_cover_20.webp" alt="" onerror="this.src=https://unpkg.zhimg.com/akilar-candyassets/image/loading.gif; this.onerror = null;"/></a><div class="blog-slider__content"><span class="blog-slider__code">2023-08-09</span><a class="blog-slider__title" onclick="pjax.loadUrl(&quot;posts/2013454d.html&quot;);" href="javascript:void(0);" alt="">Markdown语法与外挂标签写法汇总</a><div class="blog-slider__text">🥧本文汇总Markdown格式以及外挂标签在网页端的渲染效果，可作为文档进行查询</div><a class="blog-slider__button" onclick="pjax.loadUrl(&quot;posts/2013454d.html&quot;);" href="javascript:void(0);" alt="">详情       </a></div></div></div><div class="blog-slider__pagination swiper-pagination-clickable swiper-pagination-bullets"></div></div></div>';
+    console.log('已挂载butterfly_swiper')
+    parent_div_git.insertAdjacentHTML("afterbegin",item_html)
+    }
+  var elist = 'undefined'.split(',');
+  var cpage = location.pathname;
+  var epage = '/';
+  var flag = 0;
+
+  for (var i=0;i<elist.length;i++){
+    if (cpage.includes(elist[i])){
+      flag++;
+    }
+  }
+
+  if ((epage ==='all')&&(flag == 0)){
+    butterfly_swiper_injector_config();
+  }
+  else if (epage === cpage){
+    butterfly_swiper_injector_config();
+  }
+  </script><script defer src="https://npm.elemecdn.com/hexo-butterfly-swiper/lib/swiper.min.js"></script><script defer data-pjax src="https://npm.elemecdn.com/hexo-butterfly-swiper/lib/swiper_init.js"></script><div class="js-pjax"><script async="async">var arr = document.getElementsByClassName('recent-post-item');
+for(var i = 0;i<arr.length;i++){
+    arr[i].classList.add('wow');
+    arr[i].classList.add('animate__zoomIn');
+    arr[i].setAttribute('data-wow-duration', '2s');
+    arr[i].setAttribute('data-wow-delay', '200ms');
+    arr[i].setAttribute('data-wow-offset', '30');
+    arr[i].setAttribute('data-wow-iteration', '1');
+  }</script><script async="async">var arr = document.getElementsByClassName('card-widget');
+for(var i = 0;i<arr.length;i++){
+    arr[i].classList.add('wow');
+    arr[i].classList.add('animate__zoomIn');
+    arr[i].setAttribute('data-wow-duration', '2s');
+    arr[i].setAttribute('data-wow-delay', '200ms');
+    arr[i].setAttribute('data-wow-offset', '30');
+    arr[i].setAttribute('data-wow-iteration', '1');
+  }</script></div><script defer src="https://npm.elemecdn.com/hexo-butterfly-wowjs/lib/wow.min.js"></script><script defer src="https://npm.elemecdn.com/hexo-butterfly-wowjs/lib/wow_init.js"></script><script data-pjax src="https://npm.elemecdn.com/hexo-filter-gitcalendar/lib/gitcalendar.js"></script><script data-pjax>
+  function gitcalendar_injector_config(){
+      var parent_div_git = document.getElementById('gitZone');
+      var item_html = '<div class="recent-post-item" id="gitcalendarBar" style="width:100%;height:auto;padding:10px;"><style>#git_container{min-height: 320px}@media screen and (max-width:650px) {#git_container{min-height: 0px}}</style><div id="git_loading" style="width:10%;height:100%;margin:0 auto;display: block;"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 50 50" style="enable-background:new 0 0 50 50" xml:space="preserve"><path fill="#d0d0d0" d="M25.251,6.461c-10.318,0-18.683,8.365-18.683,18.683h4.068c0-8.071,6.543-14.615,14.615-14.615V6.461z" transform="rotate(275.098 25 25)"><animatetransform attributeType="xml" attributeName="transform" type="rotate" from="0 25 25" to="360 25 25" dur="0.6s" repeatCount="indefinite"></animatetransform></path></svg><style>#git_container{display: none;}</style></div><div id="git_container"></div></div>';
+      parent_div_git.insertAdjacentHTML("afterbegin",item_html)
+      console.log('已挂载gitcalendar')
+      }
+
+    if( document.getElementById('gitZone') && (location.pathname ==='/site/census/'|| '/site/census/' ==='all')){
+        gitcalendar_injector_config()
+        GitCalendarInit("/api?null",['#d9e0df', '#c6e0dc', '#a8dcd4', '#9adcd2', '#89ded1', '#77e0d0', '#5fdecb', '#47dcc6', '#39dcc3', '#1fdabe', '#00dab9'],'null')
+    }
+  </script><!-- hexo injector body_end end --></body></html>
