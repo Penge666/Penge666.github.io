@@ -1,0 +1,832 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><div id="myscoll"></div><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>SSM面经 | Penge666</title><meta name="keywords" content="Java"><meta name="author" content="Penge666"><meta name="copyright" content="Penge666"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="ffffff"><meta name="description" content="SSM面经">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SSM面经">
+<meta property="og:url" content="https://penge666.github.io/posts/7a87de03.html">
+<meta property="og:site_name" content="Penge666">
+<meta property="og:description" content="SSM面经">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://penge666.github.io/assets/photo1/default_cover_23.webp">
+<meta property="article:published_time" content="2024-01-07T12:22:52.000Z">
+<meta property="article:modified_time" content="2024-10-07T13:50:28.253Z">
+<meta property="article:author" content="Penge666">
+<meta property="article:tag" content="Java">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://penge666.github.io/assets/photo1/default_cover_23.webp"><link rel="shortcut icon" href="/"><link rel="canonical" href="https://penge666.github.io/posts/7a87de03"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://lf6-cdn-tos.bytecdntp.com/cdn/expire-1-M/font-awesome/6.0.0/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.staticfile.org/fancyapps-ui/4.0.31/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":true,"languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: {"limitDay":365,"position":"top","messagePrev":"It has been","messageNext":"days since the last update, the content of the article may be outdated."},
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":230},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: true,
+    post: true
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdnjs.cloudflare.com/ajax/libs/flickr-justified-gallery/2.1.2/fjGallery.min.js',
+      css: 'https://cdnjs.cloudflare.com/ajax/libs/flickr-justified-gallery/2.1.2/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isAnchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'SSM面经',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-10-07 21:50:28'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          const now = new Date()
+          const hour = now.getHours()
+          const isNight = hour <= 6 || hour >= 18
+          if (t === undefined) isNight ? activateDarkMode() : activateLightMode()
+          else if (t === 'light') activateLightMode()
+          else activateDarkMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><link rel="stylesheet" href="https://cdn1.tianli0.top/npm/element-ui@2.15.6/packages/theme-chalk/lib/index.css"><style id="themeColor"></style><style id="rightSide"></style><style id="transPercent"></style><style id="blurNum"></style><style id="settingStyle"></style><span id="fps"></span><style id="defineBg"></style><style id="menu_shadow"></style><svg aria-hidden="true" style="position:absolute; overflow:hidden; width:0; height:0"><symbol id="icon-sun" viewBox="0 0 1024 1024"><path d="M960 512l-128 128v192h-192l-128 128-128-128H192v-192l-128-128 128-128V192h192l128-128 128 128h192v192z" fill="#FFD878" p-id="8420"></path><path d="M736 512a224 224 0 1 0-448 0 224 224 0 1 0 448 0z" fill="#FFE4A9" p-id="8421"></path><path d="M512 109.248L626.752 224H800v173.248L914.752 512 800 626.752V800h-173.248L512 914.752 397.248 800H224v-173.248L109.248 512 224 397.248V224h173.248L512 109.248M512 64l-128 128H192v192l-128 128 128 128v192h192l128 128 128-128h192v-192l128-128-128-128V192h-192l-128-128z" fill="#4D5152" p-id="8422"></path><path d="M512 320c105.888 0 192 86.112 192 192s-86.112 192-192 192-192-86.112-192-192 86.112-192 192-192m0-32a224 224 0 1 0 0 448 224 224 0 0 0 0-448z" fill="#4D5152" p-id="8423"></path></symbol><symbol id="icon-moon" viewBox="0 0 1024 1024"><path d="M611.370667 167.082667a445.013333 445.013333 0 0 1-38.4 161.834666 477.824 477.824 0 0 1-244.736 244.394667 445.141333 445.141333 0 0 1-161.109334 38.058667 85.077333 85.077333 0 0 0-65.066666 135.722666A462.08 462.08 0 1 0 747.093333 102.058667a85.077333 85.077333 0 0 0-135.722666 65.024z" fill="#FFB531" p-id="11345"></path><path d="M329.728 274.133333l35.157333-35.157333a21.333333 21.333333 0 1 0-30.165333-30.165333l-35.157333 35.157333-35.114667-35.157333a21.333333 21.333333 0 0 0-30.165333 30.165333l35.114666 35.157333-35.114666 35.157334a21.333333 21.333333 0 1 0 30.165333 30.165333l35.114667-35.157333 35.157333 35.157333a21.333333 21.333333 0 1 0 30.165333-30.165333z" fill="#030835" p-id="11346"></path></symbol></svg><!-- hexo injector head_end start --><link rel="stylesheet" href="https://npm.elemecdn.com/hexo-butterfly-swiper/lib/swiper.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://npm.elemecdn.com/hexo-butterfly-swiper/lib/swiperstyle.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://npm.elemecdn.com/hexo-butterfly-wowjs/lib/animate.min.css" media="print" onload="this.media='screen'"><link rel="stylesheet" href="https://npm.elemecdn.com/hexo-filter-gitcalendar/lib/gitcalendar.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://npm.elemecdn.com/hexo-butterfly-tag-plugins-plus@latest/lib/assets/font-awesome-animation.min.css" media="defer" onload="this.media='all'"><link rel="stylesheet" href="https://npm.elemecdn.com/hexo-butterfly-tag-plugins-plus@latest/lib/tag_plugins.css" media="defer" onload="this.media='all'"><script src="https://npm.elemecdn.com/hexo-butterfly-tag-plugins-plus@latest/lib/assets/carousel-touch.js"></script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="Penge666" type="application/atom+xml">
+</head><body><div id="loading-box" onclick="document.getElementById(&quot;loading-box&quot;).classList.add(&quot;loaded&quot;)"><div class="loading-bg"><div class="loading-img"></div><div class="loading-image-dot"></div></div></div><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/hhh.jpeg" onerror="onerror=null;src='/assets/r1.jpg'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">150</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">30</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">34</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page faa-parent animated-hover" href="/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-home"></use></svg><span class="menu_word" style="font-size:17px"> 首页</span></a></div><div class="menus_item"><a class="site-page faa-parent animated-hover" href="/archives/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-guidang1"></use></svg><span class="menu_word" style="font-size:17px"> 文章</span></a></div><div class="menus_item"><a class="site-page faa-parent animated-hover" href="/tags/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-sekuaibiaoqian"></use></svg><span class="menu_word" style="font-size:17px"> 标签</span></a></div><div class="menus_item"><a class="site-page faa-parent animated-hover" href="/categories/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-fenlei"></use></svg><span class="menu_word" style="font-size:17px"> 分类</span></a></div><div class="menus_item"><a class="site-page faa-parent animated-hover" href="/personal/about/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-paperplane"></use></svg><span class="menu_word" style="font-size:17px"> 个人</span></a></div><div class="menus_item"><a class="site-page group faa-parent animated-hover hide" href="javascript:void(0);"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-shejiaoxinxi"></use></svg><span class="menu_word" style="font-size:17px"> 社交</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/comments/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-liuyan">                   </use></svg><span class="menu_word" style="font-size:17px"> 留言板</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/social/link/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-lianjie">                   </use></svg><span class="menu_word" style="font-size:17px"> 友人帐</span></a></li></ul></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">Penge666</a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page faa-parent animated-hover" href="/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-home"></use></svg><span class="menu_word" style="font-size:17px"> 首页</span></a></div><div class="menus_item"><a class="site-page faa-parent animated-hover" href="/archives/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-guidang1"></use></svg><span class="menu_word" style="font-size:17px"> 文章</span></a></div><div class="menus_item"><a class="site-page faa-parent animated-hover" href="/tags/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-sekuaibiaoqian"></use></svg><span class="menu_word" style="font-size:17px"> 标签</span></a></div><div class="menus_item"><a class="site-page faa-parent animated-hover" href="/categories/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-fenlei"></use></svg><span class="menu_word" style="font-size:17px"> 分类</span></a></div><div class="menus_item"><a class="site-page faa-parent animated-hover" href="/personal/about/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-paperplane"></use></svg><span class="menu_word" style="font-size:17px"> 个人</span></a></div><div class="menus_item"><a class="site-page group faa-parent animated-hover hide" href="javascript:void(0);"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-shejiaoxinxi"></use></svg><span class="menu_word" style="font-size:17px"> 社交</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/comments/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-liuyan">                   </use></svg><span class="menu_word" style="font-size:17px"> 留言板</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/social/link/"><svg class="menu_icon faa-tada" aria-hidden="true" style="width:1.30em;height:1.30em;vertical-align:-0.15em;fill:currentColor;overflow:hidden;"><use xlink:href="#icon-lianjie">                   </use></svg><span class="menu_word" style="font-size:17px"> 友人帐</span></a></li></ul></div></div><center id="name-container"><a id="page-name" href="javascript:scrollToTop()">PAGE_NAME</a></center><div id="nav-right"><div id="search-button"><a class="search faa-parent animated-hover" title="检索站内任何你想要的信息"><svg class="faa-tada icon" style="height:24px;width:24px;fill:currentColor;position:relative;top:6px" aria-hidden="true"><use xlink:href="#icon-valentine_-search-love-find-heart"></use></svg><span> 搜索</span></a></div><a class="meihua faa-parent animated-hover" onclick="toggleWinbox()" title="美化设置-自定义你的风格" id="meihua-button"><svg class="faa-tada icon" style="height:26px;width:26px;fill:currentColor;position:relative;top:8px" aria-hidden="true"><use xlink:href="#icon-tupian1"></use></svg></a><a class="sun_moon faa-parent animated-hover" onclick="switchNightMode()" title="浅色和深色模式转换" id="nightmode-button"><svg class="faa-tada" style="height:25px;width:25px;fill:currentColor;position:relative;top:7px" viewBox="0 0 1024 1024"><use id="modeicon" xlink:href="#icon-moon">       </use></svg></a><div id="toggle-menu"><a><i class="fas fa-bars fa-fw"></i></a></div></div></div></nav><div id="post-info"><h1 class="post-title">SSM面经</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><svg class="meta_icon post-meta-icon" style="width:30px;height:30px;position:relative;top:10px"><use xlink:href="#icon-rili"></use></svg><span class="post-meta-label">发表于 </span><time class="post-meta-date-created" datetime="2024-01-07T12:22:52.000Z" title="发表于 2024-01-07 20:22:52">2024-01-07</time><span class="post-meta-separator">|</span><svg class="meta_icon post-meta-icon" style="width:18px;height:18px;position:relative;top:5px"><use xlink:href="#icon-gengxin1"></use></svg><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-10-07T13:50:28.253Z" title="更新于 2024-10-07 21:50:28">2024-10-07</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><svg class="meta_icon post-meta-icon" style="width:18px;height:18px;position:relative;top:5px"><use xlink:href="#icon-biaoqian"></use></svg><a class="post-meta-categories" href="/categories/Java/">Java</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><svg class="meta_icon post-meta-icon" style="width:25px;height:25px;position:relative;top:8px"><use xlink:href="#icon-charuword"></use></svg><span class="post-meta-label">字数总计:</span><span class="word-count">5451</span><span class="post-meta-separator">|</span><svg class="meta_icon post-meta-icon" style="width:20px;height:20px;position:relative;top:5px"><use xlink:href="#icon-shizhong"></use></svg><span class="post-meta-label">阅读时长:</span><span>18分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="SSM面经"><svg class="meta_icon post-meta-icon" style="width:25px;height:25px;position:relative;top:5px"><use xlink:href="#icon-eye"></use></svg><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div><section class="main-hero-waves-area waves-area"><svg class="waves-svg" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto"><defs><path id="gentle-wave" d="M -160 44 c 30 0 58 -18 88 -18 s 58 18 88 18 s 58 -18 88 -18 s 58 18 88 18 v 44 h -352 Z"></path></defs><g class="parallax"><use href="#gentle-wave" x="48" y="0"></use><use href="#gentle-wave" x="48" y="3"></use><use href="#gentle-wave" x="48" y="5"></use><use href="#gentle-wave" x="48" y="7"></use></g></svg></section></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="Spring">Spring</h2>
+<h3 id="IOC原理">IOC原理</h3>
+<p>待填坑</p>
+<h3 id="AOP原理">AOP原理</h3>
+<p>待填坑</p>
+<h3 id="依赖注入的方式">依赖注入的方式</h3>
+<p><strong>对比三种依赖注入方式</strong></p>
+<table>
+<thead>
+<tr>
+<th>特性</th>
+<th><strong>构造器注入</strong></th>
+<th><strong>Setter 注入</strong></th>
+<th><strong>字段注入</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>注入方式</strong></td>
+<td>通过构造器</td>
+<td>通过 Setter 方法</td>
+<td>直接注入到字段</td>
+</tr>
+<tr>
+<td><strong>依赖是否可选</strong></td>
+<td>必须注入，强制依赖</td>
+<td>可选依赖</td>
+<td>必须注入</td>
+</tr>
+<tr>
+<td><strong>是否可变</strong></td>
+<td>不可变，依赖一旦注入不可修改</td>
+<td>可变，可以随时修改依赖</td>
+<td>不可变</td>
+</tr>
+<tr>
+<td><strong>推荐程度</strong></td>
+<td>高，推荐的注入方式</td>
+<td>中，适合可选依赖</td>
+<td>低，不推荐使用</td>
+</tr>
+<tr>
+<td><strong>测试友好性</strong></td>
+<td>高，容易进行依赖替换和测试</td>
+<td>高，容易进行依赖替换和测试</td>
+<td>低，不容易进行依赖替换和测试</td>
+</tr>
+<tr>
+<td><strong>代码简洁性</strong></td>
+<td>需要构造器，代码稍多</td>
+<td>需要额外的 Setter 方法</td>
+<td>简洁，不需要构造器或 Setter</td>
+</tr>
+</tbody>
+</table>
+<h3 id="Spring中ApplicationContext和BeanFactory的区别">Spring中ApplicationContext和BeanFactory的区别</h3>
+<p><strong>总结</strong></p>
+<table>
+<thead>
+<tr>
+<th>特性</th>
+<th><code>BeanFactory</code></th>
+<th><code>ApplicationContext</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>基础功能</strong></td>
+<td>提供基本的依赖注入功能和 Bean 管理</td>
+<td>扩展了 <code>BeanFactory</code>，支持更多企业级功能</td>
+</tr>
+<tr>
+<td><strong>Bean 加载时机</strong></td>
+<td>按需加载（懒加载）</td>
+<td>启动时预实例化单例 Bean</td>
+</tr>
+<tr>
+<td><strong>事件机制</strong></td>
+<td>不支持事件发布和监听</td>
+<td>支持事件机制，例如 <code>ApplicationEvent</code></td>
+</tr>
+<tr>
+<td><strong>国际化支持</strong></td>
+<td>不支持</td>
+<td>支持国际化（<code>MessageSource</code>）</td>
+</tr>
+<tr>
+<td><strong>资源访问</strong></td>
+<td>不统一</td>
+<td>通过 <code>getResource()</code> 方法统一访问资源</td>
+</tr>
+<tr>
+<td><strong>生命周期管理</strong></td>
+<td>需要手动注册 <code>BeanPostProcessor</code> 等</td>
+<td>自动处理 Bean 生命周期，自动注册处理器</td>
+</tr>
+<tr>
+<td><strong>扩展功能</strong></td>
+<td>功能较为基础，扩展性有限</td>
+<td>支持 AOP、事务管理、扩展点更多</td>
+</tr>
+</tbody>
+</table>
+<h3 id="Autowired和Resource区别">Autowired和Resource区别</h3>
+<p><strong><code>@Autowired</code> 注解</strong></p>
+<p><code>@Autowired</code> 是 Spring 框架提供的注解，默认情况下它使用 <strong>byType</strong> 的方式进行依赖注入。</p>
+<p>特点：</p>
+<ul>
+<li><strong>默认按类型注入（byType）</strong>：<code>@Autowired</code> 会根据类型查找匹配的 Bean。如果找到多个相同类型的 Bean，Spring 会抛出异常。</li>
+<li><strong>可选按名称注入</strong>：可以配合 <code>@Qualifier</code> 注解使用，通过指定 Bean 的名称进行注入。</li>
+<li><strong>可以用于构造器、字段、setter方法</strong>。</li>
+<li><strong>自动注入</strong>：如果没有找到对应的 Bean，且 <code>required = true</code>，程序会抛出异常。可以通过设置 <code>required = false</code>，避免异常。</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">UserService</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 按类型注入，若有多个同类型的Bean，可以使用@Qualifier指定</span></span><br><span class="line">    <span class="meta">@Autowired(required = true)</span> </span><br><span class="line">    <span class="keyword">private</span> UserDao userDao;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 也可以通过构造器注入</span></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">UserService</span><span class="params">(UserDao userDao)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.userDao = userDao;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">performService</span><span class="params">()</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;Performing service with &quot;</span> + userDao.getData());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong><code>@Resource</code> 注解</strong></p>
+<p><code>@Resource</code> 是来自 <strong>Java EE（JDK）</strong> 的注解，它在 Spring 框架中也可以用来进行依赖注入。与 <code>@Autowired</code> 不同，<code>@Resource</code> 默认是 <strong>按名称（byName）</strong> 进行注入的。</p>
+<p>特点：</p>
+<ul>
+<li><strong>默认按名称注入（byName）</strong>：<code>@Resource</code> 会根据属性名称进行注入。如果名称没有匹配的 Bean，则会再尝试按类型注入。</li>
+<li><strong>可以用于字段、setter 方法</strong>，但不能用于构造器注入。</li>
+<li><strong>不支持 <code>@Qualifier</code></strong>，因此不能像 <code>@Autowired</code> 那样灵活地指定 Bean。</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">UserService</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 默认按名称注入，如果找不到名称匹配的Bean，会按类型注入</span></span><br><span class="line">    <span class="meta">@Resource(name = &quot;userDao&quot;)</span></span><br><span class="line">    <span class="keyword">private</span> UserDao userDao;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">performService</span><span class="params">()</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;Performing service with &quot;</span> + userDao.getData());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>区别</strong></p>
+<table>
+<thead>
+<tr>
+<th>特性</th>
+<th><strong><code>@Autowired</code></strong></th>
+<th><strong><code>@Resource</code></strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>来源</strong></td>
+<td>Spring 框架</td>
+<td>JSR-250 标准（Java 规范）</td>
+</tr>
+<tr>
+<td><strong>注入方式默认</strong></td>
+<td>按类型（byType）</td>
+<td>按名称（byName）</td>
+</tr>
+<tr>
+<td><strong>注入方式可选</strong></td>
+<td>配合 <code>@Qualifier</code> 可按名称注入</td>
+<td>默认按名称，找不到时按类型</td>
+</tr>
+<tr>
+<td><strong>使用场景</strong></td>
+<td>构造器、字段、setter 方法</td>
+<td>字段、setter 方法</td>
+</tr>
+<tr>
+<td><strong>依赖是否必须</strong></td>
+<td>默认 <code>required = true</code>，可设置为 <code>false</code></td>
+<td>没有 <code>required</code> 属性，必须找到匹配的 Bean</td>
+</tr>
+<tr>
+<td><strong>灵活性</strong></td>
+<td>更灵活，支持按类型和按名称注入</td>
+<td>更直接，主要按名称注入</td>
+</tr>
+<tr>
+<td><strong>支持构造器注入</strong></td>
+<td>是</td>
+<td>否</td>
+</tr>
+</tbody>
+</table>
+<h3 id="Spring框架单例Bean是线程安全的">Spring框架单例Bean是线程安全的?</h3>
+<p>在 <strong>Spring 框架</strong>中，默认的 Bean 作用域是 <strong>单例作用域</strong>（<code>singleton</code>），这意味着在整个 Spring 容器内，一个 Bean 的实例只有一个，所有对该 Bean 的引用都指向同一个对象实例。然而，<strong>单例 Bean 并不是线程安全的</strong>。下面我们详细分析为什么单例 Bean 不是线程安全的，以及如何处理多线程环境中的单例 Bean。</p>
+<p><strong>1. 为什么 Spring 的单例 Bean 不是线程安全的？</strong></p>
+<p><strong>单例作用域</strong>意味着 Spring 容器中每个 Bean 只有一个实例，所有对该 Bean 的调用都是共享同一个实例。在多线程环境下，多个线程可能会同时访问这个单例 Bean 的方法或共享的状态。这时，如果该单例类中包含了<strong>可变状态</strong>或者<strong>非线程安全的操作</strong>，就会导致线程安全问题。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">NonThreadSafeService</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="type">int</span> <span class="variable">counter</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">incrementCounter</span><span class="params">()</span> &#123;</span><br><span class="line">        counter++;</span><br><span class="line">        System.out.println(<span class="string">&quot;Counter: &quot;</span> + counter);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在上面的 <code>NonThreadSafeService</code> 类中，<code>counter</code> 是一个共享的可变状态。如果单例 Bean 在多线程环境中被多个线程同时调用 <code>incrementCounter()</code> 方法，可能会出现<strong>并发访问问题</strong>，导致 <code>counter</code> 的值不准确或出现数据竞争。</p>
+<p>问题原因：</p>
+<ul>
+<li><strong>多个线程共享一个实例</strong>：由于单例模式的特性，多个线程会共享同一个 Bean 实例，如果该实例包含<strong>可变状态</strong>，不同线程对该状态的修改就可能产生冲突。</li>
+<li><strong>非线程安全的操作</strong>：如果 Bean 的方法中存在对共享状态的修改操作，而没有适当的同步或并发控制，就会导致线程安全问题。</li>
+</ul>
+<p><strong>2. 什么时候单例 Bean 是线程安全的？</strong></p>
+<p>单例 Bean 只有在以下情况下是线程安全的：</p>
+<ul>
+<li><strong>无状态</strong>：如果单例 Bean 是无状态的，也就是说它不包含任何可变的实例变量，那么它是线程安全的。无状态 Bean 通常是<strong>纯函数</strong>，即它们的行为完全取决于输入参数，而不依赖于类的内部状态。</li>
+<li><strong>只读状态</strong>：如果单例 Bean 中的状态是不可变的（即只读），并且 Bean 的方法只执行读操作而不进行写操作，那么它也是线程安全的。</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ThreadSafeService</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">performTask</span><span class="params">()</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;Performing a task in a thread-safe manner&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上面的 <code>ThreadSafeService</code> 类是线程安全的，因为它不包含任何可变的实例变量，也不依赖于共享状态。</p>
+<p><strong>3. 如何处理 Spring 单例 Bean 的线程安全问题？</strong></p>
+<p>如果单例 Bean 需要在多线程环境中共享数据或执行某些非线程安全的操作，开发者需要采取一些措施来确保线程安全。</p>
+<ol>
+<li><strong>避免共享可变状态</strong></li>
+</ol>
+<p>最简单的解决方案是避免在单例 Bean 中使用可变状态。如果某个 Bean 需要存储可变的状态，应该将这些状态限制在方法内部，而不是作为类的实例变量。</p>
+<ol start="2">
+<li><strong>使用局部变量</strong></li>
+</ol>
+<p>局部变量是线程安全的，因为每个线程都有自己的方法栈，方法中的局部变量不会被其他线程共享。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">SafeService</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">performTask</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="type">int</span> <span class="variable">localCounter</span> <span class="operator">=</span> <span class="number">0</span>; <span class="comment">// 局部变量是线程安全的</span></span><br><span class="line">        localCounter++;</span><br><span class="line">        System.out.println(<span class="string">&quot;Local Counter: &quot;</span> + localCounter);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li><strong>引入同步机制</strong></li>
+</ol>
+<p>如果必须在单例 Bean 中共享可变状态，可以使用<strong>同步机制</strong>来确保线程安全，例如 <code>synchronized</code> 关键字、<code>ReentrantLock</code> 等。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">SynchronizedService</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="type">int</span> <span class="variable">counter</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">void</span> <span class="title function_">incrementCounter</span><span class="params">()</span> &#123;</span><br><span class="line">        counter++;</span><br><span class="line">        System.out.println(<span class="string">&quot;Synchronized Counter: &quot;</span> + counter);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上面的 <code>incrementCounter()</code> 方法使用了 <code>synchronized</code> 关键字，确保每次只有一个线程能够执行该方法，从而避免了并发问题。</p>
+<ol start="4">
+<li><strong>使用并发工具类</strong></li>
+</ol>
+<p>Java 提供了许多并发工具类，比如 <code>AtomicInteger</code>、<code>ConcurrentHashMap</code> 等，它们可以帮助你在多线程环境中安全地管理可变状态。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.util.concurrent.atomic.AtomicInteger;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">AtomicService</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="type">AtomicInteger</span> <span class="variable">counter</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">AtomicInteger</span>(<span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">incrementCounter</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="type">int</span> <span class="variable">newValue</span> <span class="operator">=</span> counter.incrementAndGet();</span><br><span class="line">        System.out.println(<span class="string">&quot;Atomic Counter: &quot;</span> + newValue);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在这个例子中，<code>AtomicInteger</code> 是线程安全的，并且提供了原子操作，避免了显式的同步。</p>
+<ol start="5">
+<li><strong>使用 <code>@Scope(&quot;prototype&quot;)</code></strong></li>
+</ol>
+<p>如果单例 Bean 中必须处理线程不安全的操作，或者 Bean 的某些方法中有大量的可变状态，可以考虑将 Bean 的作用域改为 <code>prototype</code>，这样每个线程都会获得该 Bean 的一个新的实例。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="meta">@Scope(&quot;prototype&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">PrototypeService</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="type">int</span> <span class="variable">counter</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">incrementCounter</span><span class="params">()</span> &#123;</span><br><span class="line">        counter++;</span><br><span class="line">        System.out.println(<span class="string">&quot;Prototype Counter: &quot;</span> + counter);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在 <code>prototype</code> 作用域下，每次请求都会创建一个新的 <code>PrototypeService</code> 实例，因此不需要担心线程安全问题。</p>
+<ol start="6">
+<li><strong>使用 <code>ThreadLocal</code></strong></li>
+</ol>
+<p><code>ThreadLocal</code> 是 Java 提供的一种机制，用于为每个线程提供独立的变量副本。通过使用 <code>ThreadLocal</code>，可以确保每个线程都有自己独立的变量，避免线程间共享数据导致的安全问题。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ThreadLocalService</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> ThreadLocal&lt;Integer&gt; threadLocalCounter = ThreadLocal.withInitial(() -&gt; <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">incrementCounter</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="type">int</span> <span class="variable">counter</span> <span class="operator">=</span> threadLocalCounter.get();</span><br><span class="line">        counter++;</span><br><span class="line">        threadLocalCounter.set(counter);</span><br><span class="line">        System.out.println(<span class="string">&quot;ThreadLocal Counter: &quot;</span> + counter);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在这个例子中，<code>threadLocalCounter</code> 为每个线程维护了一个独立的 <code>counter</code>，因此不同线程不会共享这个变量。</p>
+<p><strong>总结</strong></p>
+<p><strong>单例作用域</strong>（<code>singleton</code>）是 Spring 的默认作用域，意味着在整个 Spring 容器中，只有一个 Bean 实例被共享。</p>
+<p><strong>单例 Bean 不是线程安全的</strong>，因为多个线程会共享同一个实例，如果该实例包含可变状态或非线程安全的操作，可能会导致并发问题。</p>
+<p><strong>线程安全的解决方案</strong>：</p>
+<ol>
+<li>避免共享可变状态。</li>
+<li>使用局部变量。</li>
+<li>使用同步机制（如 <code>synchronized</code>、<code>ReentrantLock</code>）。</li>
+<li>使用并发工具类（如 <code>AtomicInteger</code>、<code>ConcurrentHashMap</code>）。</li>
+<li>改变 Bean 的作用域为 <code>prototype</code>，保证每个线程都有自己的实例。</li>
+<li>使用 <code>ThreadLocal</code> 为每个线程维护独立的变量。</li>
+</ol>
+<h3 id="Spring的Bean的生命周期">Spring的Bean的生命周期</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">+--------------------+</span><br><span class="line">| 创建Bean实例       |  &lt;-- 实例化 (Instantiation)</span><br><span class="line">+--------------------+</span><br><span class="line">          |</span><br><span class="line">          v</span><br><span class="line">+--------------------+</span><br><span class="line">| 属性赋值           |  &lt;-- 属性赋值 (Populate Properties)</span><br><span class="line">+--------------------+</span><br><span class="line">          |</span><br><span class="line">          v</span><br><span class="line">+--------------------+</span><br><span class="line">| 初始化操作         |  &lt;-- 初始化 (Initialization)</span><br><span class="line">+--------------------+</span><br><span class="line">          |</span><br><span class="line">          v</span><br><span class="line">+--------------------+</span><br><span class="line">| 使用Bean           |  &lt;-- 使用 (In Use)</span><br><span class="line">+--------------------+</span><br><span class="line">          |</span><br><span class="line">          v</span><br><span class="line">+--------------------+</span><br><span class="line">| 销毁Bean           |  &lt;-- 销毁 (Destruction)</span><br><span class="line">+--------------------+</span><br></pre></td></tr></table></figure>
+<p>核心流程：</p>
+<ol>
+<li><strong>实例化</strong>：Spring 创建 Bean 实例，调用构造方法或工厂方法。</li>
+<li><strong>属性赋值</strong>：Spring 将配置的属性值或依赖注入到 Bean 中。</li>
+<li><strong>初始化</strong>：Spring 调用 Bean 的初始化方法，完成一些初始化操作。</li>
+<li><strong>使用</strong>：Bean 已经可以被应用程序使用，执行业务逻辑。</li>
+<li><strong>销毁</strong>：Spring 容器销毁 Bean，调用销毁方法，释放资源。</li>
+</ol>
+<h3 id="Spring支持Bean作用域">Spring支持Bean作用域</h3>
+<table>
+<thead>
+<tr>
+<th>作用域</th>
+<th>描述</th>
+<th>适用场景</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Singleton</strong></td>
+<td>在整个 Spring 容器中，Bean 实例是唯一的（默认作用域）。</td>
+<td>适合共享状态的组件，如服务类、数据库连接池等。</td>
+</tr>
+<tr>
+<td><strong>Prototype</strong></td>
+<td>每次获取 Bean 时，都会创建一个新的实例。</td>
+<td>适合无状态的对象或需要频繁创建销毁的对象。</td>
+</tr>
+<tr>
+<td><strong>Request</strong></td>
+<td>在一个 HTTP 请求范围内，Bean 实例是唯一的。</td>
+<td>适合与 HTTP 请求相关的 Bean，如每个请求独立的业务逻辑处理类。</td>
+</tr>
+<tr>
+<td><strong>Session</strong></td>
+<td>在同一个 HTTP Session 范围内，Bean 实例是唯一的。</td>
+<td>适合需要在会话期间保持状态的对象，如登录用户信息、购物车等。</td>
+</tr>
+<tr>
+<td><strong>Global Session</strong></td>
+<td>在全局 HTTP Session 中，Bean 实例是唯一的（主要用于 Portlet 应用）。</td>
+<td>适合基于 Portlet 应用的全局 Session 共享对象。</td>
+</tr>
+</tbody>
+</table>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Bean</span></span><br><span class="line"><span class="meta">@Scope(&quot;singleton&quot;)</span></span><br><span class="line"><span class="keyword">public</span> MyService <span class="title function_">myService</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">MyService</span>();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="Spring事务">Spring事务</h3>
+<p><strong>编程式事务</strong></p>
+<p>编程式事务需要开发人员手动编写代码来控制事务的开启、提交和回滚。</p>
+<p>假设我们有一个简单的服务类 <code>UserService</code>，其中包含一个 <code>saveUser</code> 方法，用于保存用户信息。我们使用编程式事务来管理这个方法的事务。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> org.springframework.beans.factory.annotation.Autowired;</span><br><span class="line"><span class="keyword">import</span> org.springframework.jdbc.datasource.DataSourceTransactionManager;</span><br><span class="line"><span class="keyword">import</span> org.springframework.transaction.TransactionDefinition;</span><br><span class="line"><span class="keyword">import</span> org.springframework.transaction.TransactionStatus;</span><br><span class="line"><span class="keyword">import</span> org.springframework.transaction.support.DefaultTransactionDefinition;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">UserService</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> DataSourceTransactionManager transactionManager;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> UserRepository userRepository;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">saveUser</span><span class="params">(User user)</span> &#123;</span><br><span class="line">        <span class="comment">// 定义事务属性</span></span><br><span class="line">        <span class="type">DefaultTransactionDefinition</span> <span class="variable">def</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">DefaultTransactionDefinition</span>();</span><br><span class="line">        def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 开启事务</span></span><br><span class="line">        <span class="type">TransactionStatus</span> <span class="variable">status</span> <span class="operator">=</span> transactionManager.getTransaction(def);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            userRepository.save(user);</span><br><span class="line">            <span class="comment">// 提交事务</span></span><br><span class="line">            transactionManager.commit(status);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            <span class="comment">// 回滚事务</span></span><br><span class="line">            transactionManager.rollback(status);</span><br><span class="line">            <span class="keyword">throw</span> e;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在这个示例中，我们手动获取了事务管理器 <code>DataSourceTransactionManager</code>，并在 <code>saveUser</code> 方法中手动开启了事务、提交事务或回滚事务。</p>
+<p><strong>声明式事务</strong></p>
+<p>声明式事务通过配置来控制事务的提交和回滚，开发人员只需使用注解或XML配置文件来声明事务的属性和行为即可。Spring框架会自动处理事务管理操作，这种方式减少了代码的侵入性，使代码更加简洁和易于维护。</p>
+<p>示例：声明式事务（基于注解）</p>
+<p>我们同样使用 <code>UserService</code> 类，但这次我们使用声明式事务来管理事务。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> org.springframework.beans.factory.annotation.Autowired;</span><br><span class="line"><span class="keyword">import</span> org.springframework.stereotype.Service;</span><br><span class="line"><span class="keyword">import</span> org.springframework.transaction.annotation.Transactional;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Service</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">UserService</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> UserRepository userRepository;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Transactional</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">saveUser</span><span class="params">(User user)</span> &#123;</span><br><span class="line">        userRepository.save(user);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>本质</strong></p>
+<ul>
+<li>事务注解的本质是通过Spring AOP机制，在方法执行前后动态创建代理对象，将方法包装在一个事务中。事务注解在执行方法前开启一个事务，如果方法执行成功，则提交事务；如果方法执行过程中发生异常，则回滚事务。通过事务注解，我们可以在方法上标记事务的属性，方便灵活地控制事务的执行行为。同时，由于Spring框架在底层处理事务，因此可以避免一些常见的事务处理问题，比如并发访问、死锁等问题。事务注解的使用简单，可以提高开发效率，降低代码复杂度。</li>
+</ul>
+<p><strong>7 种事务传播级别</strong></p>
+<table>
+<thead>
+<tr>
+<th>传播级别</th>
+<th>描述</th>
+<th>当前存在事务</th>
+<th>当前不存在事务</th>
+<th>适用场景</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>REQUIRED</strong></td>
+<td>如果当前存在事务，则加入该事务；如果当前没有事务，则创建一个新事务（默认传播级别）。</td>
+<td>加入现有事务</td>
+<td>创建新事务</td>
+<td>绝大多数场景，适合需要保证方法在事务中执行的情况。</td>
+</tr>
+<tr>
+<td><strong>SUPPORTS</strong></td>
+<td>支持当前事务，如果当前存在事务，则加入该事务；如果当前没有事务，则以非事务方式执行。</td>
+<td>加入现有事务</td>
+<td>非事务执行</td>
+<td>适合对事务没有强制要求的情况。</td>
+</tr>
+<tr>
+<td><strong>MANDATORY</strong></td>
+<td>强制要求存在事务，如果当前存在事务，则加入该事务；如果当前没有事务，则抛出异常。</td>
+<td>加入现有事务</td>
+<td>抛出异常</td>
+<td>适合必须在事务中执行的方法，如果没有事务则不允许执行。</td>
+</tr>
+<tr>
+<td><strong>REQUIRES_NEW</strong></td>
+<td>创建一个新的事务，如果当前存在事务，则挂起当前事务，执行新事务。</td>
+<td>挂起当前事务，创建新事务</td>
+<td>创建新事务</td>
+<td>适合需要独立于外部事务执行的方法，外部事务的回滚不会影响到该方法。</td>
+</tr>
+<tr>
+<td><strong>NOT_SUPPORTED</strong></td>
+<td>以非事务方式执行操作，如果当前存在事务，则挂起当前事务。</td>
+<td>挂起当前事务</td>
+<td>非事务执行</td>
+<td>适合不需要事务控制的操作，例如只读操作或性能要求高的操作。</td>
+</tr>
+<tr>
+<td><strong>NEVER</strong></td>
+<td>以非事务方式执行操作，如果当前存在事务，则抛出异常。</td>
+<td>抛出异常</td>
+<td>非事务执行</td>
+<td>适合明确要求方法必须在非事务上下文中执行的场景。</td>
+</tr>
+<tr>
+<td><strong>NESTED</strong></td>
+<td>如果当前存在事务，则在嵌套事务内执行（可以独立回滚）；如果当前没有事务，则类似于 REQUIRED 传播级别。</td>
+<td>创建嵌套事务</td>
+<td>创建新事务</td>
+<td>适合需要部分回滚的场景，内外事务独立回滚，例如批处理操作。</td>
+</tr>
+</tbody>
+</table>
+<h3 id="Spring循环依赖及解决">Spring循环依赖及解决</h3>
+<p>例子：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">A</span> &#123;</span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> B b;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">B</span> &#123;</span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> A a;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>1. Spring 的三级缓存机制</strong></p>
+<p>Spring 通过以下三个缓存来解决单例 Bean 的循环依赖：</p>
+<ol>
+<li><strong>一级缓存（singletonObjects）</strong>：存储完全初始化好的 Bean。每当一个 Bean 完全构造好并完成依赖注入、初始化后，Spring 会将它放入一级缓存。</li>
+<li><strong>二级缓存（earlySingletonObjects）</strong>：存储实例化了但还没有完全初始化的 Bean（即尚未完成依赖注入和初始化的 Bean）。这个缓存用于提前暴露 Bean 实例，防止循环依赖。</li>
+<li><strong>三级缓存（singletonFactories）</strong>：存储 Bean 工厂（<code>ObjectFactory</code>），通过这个工厂，Spring 可以创建 Bean 实例的“引用”，并在需要时将半成品的 Bean 放入二级缓存。这也是三级缓存的主要作用，它允许在依赖注入过程中提前暴露 Bean 的引用，用于解决循环依赖。</li>
+</ol>
+<p><strong>工作流程</strong>：</p>
+<ul>
+<li>当 Spring 容器在创建 Bean 时，如果发现这个 Bean 依赖另一个 Bean 还没有完全创建好，它会先在三级缓存中查找那个 Bean 的工厂，提前获取到 Bean 的引用，并把这个引用放到二级缓存中，从而避免循环依赖。</li>
+</ul>
+<p><strong>2. 通俗解释三级缓存的作用</strong></p>
+<p>可以把三级缓存的机制比作“造房子”的过程：</p>
+<ul>
+<li><strong>一级缓存</strong>：房子完全建好了，可以住了。（Bean 已经完全初始化）</li>
+<li><strong>二级缓存</strong>：房子正在装修，但已经有房子框架，可以暂时住人。（Bean 实例已经创建，但还没有完全初始化）</li>
+<li><strong>三级缓存</strong>：有个房子设计图，虽然房子还没开始盖，但可以提前给别人看，别人知道这个房子以后会存在。（Bean 的工厂方法，能生成半成品 Bean）</li>
+</ul>
+<p>当一个房子（Bean）A 在建造时，发现它需要另一个房子（Bean）B 的帮助，而 B 也在建造中。此时，A 可以先用 B 的设计图（三级缓存），然后等 B 搭好了框架（放到二级缓存），再继续建造。这就避免了循环等待。</p>
+<p><strong>3. 具体案例：Spring 如何处理循环依赖</strong></p>
+<p>让我们通过一个简单的代码示例来看看实际情况。</p>
+<p>代码示例：</p>
+<p>我们有两个 Bean，<code>ServiceA</code> 和 <code>ServiceB</code>，它们互相依赖。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ServiceA</span> &#123;</span><br><span class="line">    </span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> ServiceB serviceB;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">ServiceA</span><span class="params">()</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;ServiceA 构造方法&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">doSomething</span><span class="params">()</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;ServiceA 调用了 ServiceB&quot;</span>);</span><br><span class="line">        serviceB.doSomething();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ServiceB</span> &#123;</span><br><span class="line">    </span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> ServiceA serviceA;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">ServiceB</span><span class="params">()</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;ServiceB 构造方法&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">doSomething</span><span class="params">()</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;ServiceB 调用了 ServiceA&quot;</span>);</span><br><span class="line">        serviceA.doSomething();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在这个例子中，<code>ServiceA</code> 依赖 <code>ServiceB</code>，同时 <code>ServiceB</code> 也依赖 <code>ServiceA</code>，形成了循环依赖。</p>
+<p><strong>4. Spring 是如何解决这个问题的：</strong></p>
+<p>当 Spring 容器启动时，会按照以下步骤来实例化这些 Bean：</p>
+<ol>
+<li><strong>实例化 <code>ServiceA</code></strong>：
+<ul>
+<li>Spring 发现需要创建 <code>ServiceA</code>，于是调用 <code>ServiceA</code> 的构造方法（此时，<code>ServiceA</code> 还没有注入 <code>ServiceB</code>）。</li>
+<li>Spring 将 <code>ServiceA</code> 的实例放入 <strong>三级缓存</strong>（<code>singletonFactories</code>），就是说，Spring 暂时把 <code>ServiceA</code> 的设计图（它的工厂）放入缓存，表示虽然 <code>ServiceA</code> 还没完全构造好，但它将会存在。</li>
+</ul>
+</li>
+<li><strong>实例化 <code>ServiceB</code></strong>：
+<ul>
+<li>在创建 <code>ServiceA</code> 的过程中，Spring 发现 <code>ServiceA</code> 依赖 <code>ServiceB</code>，于是转而去创建 <code>ServiceB</code>。</li>
+<li>Spring 调用 <code>ServiceB</code> 的构造方法，创建 <code>ServiceB</code> 实例并将其放入 <strong>三级缓存</strong>，表示 <code>ServiceB</code> 也在建造过程中。</li>
+</ul>
+</li>
+<li><strong>注入 <code>ServiceA</code> 到 <code>ServiceB</code></strong>：
+<ul>
+<li>在构造 <code>ServiceB</code> 时，Spring 发现它依赖 <code>ServiceA</code>，于是去缓存中查找 <code>ServiceA</code> 的引用。</li>
+<li>Spring 在三级缓存中找到 <code>ServiceA</code> 的工厂，并通过工厂获取到尚未完全初始化的 <code>ServiceA</code> 实例，将其放入 <strong>二级缓存</strong>（<code>earlySingletonObjects</code>），表示 <code>ServiceA</code> 的框架已经搭好了，可以暂时使用这个半成品 <code>ServiceA</code>。</li>
+</ul>
+</li>
+<li><strong>注入 <code>ServiceB</code> 到 <code>ServiceA</code></strong>：
+<ul>
+<li>接下来，Spring 继续完成 <code>ServiceB</code> 的创建，并将 <code>ServiceB</code> 的引用注入到 <code>ServiceA</code> 中。</li>
+<li>此时，<code>ServiceB</code> 已经完成创建，Spring 将完全实例化的 <code>ServiceB</code> 放入 <strong>一级缓存</strong>（<code>singletonObjects</code>），表示 <code>ServiceB</code> 已经完全建造完成。</li>
+</ul>
+</li>
+<li><strong>完成 <code>ServiceA</code> 的创建</strong>：
+<ul>
+<li>Spring 回到 <code>ServiceA</code> 的创建过程中，发现 <code>ServiceA</code> 的依赖（<code>ServiceB</code>）已经准备好，于是将 <code>ServiceB</code> 的引用注入到 <code>ServiceA</code> 中。</li>
+<li>最后，<code>ServiceA</code> 也完成了初始化，Spring 将完全构造好的 <code>ServiceA</code> 放入 <strong>一级缓存</strong>，表示 <code>ServiceA</code> 也完成了建造。</li>
+</ul>
+</li>
+</ol>
+<p><strong>5. 整个过程总结</strong></p>
+<ul>
+<li><strong>三级缓存的作用</strong>：当遇到循环依赖时，Spring 利用三级缓存机制，提前暴露 Bean 的引用（即半成品 Bean），避免了 Bean 之间的相互等待。</li>
+<li><strong>一级缓存</strong>：存储完全构造好的 Bean。</li>
+<li><strong>二级缓存</strong>：存储已经实例化但未完全初始化的 Bean。</li>
+<li><strong>三级缓存</strong>：存储 Bean 的工厂，能够生成 Bean 的半成品引用，用来解决循环依赖。</li>
+</ul>
+<p>通过这种机制，Spring 能够在<strong>单例模式</strong>下有效解决循环依赖的问题。注意，<strong>对于非单例（Prototype）Bean，Spring 无法自动解决循环依赖</strong>，因为每次依赖注入都会创建新的实例，无法提前暴露 Bean 的引用。</p>
+<h2 id="SpringMVC">SpringMVC</h2>
+<h3 id="流程">流程</h3>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="C:%5CUsers%5Cpenge%5CAppData%5CRoaming%5CTypora%5Ctypora-user-images%5Cimage-20241007215000119.png" alt="image-20241007215000119"></p>
+<p>（1）用户发送请求至前端控制器DispatcherServlet；<br>
+（2）DispatcherServlet收到请求后，调用HandlerMapping处理器映射器，请求获取Handler；<br>
+（3）处理器映射器根据请求url找到具体的处理器Handler，生成处理器对象及处理器拦截器(如果有则生成)，一并返回给DispatcherServlet；<br>
+（4）DispatcherServlet 调用 HandlerAdapter处理器适配器，请求执行Handler；<br>
+（5）HandlerAdapter 经过适配调用 具体处理器进行处理业务逻辑；<br>
+（6）Handler执行完成返回ModelAndView；<br>
+（7）HandlerAdapter将Handler执行结果ModelAndView返回给DispatcherServlet；<br>
+（8）DispatcherServlet将ModelAndView传给ViewResolver视图解析器进行解析；<br>
+（9）ViewResolver解析后返回具体View；<br>
+（10）DispatcherServlet对View进行渲染视图（即将模型数据填充至视图中）<br>
+（11）DispatcherServlet响应用户。</p>
+<h2 id="MyBatis">MyBatis</h2>
+<p>待填坑</p>
+</article><div class="post-copyright"><div class="post-copyright__title"><span class="post-copyright-info"><h>SSM面经</h></span></div><div class="post-copyright__type"><span class="post-copyright-info"><a href="https://penge666.github.io/posts/7a87de03.html">https://penge666.github.io/posts/7a87de03.html</a></span></div><div class="post-copyright-m"><div class="post-copyright-m-info"><div class="post-copyright-a"><h>作者</h><div class="post-copyright-cc-info"><h>Penge666</h></div></div><div class="post-copyright-c"><h>发布于</h><div class="post-copyright-cc-info"><h>2024-01-07</h></div></div><div class="post-copyright-u"><h>更新于</h><div class="post-copyright-cc-info"><h>2024-10-07</h></div></div><div class="post-copyright-c"><h>许可协议</h><div class="post-copyright-cc-info"><a class="icon" rel="noopener" target="_blank" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a><a rel="noopener" target="_blank" title="CC BY-NC-SA 4.0" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a></div></div></div></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Java/"><div class="tags-punctuation"><svg class="faa-tada icon" style="height:1.1em;width:1.1em;fill:currentColor;position:relative;top:2px;margin-right:3px" aria-hidden="true"><use xlink:href="#icon-sekuaibiaoqian"></use></svg></div>Java</a></div></div><link rel="stylesheet" href="/css/coin.css" media="defer" onload="this.media='all'"/><div class="post-reward"><button class="tip-button reward-button"><span class="tip-button__text">投喂作者</span><div class="coin-wrapper"><div class="coin"><div class="coin__middle"></div><div class="coin__back"></div><div class="coin__front"></div></div></div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="https://tuchuang.voooe.cn/images/2023/01/04/2.webp" target="_blank"><img class="post-qr-code-img" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://tuchuang.voooe.cn/images/2023/01/04/2.webp" alt="微信"/></a><div class="post-qr-code-desc">微信</div></li><li class="reward-item"><a href="https://tuchuang.voooe.cn/images/2023/01/04/20f8e49805975b8f8.webp" target="_blank"><img class="post-qr-code-img" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://tuchuang.voooe.cn/images/2023/01/04/20f8e49805975b8f8.webp" alt="支付宝"/></a><div class="post-qr-code-desc">支付宝</div></li></ul></div></button></div><audio id="coinAudio" src="https://npm.elemecdn.com/akilar-candyassets@1.0.36/audio/aowu.m4a"></audio><script defer="defer" src="/js/coin.js"></script><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/posts/1cc56f91.html"><img class="prev-cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/assets/photo1/default_cover_22.webp" onerror="onerror=null;src='/assets/r2.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">redis练手[easy]</div></div></a></div><div class="next-post pull-right"><a href="/posts/39f5c62f.html"><img class="next-cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/assets/photo1/default_cover_66.webp" onerror="onerror=null;src='/assets/r2.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">微服务入门笔记</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/posts/515d78b5.html" title="Java虚拟机"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/assets/photo1/default_cover_111.webp" alt="cover"><div class="content is-center"><div class="date"><i class="fas fa-history fa-fw"></i> 2024-10-04</div><div class="title">Java虚拟机</div></div></a></div></div></div><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="twikoo-wrap"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><svg class="meta_icon" style="width:22px;height:22px;position:relative;top:5px"><use xlink:href="#icon-mulu1"></use></svg><span style="font-weight:bold">目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Spring"><span class="toc-text">Spring</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#IOC%E5%8E%9F%E7%90%86"><span class="toc-text">IOC原理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#AOP%E5%8E%9F%E7%90%86"><span class="toc-text">AOP原理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BE%9D%E8%B5%96%E6%B3%A8%E5%85%A5%E7%9A%84%E6%96%B9%E5%BC%8F"><span class="toc-text">依赖注入的方式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Spring%E4%B8%ADApplicationContext%E5%92%8CBeanFactory%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-text">Spring中ApplicationContext和BeanFactory的区别</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Autowired%E5%92%8CResource%E5%8C%BA%E5%88%AB"><span class="toc-text">Autowired和Resource区别</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Spring%E6%A1%86%E6%9E%B6%E5%8D%95%E4%BE%8BBean%E6%98%AF%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8%E7%9A%84"><span class="toc-text">Spring框架单例Bean是线程安全的?</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Spring%E7%9A%84Bean%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F"><span class="toc-text">Spring的Bean的生命周期</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Spring%E6%94%AF%E6%8C%81Bean%E4%BD%9C%E7%94%A8%E5%9F%9F"><span class="toc-text">Spring支持Bean作用域</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Spring%E4%BA%8B%E5%8A%A1"><span class="toc-text">Spring事务</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Spring%E5%BE%AA%E7%8E%AF%E4%BE%9D%E8%B5%96%E5%8F%8A%E8%A7%A3%E5%86%B3"><span class="toc-text">Spring循环依赖及解决</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#SpringMVC"><span class="toc-text">SpringMVC</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B5%81%E7%A8%8B"><span class="toc-text">流程</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#MyBatis"><span class="toc-text">MyBatis</span></a></li></ol></div></div></div></div></main><footer id="footer" style="background-color: transparent;"><div id="footer-wrap"><div id="ft"><div class="ft-item-1"><div class="t-top"><div class="t-t-l"><p class="ft-t t-l-t">格言🧬</p><div class="bg-ad"><div>用勇气改变可以改变的事，用胸怀接受不能接受的事，用智慧分辨两者的不同✨</div><div class="btn-xz-box"><a class="btn-xz" target="_blank" rel="noopener" href="https://github.com/Penge666/">点击开启星辰之旅</a></div></div></div><div class="t-t-r"><p class="ft-t t-l-t">猜你想看💡</p><ul class="ft-links"><li><a href="/posts/eec9786.html">惊喜网站</a><a href="/box/nav/">网址导航</a></li><li><a href="/social/link/">我的朋友</a><a href="/comments/">留点什么</a></li><li><a href="/personal/about/">关于作者</a><a href="/archives/">文章归档</a></li><li><a href="/categories/">文章分类</a><a href="/tags/">文章标签</a></li></ul></div></div></div><div class="ft-item-2"><p class="ft-t">推荐友链⌛</p><div class="ft-img-group"><div class="img-group-item"><a target="_blank" rel="noopener" href="https://www.fomal.cc/" title="Fomalhaut🥝"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://lskypro.acozycotage.net/LightPicture/2022/12/60e5d4e39da7c077.webp" alt=""/></a></div><div class="img-group-item"><a href="javascript:void(0)" title="广告位招租"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://lskypro.acozycotage.net/LightPicture/2022/12/65307a5828af6790.webp" alt=""/></a></div><div class="img-group-item"><a href="javascript:void(0)" title="广告位招租"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://lskypro.acozycotage.net/LightPicture/2022/12/65307a5828af6790.webp" alt=""/></a></div><div class="img-group-item"><a href="javascript:void(0)" title="广告位招租"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://lskypro.acozycotage.net/LightPicture/2022/12/65307a5828af6790.webp" alt=""/></a></div><div class="img-group-item"><a href="javascript:void(0)" title="广告位招租"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://lskypro.acozycotage.net/LightPicture/2022/12/65307a5828af6790.webp" alt=""/></a></div><div class="img-group-item"><a href="javascript:void(0)" title="广告位招租"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://lskypro.acozycotage.net/LightPicture/2022/12/65307a5828af6790.webp" alt=""/></a></div><div class="img-group-item"><a href="javascript:void(0)" title="广告位招租"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://lskypro.acozycotage.net/LightPicture/2022/12/65307a5828af6790.webp" alt=""/></a></div><div class="img-group-item"><a href="javascript:void(0)" title="广告位招租"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://lskypro.acozycotage.net/LightPicture/2022/12/65307a5828af6790.webp" alt=""/></a></div></div></div></div><div class="copyright"><span><b>&copy;2022-2024</b></span><span><b>&nbsp;&nbsp;By Penge666</b></span></div><div id="workboard"></div><p id="ghbdages"><a class="github-badge" target="_blank" href="https://hexo.io/" style="margin-inline:5px" title="博客框架为Hexo_v6.3.0"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://sourcebucket.s3.ladydaily.com/badge/Frame-Hexo-blue.svg" alt=""/></a><a class="github-badge" target="_blank" href="https://butterfly.js.org/" style="margin-inline:5px" title="主题版本Butterfly_v4.3.1"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://sourcebucket.s3.ladydaily.com/badge/Theme-Butterfly-6513df.svg" alt=""/></a><a class="github-badge" target="_blank" href="https://vercel.com/" style="margin-inline:5px" title="本站采用多线部署，主线路托管于Vercel"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://sourcebucket.s3.ladydaily.com/badge/Hosted-Vercel-brightgreen.svg" alt=""/></a><a class="github-badge" target="_blank" href="https://user.51.la/" style="margin-inline:5px" title="本站数据分析得益于51la技术支持"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://sourcebucket.s3.ladydaily.com/badge/Analytics-51la-3db1eb.svg" alt=""/></a><a class="github-badge" target="_blank" href="https://icp.gov.moe/?keyword=20226665" style="margin-inline:5px" title="本站已加入萌ICP豪华套餐，萌ICP备20226665号"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://sourcebucket.s3.ladydaily.com/badge/萌ICP备-20226665-fe1384.svg" alt=""/></a><a class="github-badge" target="_blank" href="https://bitiful.dogecast.com/buckets" style="margin-inline:5px" title="本网站经Service Worker分流至缤纷云对象存储"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src=" https://sourcebucket.s3.ladydaily.com/badge/Bucket-缤纷云-9c62da.svg" alt=""/></a><a class="github-badge" target="_blank" href="https://www.netdun.net/" style="margin-inline:5px" title="本站使用网盾星球提供CDN加速与防护"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://sourcebucket.s3.ladydaily.com/badge/CDN-网盾星球-fff2cc.svg" alt=""/></a><a class="github-badge" target="_blank" href="https://github.com/" style="margin-inline:5px" title="本网站源码由Github提供存储仓库"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src=" https://sourcebucket.s3.ladydaily.com/badge/Source-Github-d021d6.svg" alt=""/></a></p></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><a class="icon-V hidden" onclick="switchNightMode()" title="浅色和深色模式转换"><svg width="25" height="25" viewBox="0 0 1024 1024"><use id="modeicon" xlink:href="#icon-moon"></use></svg></a><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button><button class="share" type="button" title="右键模式" onclick="changeMouseMode()"><i class="fas fa-mouse"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog right_side"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button class="share" type="button" title="分享链接" onclick="share()"><i class="fas fa-share-nodes"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i><span id="percent">0<span>%</span></span></button><button id="go-down" type="button" title="直达底部" onclick="btf.scrollToDest(document.body.scrollHeight, 500)"><i class="fas fa-arrow-down"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div class="js-pjax" id="rightMenu"><div class="rightMenu-group rightMenu-small"><a class="rightMenu-item" href="javascript:window.history.back();"><i class="fa fa-arrow-left"></i></a><a class="rightMenu-item" href="javascript:window.history.forward();"><i class="fa fa-arrow-right"></i></a><a class="rightMenu-item" href="javascript:window.location.reload();"><i class="fa fa-refresh"></i></a><a class="rightMenu-item" href="javascript:rmf.scrollToTop();"><i class="fa fa-arrow-up"></i></a></div><div class="rightMenu-group rightMenu-line hide" id="menu-text"><a class="rightMenu-item" href="javascript:rmf.copySelect();"><i class="fa fa-copy"></i><span>复制</span></a><a class="rightMenu-item" href="javascript:window.open(&quot;https://www.baidu.com/s?wd=&quot;+window.getSelection().toString());window.location.reload();"><i class="fa fa-search"></i><span>百度搜索</span></a></div><div class="rightMenu-group rightMenu-line hide" id="menu-too"><a class="rightMenu-item" href="javascript:window.open(window.getSelection().toString());window.location.reload();"><i class="fa fa-link"></i><span>转到链接</span></a></div><div class="rightMenu-group rightMenu-line hide" id="menu-paste"><a class="rightMenu-item" href="javascript:rmf.paste()"><i class="fa fa-copy"></i><span>粘贴</span></a></div><div class="rightMenu-group rightMenu-line hide" id="menu-post"><a class="rightMenu-item" href="#post-comment"><i class="fas fa-comment"></i><span>空降评论</span></a><a class="rightMenu-item" href="javascript:rmf.copyWordsLink()"><i class="fa fa-link"></i><span>复制本文地址</span></a></div><div class="rightMenu-group rightMenu-line hide" id="menu-to"><a class="rightMenu-item" href="javascript:rmf.openWithNewTab()"><i class="fa fa-window-restore"></i><span>新窗口打开</span></a><a class="rightMenu-item" id="menu-too" href="javascript:rmf.open()"><i class="fa fa-link"></i><span>转到链接</span></a><a class="rightMenu-item" href="javascript:rmf.copyLink()"><i class="fa fa-copy"></i><span>复制链接</span></a></div><div class="rightMenu-group rightMenu-line hide" id="menu-img"><a class="rightMenu-item" href="javascript:rmf.saveAs()"><i class="fa fa-download"></i><span>保存图片</span></a><a class="rightMenu-item" href="javascript:rmf.openWithNewTab()"><i class="fa fa-window-restore"></i><span>在新窗口打开</span></a><a class="rightMenu-item" href="javascript:rmf.copyLink()"><i class="fa fa-copy"></i><span>复制图片链接</span></a></div><div class="rightMenu-group rightMenu-line"><a class="rightMenu-item" href="javascript:randomPost()"><i class="fa fa-paper-plane"></i><span>随便逛逛</span></a><a class="rightMenu-item" href="javascript:switchNightMode();"><i class="fa fa-moon"></i><span>昼夜切换</span></a><a class="rightMenu-item" href="/personal/about/"><i class="fa fa-info-circle"></i><span>关于博客</span></a><a class="rightMenu-item" href="javascript:toggleWinbox();"><i class="fas fa-cog"></i><span>美化设置</span></a><a class="rightMenu-item" href="javascript:rmf.fullScreen();"><i class="fas fa-expand"></i><span>切换全屏</span></a><a class="rightMenu-item" href="javascript:window.print();"><i class="fa-solid fa-print"></i><span>打印页面</span></a></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.staticfile.org/fancyapps-ui/4.0.31/fancybox.umd.min.js"></script><script src="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/instant.page/5.1.0/instantpage.min.js" type="module"></script><script src="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/vanilla-lazyload/17.3.1/lazyload.iife.min.js"></script><script src="/js/search/local-search.js"></script><script async="async">var preloader = {
+  endLoading: () => {
+    document.body.style.overflow = 'auto';
+    document.getElementById('loading-box').classList.add("loaded")
+  },
+  initLoading: () => {
+    document.body.style.overflow = '';
+    document.getElementById('loading-box').classList.remove("loaded")
+
+  }
+}
+window.addEventListener('load',preloader.endLoading())
+setTimeout(function(){preloader.endLoading();}, 5000);
+document.getElementById('loading-box').addEventListener('click',()=> {preloader.endLoading()})</script><div class="js-pjax"><script>if (!window.MathJax) {
+  window.MathJax = {
+    tex: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"]],
+      tags: 'ams'
+    },
+    chtml: {
+      scale: 1.2
+    },
+    options: {
+      renderActions: {
+        findScript: [10, doc => {
+          for (const node of document.querySelectorAll('script[type^="math/tex"]')) {
+            const display = !!node.type.match(/; *mode=display/)
+            const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display)
+            const text = document.createTextNode('')
+            node.parentNode.replaceChild(text, node)
+            math.start = {node: text, delim: '', n: 0}
+            math.end = {node: text, delim: '', n: 0}
+            doc.math.push(math)
+          }
+        }, ''],
+        insertScript: [200, () => {
+          document.querySelectorAll('mjx-container:not\([display]\)').forEach(node => {
+            const target = node.parentNode
+            if (target.nodeName.toLowerCase() === 'li') {
+              target.parentNode.classList.add('has-jax')
+            } else {
+              target.classList.add('has-jax')
+            }
+          });
+        }, '', false]
+      }
+    }
+  }
+  
+  const script = document.createElement('script')
+  script.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.min.js'
+  script.id = 'MathJax-script'
+  script.async = true
+  document.head.appendChild(script)
+} else {
+  MathJax.startup.document.state(0)
+  MathJax.texReset()
+  MathJax.typeset()
+}</script><script>(()=>{
+  const init = () => {
+    twikoo.init(Object.assign({
+      el: '#twikoo-wrap',
+      envId: '',
+      region: '',
+      onCommentLoaded: function () {
+        btf.loadLightbox(document.querySelectorAll('#twikoo .tk-content img:not(.tk-owo-emotion)'))
+      }
+    }, null))
+  }
+
+  const getCount = () => {
+    const countELement = document.getElementById('twikoo-count')
+    if(!countELement) return
+    twikoo.getCommentsCount({
+      envId: '',
+      region: '',
+      urls: [window.location.pathname],
+      includeReply: false
+    }).then(function (res) {
+      countELement.innerText = res[0].count
+    }).catch(function (err) {
+      console.error(err);
+    });
+  }
+
+  const runFn = () => {
+    init()
+    
+  }
+
+  const loadTwikoo = () => {
+    if (typeof twikoo === 'object') {
+      setTimeout(runFn,0)
+      return
+    } 
+    getScript('https://cdn.staticfile.org/twikoo/1.6.8/twikoo.all.min.js').then(runFn)
+  }
+
+  if ('Twikoo' === 'Twikoo' || !true) {
+    if (true) btf.loadComment(document.getElementById('twikoo-wrap'), loadTwikoo)
+    else loadTwikoo()
+  } else {
+    window.loadOtherComment = () => {
+      loadTwikoo()
+    }
+  }
+})()</script></div><script src="https://cdn.staticfile.org/jquery/3.6.3/jquery.min.js"></script><script async src="https://cdn1.tianli0.top/npm/vue@2.6.14/dist/vue.min.js"></script><script async src="https://cdn1.tianli0.top/npm/element-ui@2.15.6/lib/index.js"></script><script async src="https://cdn.bootcdn.net/ajax/libs/clipboard.js/2.0.11/clipboard.min.js"></script><script defer type="text/javascript" src="https://cdn1.tianli0.top/npm/sweetalert2@8.19.0/dist/sweetalert2.all.js"></script><script async src="//npm.elemecdn.com/pace-js@1.2.4/pace.min.js"></script><script defer src="https://cdn1.tianli0.top/gh/nextapps-de/winbox/dist/winbox.bundle.min.js"></script><script async src="//at.alicdn.com/t/c/font_3586335_hsivh70x0fm.js"></script><script async src="//at.alicdn.com/t/c/font_3636804_gr02jmjr3y9.js"></script><script async src="//at.alicdn.com/t/c/font_3612150_kfv55xn3u2g.js"></script><script async src="https://cdn.wpon.cn/2022-sucai/Gold-ingot.js"></script><canvas id="universe"></canvas><canvas id="snow"></canvas><script defer src="/js/fomal.js"></script><link rel="stylesheet" href="https://lf6-cdn-tos.bytecdntp.com/cdn/expire-1-M/aplayer/1.10.1/APlayer.min.css" media="print" onload="this.media='all'"><script src="https://lf6-cdn-tos.bytecdntp.com/cdn/expire-1-M/aplayer/1.10.1/APlayer.min.js"></script><script src="https://cdn1.tianli0.top/npm/js-heo@1.0.12/metingjs/Meting.min.js"></script><script src="https://lib.baomitu.com/pjax/0.2.8/pjax.min.js"></script><script>let pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show","#web_bg",".js-pjax","#bibi","body > title","#app","#tag-echarts","#posts-echart","#categories-echarts"]
+
+var pjax = new Pjax({
+  elements: 'a:not([target="_blank"])',
+  selectors: pjaxSelectors,
+  cacheBust: false,
+  analytics: false,
+  scrollRestoration: false
+})
+
+document.addEventListener('pjax:send', function () {
+
+  // removeEventListener scroll 
+  window.tocScrollFn && window.removeEventListener('scroll', window.tocScrollFn)
+  window.scrollCollect && window.removeEventListener('scroll', scrollCollect)
+
+  typeof preloader === 'object' && preloader.initLoading()
+  document.getElementById('rightside').style.cssText = "opacity: ''; transform: ''"
+  
+  if (window.aplayers) {
+    for (let i = 0; i < window.aplayers.length; i++) {
+      if (!window.aplayers[i].options.fixed) {
+        window.aplayers[i].destroy()
+      }
+    }
+  }
+
+  typeof typed === 'object' && typed.destroy()
+
+  //reset readmode
+  const $bodyClassList = document.body.classList
+  $bodyClassList.contains('read-mode') && $bodyClassList.remove('read-mode')
+
+  typeof disqusjs === 'object' && disqusjs.destroy()
+})
+
+document.addEventListener('pjax:complete', function () {
+  window.refreshFn()
+
+  document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+  })
+
+  GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+  typeof chatBtnFn === 'function' && chatBtnFn()
+  typeof panguInit === 'function' && panguInit()
+
+  // google analytics
+  typeof gtag === 'function' && gtag('config', '', {'page_path': window.location.pathname});
+
+  // baidu analytics
+  typeof _hmt === 'object' && _hmt.push(['_trackPageview',window.location.pathname]);
+
+  typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
+
+  // prismjs
+  typeof Prism === 'object' && Prism.highlightAll()
+
+  typeof preloader === 'object' && preloader.endLoading()
+})
+
+document.addEventListener('pjax:error', (e) => {
+  if (e.request.status === 404) {
+    pjax.loadUrl('/404.html')
+  }
+})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div><!-- hexo injector body_end start --> <script data-pjax>if(document.getElementById('recent-posts') && (location.pathname ==='/'|| '/' ==='all')){
+    var parent = document.getElementById('recent-posts');
+    var child = '<div class="recent-post-item" style="width:100%;height: auto"><div id="catalog_magnet"><div class="magnet_item"><a class="magnet_link" href="https://Penge666.github.io/categories/分布式/"><div class="magnet_link_context" style=""><span style="font-weight:500;flex:1">🍡 Kevinの分布式学习笔记 (8)</span><span style="padding:0px 4px;border-radius: 8px;"><i class="fas fa-arrow-circle-right"></i></span></div></a></div><div class="magnet_item"><a class="magnet_link" href="https://Penge666.github.io/categories/操作系统/"><div class="magnet_link_context" style=""><span style="font-weight:500;flex:1">🍉 Kevinの操作系统笔记 (21)</span><span style="padding:0px 4px;border-radius: 8px;"><i class="fas fa-arrow-circle-right"></i></span></div></a></div><div class="magnet_item"><a class="magnet_link" href="https://Penge666.github.io/categories/Cpp/"><div class="magnet_link_context" style=""><span style="font-weight:500;flex:1">🍟 KevinのCpp基础笔记 (39)</span><span style="padding:0px 4px;border-radius: 8px;"><i class="fas fa-arrow-circle-right"></i></span></div></a></div><div class="magnet_item"><a class="magnet_link" href="https://Penge666.github.io/categories/数据结构/Cpp/"><div class="magnet_link_context" style=""><span style="font-weight:500;flex:1">🍟 KevinのCpp基础笔记 (1)</span><span style="padding:0px 4px;border-radius: 8px;"><i class="fas fa-arrow-circle-right"></i></span></div></a></div><div class="magnet_item"><a class="magnet_link" href="https://Penge666.github.io/categories/数据库/"><div class="magnet_link_context" style=""><span style="font-weight:500;flex:1">🍨 Kevinの数据库笔记 (12)</span><span style="padding:0px 4px;border-radius: 8px;"><i class="fas fa-arrow-circle-right"></i></span></div></a></div><div class="magnet_item" style="visibility: hidden"></div><a class="magnet_link_more"  href="https://Penge666.github.io/categories/" style="flex:1;text-align: center;margin-bottom: 10px;">查看更多...</a></div></div>';
+    console.log('已挂载magnet')
+    parent.insertAdjacentHTML("afterbegin",child)}
+     </script><style>#catalog_magnet{flex-wrap: wrap;display: flex;width:100%;justify-content:space-between;padding: 10px 10px 0 10px;align-content: flex-start;}.magnet_item{flex-basis: calc(33.333333333333336% - 5px);background: #e9e9e9;margin-bottom: 10px;border-radius: 8px;transition: all 0.2s ease-in-out;}.magnet_item:hover{background: var(--text-bg-hover)}.magnet_link_more{color:#555}.magnet_link{color:black}.magnet_link:hover{color:white}@media screen and (max-width: 600px) {.magnet_item {flex-basis: 100%;}}.magnet_link_context{display:flex;padding: 10px;font-size:16px;transition: all 0.2s ease-in-out;}.magnet_link_context:hover{padding: 10px 20px;}</style>
+    <style></style><script data-pjax>
+  function butterfly_swiper_injector_config(){
+    var parent_div_git = document.getElementById('recent-posts');
+    var item_html = '<div class="recent-post-item" style="height: auto;width: 100%"><div class="blog-slider swiper-container-fade swiper-container-horizontal" id="swiper_container"><div class="blog-slider__wrp swiper-wrapper" style="transition-duration: 0ms;"><div class="blog-slider__item swiper-slide" style="width: 750px; opacity: 1; transform: translate3d(0px, 0px, 0px); transition-duration: 0ms;"><a class="blog-slider__img" onclick="pjax.loadUrl(&quot;posts/2013454d.html&quot;);" href="javascript:void(0);" alt=""><img width="48" height="48" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/assets/photo1/default_cover_20.webp" alt="" onerror="this.src=https://unpkg.zhimg.com/akilar-candyassets/image/loading.gif; this.onerror = null;"/></a><div class="blog-slider__content"><span class="blog-slider__code">2023-08-09</span><a class="blog-slider__title" onclick="pjax.loadUrl(&quot;posts/2013454d.html&quot;);" href="javascript:void(0);" alt="">Markdown语法与外挂标签写法汇总</a><div class="blog-slider__text">🥧本文汇总Markdown格式以及外挂标签在网页端的渲染效果，可作为文档进行查询</div><a class="blog-slider__button" onclick="pjax.loadUrl(&quot;posts/2013454d.html&quot;);" href="javascript:void(0);" alt="">详情       </a></div></div></div><div class="blog-slider__pagination swiper-pagination-clickable swiper-pagination-bullets"></div></div></div>';
+    console.log('已挂载butterfly_swiper')
+    parent_div_git.insertAdjacentHTML("afterbegin",item_html)
+    }
+  var elist = 'undefined'.split(',');
+  var cpage = location.pathname;
+  var epage = '/';
+  var flag = 0;
+
+  for (var i=0;i<elist.length;i++){
+    if (cpage.includes(elist[i])){
+      flag++;
+    }
+  }
+
+  if ((epage ==='all')&&(flag == 0)){
+    butterfly_swiper_injector_config();
+  }
+  else if (epage === cpage){
+    butterfly_swiper_injector_config();
+  }
+  </script><script defer src="https://npm.elemecdn.com/hexo-butterfly-swiper/lib/swiper.min.js"></script><script defer data-pjax src="https://npm.elemecdn.com/hexo-butterfly-swiper/lib/swiper_init.js"></script><div class="js-pjax"><script async="async">var arr = document.getElementsByClassName('recent-post-item');
+for(var i = 0;i<arr.length;i++){
+    arr[i].classList.add('wow');
+    arr[i].classList.add('animate__zoomIn');
+    arr[i].setAttribute('data-wow-duration', '2s');
+    arr[i].setAttribute('data-wow-delay', '200ms');
+    arr[i].setAttribute('data-wow-offset', '30');
+    arr[i].setAttribute('data-wow-iteration', '1');
+  }</script><script async="async">var arr = document.getElementsByClassName('card-widget');
+for(var i = 0;i<arr.length;i++){
+    arr[i].classList.add('wow');
+    arr[i].classList.add('animate__zoomIn');
+    arr[i].setAttribute('data-wow-duration', '2s');
+    arr[i].setAttribute('data-wow-delay', '200ms');
+    arr[i].setAttribute('data-wow-offset', '30');
+    arr[i].setAttribute('data-wow-iteration', '1');
+  }</script></div><script defer src="https://npm.elemecdn.com/hexo-butterfly-wowjs/lib/wow.min.js"></script><script defer src="https://npm.elemecdn.com/hexo-butterfly-wowjs/lib/wow_init.js"></script><script data-pjax src="https://npm.elemecdn.com/hexo-filter-gitcalendar/lib/gitcalendar.js"></script><script data-pjax>
+  function gitcalendar_injector_config(){
+      var parent_div_git = document.getElementById('gitZone');
+      var item_html = '<div class="recent-post-item" id="gitcalendarBar" style="width:100%;height:auto;padding:10px;"><style>#git_container{min-height: 320px}@media screen and (max-width:650px) {#git_container{min-height: 0px}}</style><div id="git_loading" style="width:10%;height:100%;margin:0 auto;display: block;"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 50 50" style="enable-background:new 0 0 50 50" xml:space="preserve"><path fill="#d0d0d0" d="M25.251,6.461c-10.318,0-18.683,8.365-18.683,18.683h4.068c0-8.071,6.543-14.615,14.615-14.615V6.461z" transform="rotate(275.098 25 25)"><animatetransform attributeType="xml" attributeName="transform" type="rotate" from="0 25 25" to="360 25 25" dur="0.6s" repeatCount="indefinite"></animatetransform></path></svg><style>#git_container{display: none;}</style></div><div id="git_container"></div></div>';
+      parent_div_git.insertAdjacentHTML("afterbegin",item_html)
+      console.log('已挂载gitcalendar')
+      }
+
+    if( document.getElementById('gitZone') && (location.pathname ==='/site/census/'|| '/site/census/' ==='all')){
+        gitcalendar_injector_config()
+        GitCalendarInit("/api?null",['#d9e0df', '#c6e0dc', '#a8dcd4', '#9adcd2', '#89ded1', '#77e0d0', '#5fdecb', '#47dcc6', '#39dcc3', '#1fdabe', '#00dab9'],'null')
+    }
+  </script><!-- hexo injector body_end end --></body></html>
